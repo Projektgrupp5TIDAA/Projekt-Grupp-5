@@ -2,6 +2,6 @@
 
 int main(int argc, char const *argv[])
 {
-	printf("HEJ GRUPP5 :D\n");
+    printf("Hej grupp 5");
 	return 0;
 }

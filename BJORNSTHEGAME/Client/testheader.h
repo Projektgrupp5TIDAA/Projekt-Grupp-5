@@ -1,5 +1,5 @@
 #ifndef _TEST_HEADER_
-#define
+#define _TEST_HEADER_
 int GetNumber(int x, int y)
 {
 	return (x+y);

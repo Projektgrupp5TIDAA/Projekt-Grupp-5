@@ -48,13 +48,28 @@ int main(int argc, char **argv)
  
 	/* Main loop */
 	quit = 0;
+	p->address.host = srvadd.host;
+	p->address.port = srvadd.port;
+	p->len = 7;
+	strcpy((char *)p->data, "COMMREQ");
+	SDLNet_UDP_Send(sd, -1, p);
+	while(1){
+	  if(SDLNet_UDP_Recv(sd, p))
+	    break;
+	}
+	SDLNet_ResolveHost(&srvadd, argv[1], atoi(p->data));
+	printf("%d\n", srvadd.port);
+	quit = 0;
 	while (!quit)
 	{
 		printf("Fill the buffer\n>");
 		scanf("%s", (char *)p->data);
- 
+
+		p->address.port = srvadd.port;
+		
+		printf("%d\n", p->address.port);
+		
 		p->address.host = srvadd.host;	/* Set the destination host */
-		p->address.port = srvadd.port;	/* And destination port */
  
 		p->len = strlen((char *)p->data) + 1;
 		SDLNet_UDP_Send(sd, -1, p); /* This sets the p->channel */

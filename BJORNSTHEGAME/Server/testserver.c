@@ -6,10 +6,9 @@
  
 int main(int argc, char **argv)
 {
-	UDPsocket sd[7];       /* Socket descriptor */
-	UDPpacket *p[7];       /* Pointer to packet memory */
-	int open[7] = {0};
-	int quit[7] = {0};
+	UDPsocket sd;       /* Socket descriptor */
+	UDPpacket *p;       /* Pointer to packet memory */
+	int quit;
  
 	/* Initialize SDL_net */
 	if (SDLNet_Init() < 0)
@@ -19,47 +18,42 @@ int main(int argc, char **argv)
 	}
  
 	/* Open a socket */
-	if (!(sd[0] = SDLNet_UDP_Open(2000)))
+	if (!(sd = SDLNet_UDP_Open(2000)))
 	{
 		fprintf(stderr, "SDLNet_UDP_Open: %s\n", SDLNet_GetError());
 		exit(EXIT_FAILURE);
 	}
-	open[0]=1;
-	
+ 
 	/* Make space for the packet */
-	if (!(p[0] = SDLNet_AllocPacket(512)))
+	if (!(p = SDLNet_AllocPacket(512)))
 	{
 		fprintf(stderr, "SDLNet_AllocPacket: %s\n", SDLNet_GetError());
 		exit(EXIT_FAILURE);
 	}
  
 	/* Main loop */
-	while (!quit[0])
+	quit = 0;
+	while (!quit)
 	{
 		/* Wait a packet. UDP_Recv returns != 0 if a packet is coming */
-		if (SDLNet_UDP_Recv(sd[0], p[0]))
+		if (SDLNet_UDP_Recv(sd, p))
 		{
-		  //printf("UDP Packet incoming\n");
-			printf("\tChan:    %d\n", p[0]->channel);
-			//printf("\tData:    %s\n", (char *)p[0]->data);
-			char req[100];
-			strcpy(req, p[0]->data);
-			if(strstr("COMMREQ", req)){
-			  printf("\n\nRequest recieved, assigning port.\n");
-			}else printf("\n\nInvalid request recieved, discarding.\n");
-			printf("\n\n\tLen:     %d\n", p[0]->len);
-			printf("\tMaxlen:  %d\n", p[0]->maxlen);
-			printf("\tStatus:  %d\n", p[0]->status);
-			printf("\tAddress: %x %x\n", p[0]->address.host, p[0]->address.port);
+			printf("UDP Packet incoming\n");
+			printf("\tChan:    %d\n", p->channel);
+			printf("\tData:    %s\n", (char *)p->data);
+			printf("\tLen:     %d\n", p->len);
+			printf("\tMaxlen:  %d\n", p->maxlen);
+			printf("\tStatus:  %d\n", p->status);
+			printf("\tAddress: %x %x\n", p->address.host, p->address.port);
  
 			/* Quit if packet contains "quit" */
-			if (strcmp((char *)p[0]->data, "quit") == 0)
-				quit[0] = 1;
+			if (strcmp((char *)p->data, "quit") == 0)
+				quit = 1;
 		}		
 	}
  
 	/* Clean and exit */
-	SDLNet_FreePacket(p[0]);
+	SDLNet_FreePacket(p);
 	SDLNet_Quit();
 	return EXIT_SUCCESS;
 }

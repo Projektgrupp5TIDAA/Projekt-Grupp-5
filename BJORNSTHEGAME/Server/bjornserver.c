@@ -3,71 +3,75 @@
 #include <string.h>
 #include <pthread.h>
 #include "SDL2/SDL_net.h"
+#define PORTS 2000
 #include "bjornthreads.h"
- 
+
 int main(int argc, char **argv)
 {
-	UDPsocket sd[7];       /* Socket descriptor */
-	UDPpacket *p[7];       /* Pointer to packet memory */
-	int open[7] = {0};
-	int quit[7] = {0};
-    int check_thread, i=1;
-    pthread_t threads[6]; // array av trådar
- 
-	/* Initialize SDL_net */
-	if (SDLNet_Init() < 0)
-	{
-		fprintf(stderr, "SDLNet_Init: %s\n", SDLNet_GetError());
-		exit(EXIT_FAILURE);
-	}
- 
-	/* Open a socket */
-	if (!(sd[0] = SDLNet_UDP_Open(2000)))
-	{
-		fprintf(stderr, "SDLNet_UDP_Open: %s\n", SDLNet_GetError());
-		exit(EXIT_FAILURE);
-	}
-	open[0]=1;
-	
-	/* Make space for the packet */
-	if (!(p[0] = SDLNet_AllocPacket(512)))
-	{
-		fprintf(stderr, "SDLNet_AllocPacket: %s\n", SDLNet_GetError());
-		exit(EXIT_FAILURE);
-	}
- 
-	/* Main loop */
-	while (!quit[0])
-	{
-		/* Wait a packet. UDP_Recv returns != 0 if a packet is coming */
-		if (SDLNet_UDP_Recv(sd[0], p[0]))
-		{
-		  //printf("UDP Packet incoming\n");
-			printf("\tChan:    %d\n", p[0]->channel);
-			//printf("\tData:    %s\n", (char *)p[0]->data);
-			char req[100];
-			strcpy(req, p[0]->data);
-			if(strstr("COMMREQ", req)){
-                printf("\n\nRequest recieved, assigning port.\n");
-                pthread_create(&threads[i],NULL,&check_ports,NULL);
-			}else printf("\n\nInvalid request recieved, discarding.\n");
-			printf("\n\n\tLen:     %d\n", p[0]->len);
-			printf("\tMaxlen:  %d\n", p[0]->maxlen);
-			printf("\tStatus:  %d\n", p[0]->status);
-			printf("\tAddress: %x %x\n", p[0]->address.host, p[0]->address.port);
- 
-			/* Quit if packet contains "quit" */
-			if (strcmp((char *)p[0]->data, "quit") == 0)
-				quit[0] = 1;
-            i++;
-		}		
-	}
-    int j;
-    for(j=0;j<i;j++)
-        pthread_join(threads[i], NULL);
-	/* Clean and exit */
-	SDLNet_FreePacket(p[0]);
-	SDLNet_Quit();
-	return EXIT_SUCCESS;
+  UDPsocket sock[PLAYERCOUNT + 1];       /* Socket descriptor */
+  UDPpacket *mem[PLAYERCOUNT + 1];       /* Pointer to packet memory */
+  pinfo players[PLAYERCOUNT];
+  int ports[PLAYERCOUNT + 1];
+  getPorts(ports);
+  int open[PLAYERCOUNT + 1] = {0};
+  int quit[PLAYERCOUNT + 1] = {0};
+  int check_thread, threadID=1, i;
+  pthread_t threads[6]; // array av trådar
+  
+  /* Initialize SDL_net */
+  if (SDLNet_Init() < 0)
+    {
+      fprintf(stderr, "SDLNet_Init: %s\n", SDLNet_GetError());
+      exit(EXIT_FAILURE);
+    }
+  
+  /* Open the sockets */
+  for(i=0;i<PLAYERCOUNT+1;i++){
+    if (!(sock[i] = SDLNet_UDP_Open(ports[i])))
+      {
+	fprintf(stderr, "SDLNet_UDP_Open: %s\n", SDLNet_GetError());
+	exit(EXIT_FAILURE);
+      }
+    open[0]=1;
+  
+    /* Make space for the packets on the sockets */
+    if (!(mem[i] = SDLNet_AllocPacket(512)))
+      {
+	fprintf(stderr, "SDLNet_AllocPacket: %s\n", SDLNet_GetError());
+	exit(EXIT_FAILURE);
+      }
+  }
+  
+  /* Main loop */
+  while (!quit[0])
+    {
+      /* Waits for a packet. UDP_Recv returns != 0 if a packet is incoming */
+      if (SDLNet_UDP_Recv(sock[0], mem[0])){
+	/* Copies the data and compares it to the request-string*/
+	char req[100];
+	strcpy(req, mem[0]->data);
+	if(strstr("COMMREQ", req) && threadID < 7){
+	  /* If the request is valid, a thread is spawned and assigned a socket with a port-number */
+	  printf("Request recieved, assigning port.\n");
+	  initiatePlayer(&(players[threadID]));
+	  players[threadID].threadID = threadID;
+	  players[threadID].port = ports[threadID];
+	  open[threadID] = 1;
+	  pthread_create(&threads[threadID],NULL,&check_ports,(void *)&players[threadID]);
+	  threadID++;
+	}else printf("Invalid request recieved, discarding.\n");
+	  
+	/* Quit if packet contains the exit-command */
+	if (strcmp((char *)mem[0]->data, "EXIT") == 0)
+	  quit[0] = 1;
+	}		
+    }
+  int j;
+  for(j=0;j<threadID;j++)
+    pthread_join(threads[threadID], NULL);
+  /* Clean and exit */
+  SDLNet_FreePacket(mem[0]);
+  SDLNet_Quit();
+  return EXIT_SUCCESS;
 }
 

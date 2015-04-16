@@ -3,11 +3,7 @@
 #include <string.h>
 #include <pthread.h>
 #include "SDL2/SDL_net.h"
-
-void *check_ports(){
-    printf("Tråden funkar!");
-}
-
+#include "bjornthreads.h"
  
 int main(int argc, char **argv)
 {
@@ -44,22 +40,22 @@ int main(int argc, char **argv)
 	while (!quit[0])
 	{
 		/* Wait a packet. UDP_Recv returns != 0 if a packet is coming */
-		if (SDLNet_UDP_Recv(sd[0], p[0]))
-		{
-		  //printf("UDP Packet incoming\n");
-			printf("\tChan:    %d\n", p[0]->channel);
-			//printf("\tData:    %s\n", (char *)p[0]->data);
-			char req[100];
-			strcpy(req, p[0]->data);
-			if(strstr("COMMREQ", req)){
-                printf("\n\nRequest recieved, assigning port.\n");
+	  if (SDLNet_UDP_Recv(sd[0], p[0]))
+	    {
+	      //printf("UDP Packet incoming\n");
+	      //printf("\tChan:    %d\n", p[0]->channel);
+	      //printf("\tData:    %s\n", (char *)p[0]->data);
+	      char req[100];
+	      strcpy(req, p[0]->data);
+	      if(strstr("COMMREQ", req)){
+                printf("Request recieved, assigning port.\n");
                 pthread_create(&threads[i],NULL,&check_ports,NULL);
-			}else printf("\n\nInvalid request recieved, discarding.\n");
-			printf("\n\n\tLen:     %d\n", p[0]->len);
-			printf("\tMaxlen:  %d\n", p[0]->maxlen);
-			printf("\tStatus:  %d\n", p[0]->status);
-			printf("\tAddress: %x %x\n", p[0]->address.host, p[0]->address.port);
- 
+	      }else printf("Invalid request recieved, discarding.\n");
+	      //printf("\n\n\tLen:     %d\n", p[0]->len);
+	      //printf("\tMaxlen:  %d\n", p[0]->maxlen);
+	      //printf("\tStatus:  %d\n", p[0]->status);
+	      //printf("\tAddress: %x %x\n", p[0]->address.host, p[0]->address.port);
+	      
 			/* Quit if packet contains "quit" */
 			if (strcmp((char *)p[0]->data, "quit") == 0)
 				quit[0] = 1;

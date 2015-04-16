@@ -1,8 +1,14 @@
 #ifndef _BJORN_THREAD_
 #define _BJORN_THREAD_
 
-void *check_ports(){
-    printf("Tråden funkar!");
+typedef struct playerinfo{
+  int test;
+}pinfo;
+
+void *check_ports(void* ply){
+  pinfo player = (pinfo *) ply;
+  player.test = 3;
+  printf("Tråden funkar! %d\n", testaa.test);
 }
 
 #endif

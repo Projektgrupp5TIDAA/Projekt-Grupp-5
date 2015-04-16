@@ -1,8 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
- 
-#include "SDL2/SDL_net.h"
+#include <pthread.h>
+#include "SDL2_net/SDL_net.h"
+
+void *check_ports(){
+    printf("Tråden funkar!");
+}
+
  
 int main(int argc, char **argv)
 {
@@ -10,6 +15,8 @@ int main(int argc, char **argv)
 	UDPpacket *p[7];       /* Pointer to packet memory */
 	int open[7] = {0};
 	int quit[7] = {0};
+    int check_thread, i=1;
+    pthread_t threads[6]; // array av trådar
  
 	/* Initialize SDL_net */
 	if (SDLNet_Init() < 0)
@@ -45,7 +52,8 @@ int main(int argc, char **argv)
 			char req[100];
 			strcpy(req, p[0]->data);
 			if(strstr("COMMREQ", req)){
-			  printf("\n\nRequest recieved, assigning port.\n");
+                printf("\n\nRequest recieved, assigning port.\n");
+                pthread_create(&threads[i],NULL,&check_ports,NULL);
 			}else printf("\n\nInvalid request recieved, discarding.\n");
 			printf("\n\n\tLen:     %d\n", p[0]->len);
 			printf("\tMaxlen:  %d\n", p[0]->maxlen);
@@ -55,11 +63,15 @@ int main(int argc, char **argv)
 			/* Quit if packet contains "quit" */
 			if (strcmp((char *)p[0]->data, "quit") == 0)
 				quit[0] = 1;
+            i++;
 		}		
 	}
- 
+    int j;
+    for(j=0;j<i;j++)
+        pthread_join(threads[i], NULL);
 	/* Clean and exit */
 	SDLNet_FreePacket(p[0]);
 	SDLNet_Quit();
 	return EXIT_SUCCESS;
 }
+

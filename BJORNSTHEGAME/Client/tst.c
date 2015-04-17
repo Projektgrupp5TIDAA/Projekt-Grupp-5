@@ -33,6 +33,8 @@ void life(Player *p, bool shooted)// counting HP (players life)
     if(HP==0)
     {
         //gameOver?
+         strcpy(p-> alive, "No");
+        
     }
     else
     {

@@ -14,6 +14,8 @@ int main(int argc, char const *argv[])
 			    400,
 			    SDL_WINDOW_FULLSCREEN_DESKTOP	//flags etc
 			    );
+
+  SDL_Renderer *test = SDL_CreateRenderer(window, -1, 0);
   
   if (window==NULL)
     {
@@ -25,10 +27,16 @@ int main(int argc, char const *argv[])
   font = TTF_OpenFont("Metropolitan-Text.ttf", 16);
   SDL_Color color={0,0,0};
   SDL_Surface *text_surface;
+  SDL_Texture* testmessage = SDL_CreateTextureFromSurface(test, text_surface);
+  SDL_Rect testrect;
+  testrect.x = 0;
+  testrect.y = 0;
+  testrect.w = 100;
+  testrect.h = 100;
   if(!(text_surface=TTF_RenderText_Solid(font, "Hello!", color))){
     printf("FEEEL\n");
   } else {
-    SDL_BlitSurface(text_surface, NULL, window, null);
+    SDL_RenderCopy(test, testmessage, NULL, &testrect);
   }
   
 	     

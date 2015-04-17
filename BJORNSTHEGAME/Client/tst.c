@@ -54,8 +54,10 @@ int Bullets(Player p)//how many bullets left to the player?
 
 bool shootedP()
 {
+  
     bool n=false;
     Player p1, p2;
+    position.x=p1.x;
     if(p1.shooting==0 && p2.x==position.x)
     {
         n=true;

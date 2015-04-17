@@ -58,13 +58,16 @@ int main(int argc, char **argv)
 	    break;
 	}
 	SDLNet_ResolveHost(&srvadd, argv[1], atoi(p->data));
+	printf("%d\n", srvadd.port);
 	quit = 0;
 	while (!quit)
 	{
-		printf("Input: ");
+		printf("Fill the buffer\n>");
 		scanf("%s", (char *)p->data);
 
 		p->address.port = srvadd.port;
+		
+		printf("%d\n", p->address.port);
 		
 		p->address.host = srvadd.host;	/* Set the destination host */
  

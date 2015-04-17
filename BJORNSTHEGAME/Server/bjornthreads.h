@@ -1,31 +1,26 @@
 #ifndef _BJORN_THREAD_
 #define _BJORN_THREAD_
-#define HEALTH 5
+#define HEALTH 22
 #define PLAYERCOUNT 6
 
 /* Struct with important information regarding the thread and player */
 typedef struct playerinfo{
-  int health, drunkLevel, upgradeTimer, position[2], powerLocation[10][2], damage, threadID, port;
+  int health, drunkLevel, upgradeTimer, position[2], powerLocation[10][2], damage, threadID;
+  UDPsocket *sock;
 }pinfo;
 
 /* Thread execution function */
 void *check_ports(void* ply){
-  UDPsocket socket;
   UDPpacket *packet;
   pinfo player = *((pinfo *) ply);
-  if(!(socket = SDLNet_UDP_Open(player.port))){
-    fprintf(stderr, "SDLNet_UDP_Open for thread %d: %s", player.threadID, SDLNet_GetError());
-  }
   if(!(packet = SDLNet_AllocPacket(512))){
     fprintf(stderr, "SDLNet_Allocation %s for thread %d", SDLNet_GetError(), player.threadID);
   }
-  SDLNet_UDP_Recv(socket, packet);
-  printf("Thread with ID: %d is working!\n", player.threadID);
   while(1){
-    if(SDLNet_UDP_Recv(socket, packet)){
-      printf("Thread #%d says: %s\n", player.threadID, packet->data);
-    }
+    if(SDLNet_UDP_Recv(*(player.sock), packet))
+      break;
   }
+  printf("Tråden funkar! %d ID:%d Data: %s\n", player.health, player.threadID, packet->data);
 }
 
 /* Function for retrieving the location of Power-Up items */

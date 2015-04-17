@@ -12,7 +12,7 @@ int main(int argc, char **argv){
   pinfo players[PLAYERCOUNT];
   int ports[PLAYERCOUNT + 1];
   getPorts(ports);
-  char clear='0';
+  unsigned char clear='0';
   int open[PLAYERCOUNT + 1] = {0};
   int quit[PLAYERCOUNT + 1] = {0};
   int check_thread, threadID=0, i;

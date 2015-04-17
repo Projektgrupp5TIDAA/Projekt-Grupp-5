@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL2_ttf/SDL_ttf.h>
 #include "testheader.h"
 
 int main(int argc, char const *argv[])
@@ -28,9 +28,8 @@ int main(int argc, char const *argv[])
   if(!(text_surface=TTF_RenderText_Solid(font, "Hello!", color))){
     printf("FEEEL\n");
   } else {
-    SDL_BlitSurface(text_surface, NULL, window, null);
+    SDL_BlitSurface(text_surface, NULL, window, NULL);
   }
-  
 	     
   SDL_Delay(8000); //8 sek
   

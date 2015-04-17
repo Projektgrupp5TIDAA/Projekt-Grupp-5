@@ -5,15 +5,22 @@
 
 /* Struct with important information regarding the thread and player */
 typedef struct playerinfo{
-  int health, drunkLevel, upgradeTimer, position[2], powerLocation[10][2], damage, port, threadID;
+  int health, drunkLevel, upgradeTimer, position[2], powerLocation[10][2], damage, threadID;
   UDPsocket *sock;
 }pinfo;
 
 /* Thread execution function */
 void *check_ports(void* ply){
+  UDPpacket *packet;
   pinfo player = *((pinfo *) ply);
-  printf("Tråden funkar! %d\n", player.health);
-    //ply = &player;
+  if(!(packet = SDLNet_AllocPacket(512))){
+    fprintf(stderr, "SDLNet_Allocation %s for thread %d", SDLNet_GetError(), player.threadID);
+  }
+  while(1){
+    if(SDLNet_UDP_Recv(*(player.sock), packet))
+      break;
+  }
+  printf("Tråden funkar! %d ID:%d Data: %s\n", player.health, player.threadID, packet->data);
 }
 
 /* Function for retrieving the location of Power-Up items */

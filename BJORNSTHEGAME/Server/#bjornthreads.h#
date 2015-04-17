@@ -1,6 +1,6 @@
 #ifndef _BJORN_THREAD_
 #define _BJORN_THREAD_
-#define HEALTH 5
+#define HEALTH 22
 #define PLAYERCOUNT 6
 
 /* Struct with important information regarding the thread and player */
@@ -20,10 +20,10 @@ void *check_ports(void* ply){
     fprintf(stderr, "SDLNet_Allocation %s for thread %d", SDLNet_GetError(), player.threadID);
   }
   SDLNet_UDP_Recv(socket, packet);
-  printf("Thread with ID: %d is working!\n", player.threadID);
+  printf("Thread is working! %d ID:%d\n", player.health, player.threadID);
   while(1){
     if(SDLNet_UDP_Recv(socket, packet)){
-      printf("Thread #%d says: %s\n", player.threadID, packet->data);
+      printf("Thread #%d says:%s\n", player.threadID3, packet->data);
     }
   }
 }

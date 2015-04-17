@@ -5,25 +5,28 @@
 
 int main(int argc, char const *argv[])
 {
-	int i = GetNumber(4, 5);
-	printf("The number should be 9: number = %d\n", i);
-	/*SDL_Window* window;
+	SDL_Window* window;
 	SDL_INIT_VIDEO;
     window = SDL_CreateWindow("HEJ",						//Window name
     						SDL_WINDOWPOS_UNDEFINED,		//x-position
     						SDL_WINDOWPOS_UNDEFINED,		//y-position
     						720,
     						400,
-    						SDL_WINDOW_OPENGL				//flags etc
+    						SDL_WINDOW_FULLSCREEN_DESKTOP	//flags etc
     						);
 
     if (window==NULL)
     {
     	printf("Couldnt create window\n");
     }
+
+    TTF_Init();
+    TTF_Font
     SDL_Delay(8000); //8 sek
+
+
     SDL_DestroyWindow(window);
     SDL_Quit();
 	return 0;
-	*/
+	
 }

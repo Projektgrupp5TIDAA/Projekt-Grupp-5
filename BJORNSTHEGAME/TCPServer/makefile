@@ -14,7 +14,7 @@ else
 		CFLAGS=-lSDL2 -lSDL2_net
 	endif
 	ifeq ($(UNAME_TARGET),Darwin)
-		CFLAGS=-I$(SDL2_DIR) -I$(SDL2NET_DIR) -F$(FRAMEWORKS) -framework SDL2 -framework SDL2_net -lpthread
+		CFLAGS=-I$(SDL2_DIR) -I$(SDL2NET_DIR) -F$(FRAMEWORKS) -framework SDL2 -framework SDL2_net
 	endif
 endif
 

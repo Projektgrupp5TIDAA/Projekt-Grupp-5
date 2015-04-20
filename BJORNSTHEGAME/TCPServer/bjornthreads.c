@@ -1,23 +1,21 @@
-#ifndef _BJORN_THREAD_
-#define _BJORN_THREAD_
-#define HEALTH 5
-#define PLAYERCOUNT 6
-#define PACKETSIZE 512
-
-/* Struct with important information regarding the thread and player */
-typedef struct playerinfo{
-  int health, drunkLevel, upgradeTimer, position[2], powerLocation[10][2], threadID;
-  TCPsocket socket;
-}pinfo;
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_net.h>
+#include <SDL2/SDL_thread.h>
+#include "bjornthreads.h"
 
 /* Thread execution function */
-void *check_ports(void* ply){
+SDL_ThreadFunction *check_ports(void* ply){
   char incoming[PACKETSIZE];
-  pinfo player = *((pinfo *) ply);
-  printf("Thread with ID: %d is working!\n", player.threadID);
+  tinfo thread = *((tinfo *) ply);
+  printf("Thread #%d is active!\n", thread.threadID);
   while(1){
-    if(SDLNet_TCP_Recv(player.socket, incoming, PACKETSIZE)){
-      printf("Thread #%d says: %s\n", player.threadID, incoming);
+    if(SDLNet_TCP_Recv(thread.socket, incoming, PACKETSIZE)){
+      if(strstr("EXITTHR", incoming)){
+        printf("Thread #%d exiting!\n", thread.threadID);
+        *(thread.active) = 0;
+        return;
+      }
+      printf("Thread #%d says: %s\n", thread.threadID, incoming);
     }
   }
 }
@@ -43,5 +41,3 @@ void getPorts(int ports[PLAYERCOUNT + 1]){
     ports[i] = PORTS + i;
   }
 }
-
-#endif

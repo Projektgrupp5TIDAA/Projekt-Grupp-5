@@ -48,7 +48,7 @@ int main(int argc, char **argv){
     if(!isEmptyStack(servants)){
       currentsocket = popSocketStack(&servants);
       while(1){
-        if(clientsockets[currentsocket] = SDLNet_TCP_Accept(socket)){
+        if((clientsockets[currentsocket] = SDLNet_TCP_Accept(socket))){
          activethread[currentsocket] = 1;
 	       printf("Request recieved, assigning socket to thread #%d.\n", currentsocket);
          break;

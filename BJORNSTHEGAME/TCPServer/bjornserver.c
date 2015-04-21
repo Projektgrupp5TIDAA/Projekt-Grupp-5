@@ -2,15 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include "bjornthreads.h"
+#include "bjornstack.h"
 
 int main(int argc, char **argv){
   IPaddress sourceIP, *destinationIP;
-  TCPsocket socket, clientsockets[6];
+  TCPsocket socket, clientsockets[PLAYERCOUNT];
+  cServ servants = {0,{0}}; //Stack
   tinfo threadvariables[PLAYERCOUNT]; // Array of player-structs
   char incomingdata[512]; //char to clear the data input
-  int stop=0, threadID=0, i; //various ints
+  int currentsocket=0, stop=0, i, activethread[PLAYERCOUNT] = {0}; //various ints
   SDL_Thread* threads[PLAYERCOUNT + 1]; // Array of threads
-  int activethreads[PLAYERCOUNT] = {0};
   
   /* Initialize SDL_net */
   if (SDLNet_Init() < 0){
@@ -29,40 +30,33 @@ int main(int argc, char **argv){
     exit(EXIT_FAILURE);
   }
     
+
+  //Put in a function(Populate stack)
+  for(i=0;i<PLAYERCOUNT;i++){
+    pushSocketStack(&servants, i); //Pushes the current socket that is being handled onto the stack
+    initiatePlayer(&(threadvariables[i].player));  //Initiate the player-struct
+    threadvariables[i].active = &activethread[i];  //Gives the current thread the active flag-pointer
+    threadvariables[i].servants = &servants;       //Gives the thread access to the stack
+    threadvariables[i].threadID = i;               //Assigns the thread ID
+    threadvariables[i].socket = &clientsockets[i]; //Assigns the thread it's socket
+    SDL_CreateThread(check_ports, "Thr", (void *)&threadvariables[i]); //Creates the thread
+  }
+
   /* Main loop */
   while(!stop){
     /* Clears the data input then waits for a packet */
-    if (clientsockets[threadID] = SDLNet_TCP_Accept(socket)){
-      /* Copies the data and compares it to the request-string*/
-      if(threadID < 6){
-	     /* If the request is valid, a thread is spawned and assigned a port */
-	     printf("Request recieved, assigning socket to thread #%d.\n", threadID);
-	     initiatePlayer(&(threadvariables[threadID].player)); //Initiate the player-struct
-	     threadvariables[threadID].threadID = threadID;
-	     threadvariables[threadID].socket = clientsockets[threadID];
-       activethreads[threadID] = 1;
-       threadvariables[threadID].active = &activethreads[threadID];
-	     SDL_CreateThread(check_ports, "Thr", (void *)&threadvariables[threadID]);
-       if(threadID == 5)
-       stop = 1;
-       threadID++;
-      } 
-    }		
-  }
-  stop = 0;
-  while(!stop){
-    //if(SDLNet_SocketReady(socket)){
-      for(i=0;i<PLAYERCOUNT;i++){
-        if(activethreads[i] == 0){
-          printf("Socket #%d closed, ready for new connection!\n", i);
-          SDLNet_TCP_Close(clientsockets[i]);
+    if(!isEmptyStack(servants)){
+      currentsocket = popSocketStack(&servants);
+      while(1){
+        if(clientsockets[currentsocket] = SDLNet_TCP_Accept(socket)){
+         activethread[currentsocket] = 1;
+	       printf("Request recieved, assigning socket to thread #%d.\n", currentsocket);
+         break;
         }
       }
+    }		
   }
-  int j;
-  for(j=0;j<threadID;j++)
-    SDL_WaitThread(threads[threadID], NULL);
-  /* Clean and exit */
+
   SDLNet_TCP_Close(socket);
   SDLNet_Quit();
   return EXIT_SUCCESS;

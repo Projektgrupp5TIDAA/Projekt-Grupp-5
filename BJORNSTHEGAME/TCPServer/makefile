@@ -18,7 +18,7 @@ else
 	endif
 endif
 
-objectlist = bjornserver.o bjornthreads.o
+objectlist = bjornserver.o bjornthreads.o bjornstack.o
 
 bjornserver : $(objectlist)
 	$(CC) -o bjornserver.ou $(CFLAGS) $(objectlist)

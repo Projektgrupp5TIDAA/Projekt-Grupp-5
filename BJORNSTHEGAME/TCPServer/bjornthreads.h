@@ -10,7 +10,7 @@
 #define HEALTH 5
 #define PLAYERCOUNT 6
 #define PACKETSIZE 512
-//#include "bjornstack.h"
+
 /* struct with important information about the sockets id */
 typedef struct clientServant{
 	int population, socket[PLAYERCOUNT];

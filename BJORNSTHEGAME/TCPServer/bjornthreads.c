@@ -9,13 +9,15 @@ SDL_ThreadFunction *check_ports(void* ply){
   tinfo thread = *((tinfo *) ply);
   printf("Thread #%d is active!\n", thread.threadID);
   while(1){
-    if(SDLNet_TCP_Recv(thread.socket, incoming, PACKETSIZE)){
-      if(strstr("EXITTHR", incoming)){
-        printf("Thread #%d exiting!\n", thread.threadID);
-        *(thread.active) = 0;
-        return;
+    if((*(thread.active)) == 1){
+      if(SDLNet_TCP_Recv(*(thread.socket), incoming, PACKETSIZE)){
+        if(strstr("EXITTHR", incoming)){
+          printf("Thread #%d is now inactive!\n", thread.threadID);
+          pushSocketStack(thread.servants, thread.threadID);
+          *(thread.active) = 0;
+        }else
+          printf("Thread #%d says: %s\n", thread.threadID, incoming);
       }
-      printf("Thread #%d says: %s\n", thread.threadID, incoming);
     }
   }
 }
@@ -32,12 +34,4 @@ void initiatePlayer(pinfo* ply){
   (*ply).position[1] = 5;
   //getPowerLocation((*ply).powerLocation);
   (*ply).damage = 1;
-}
-
-/* Gets the port-range to be used by the server */
-void getPorts(int ports[PLAYERCOUNT + 1]){
-  int i;
-  for(i=0;i<PLAYERCOUNT+1;i++){ 
-    ports[i] = PORTS + i;
-  }
 }

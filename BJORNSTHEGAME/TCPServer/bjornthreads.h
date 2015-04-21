@@ -10,6 +10,13 @@
 #define HEALTH 5
 #define PLAYERCOUNT 6
 #define PACKETSIZE 512
+//#include "bjornstack.h"
+
+typedef struct clientServant{
+	int population, socket[PLAYERCOUNT];
+}cServ;
+
+#include "bjornstack.h"
 
 /* Struct with important information regarding the thread and player */
 typedef struct playerinfo{
@@ -17,9 +24,10 @@ typedef struct playerinfo{
 }pinfo;
 
 typedef struct threadinfo{
-	TCPsocket socket;
+	TCPsocket *socket;
 	int threadID, *active;
 	pinfo player;
+	cServ *servants;
 }tinfo;
 
 /* Thread execution function */

@@ -5,7 +5,7 @@
 #include "bjornstack.h"
 
 int main(int argc, char **argv){
-  IPaddress sourceIP, *destinationIP;
+  IPaddress sourceIP;
   TCPsocket socket, clientsockets[PLAYERCOUNT];
   cServ servants = {0,{0}}; //Stack
   tinfo threadvariables[PLAYERCOUNT]; // Array of player-structs
@@ -54,7 +54,8 @@ int main(int argc, char **argv){
          break;
         }
       }
-    }		
+    }
+    //BROADCAST
   }
 
   SDLNet_TCP_Close(socket);

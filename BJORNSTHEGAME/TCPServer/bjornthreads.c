@@ -1,3 +1,4 @@
+
 #include "bjornthreads.h"
 
 /* Thread execution function */
@@ -10,13 +11,13 @@ SDL_ThreadFunction *check_ports(void* ply){
       if(SDLNet_TCP_Recv(*(thread.socket), incoming, PACKETSIZE)){
         if(strstr("EXITTHR", incoming)){
           printf("Thread #%d is now inactive!\n", thread.threadID);
-          pushSocketStack(thread.servants, thread.threadID);
+          pushSocketStack(thread.servants, thread.threadID); // pushes sockets id to the stack 
           *(thread.active) = 0;
         }else
           printf("Thread #%d says: %s\n", thread.threadID, incoming);
-      }
     }
   }
+}
 }
 
 /* Function for retrieving the location of Power-Up items */

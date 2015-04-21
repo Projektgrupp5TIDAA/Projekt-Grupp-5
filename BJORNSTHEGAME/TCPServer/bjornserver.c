@@ -40,13 +40,14 @@ int main(int argc, char **argv){
     threadvariables[i].threadID = i;               //Assigns the thread ID
     threadvariables[i].socket = &clientsockets[i]; //Assigns the thread it's socket
     SDL_CreateThread(check_ports, "Thr", (void *)&threadvariables[i]); //Creates the thread
+    
   }
 
   /* Main loop */
   while(!stop){
     /* Clears the data input then waits for a packet */
     if(!isEmptyStack(servants)){
-      currentsocket = popSocketStack(&servants);
+      currentsocket = popSocketStack(&servants); // take socket id from the stack 
       while(1){
         if((clientsockets[currentsocket] = SDLNet_TCP_Accept(socket))){
          activethread[currentsocket] = 1;

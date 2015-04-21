@@ -3,7 +3,7 @@
 #ifdef __APPLE__
 #include <SDL2_net/SDL_net.h>
 #else
-#include <SDL2/SDL_net.h>
+#include <SDL2/SDL_net.h>1
 #endif
 #include <SDL2/SDL_thread.h>
 #define PORT 4000
@@ -11,7 +11,7 @@
 #define PLAYERCOUNT 6
 #define PACKETSIZE 512
 //#include "bjornstack.h"
-
+/* struct with important information about the sockets id */
 typedef struct clientServant{
 	int population, socket[PLAYERCOUNT];
 }cServ;
@@ -23,6 +23,7 @@ typedef struct playerinfo{
   int health, drunkLevel, upgradeTimer, position[2], powerLocation[10][2], damage;
 }pinfo;
 
+/* struct with information about the threads */
 typedef struct threadinfo{
 	TCPsocket *socket;
 	int threadID, *active;

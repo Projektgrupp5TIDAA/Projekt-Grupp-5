@@ -3,7 +3,7 @@
 #include <string.h>
 #include "bjornthreads.h"
 #include "bjornstack.h"
-#include "../Shared/bjornshared.h"
+#include "bjornshared.h"
 
 int main(int argc, char **argv){
   IPaddress sourceIP;
@@ -55,8 +55,9 @@ int main(int argc, char **argv){
 	       printf("Request recieved, assigning socket to thread #%d.\n", currentsocket);
          break;
         }
+        printf("Drunklevel of %s is: %d\n", threadvariables[5].player.playername, threadvariables[5].player.drunkLevel);
       }
-    }
+    }   
     //BROADCAST
   }
 

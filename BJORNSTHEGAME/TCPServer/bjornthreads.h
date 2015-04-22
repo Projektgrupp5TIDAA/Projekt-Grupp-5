@@ -3,7 +3,7 @@
 #ifdef __APPLE__
 #include <SDL2_net/SDL_net.h>
 #else
-#include <SDL2/SDL_net.h>1
+#include <SDL2/SDL_net.h>
 #endif
 #include <SDL2/SDL_thread.h>
 #define PORT 4000
@@ -20,7 +20,8 @@ typedef struct clientServant{
 
 /* Struct with important information regarding the thread and player */
 typedef struct playerinfo{
-  int health, drunkLevel, upgradeTimer, position[2], powerLocation[10][2], damage;
+  int health, drunkLevel, upgradeTimer, position[2], powerLocation, damage;
+  char playername[20];
 }pinfo;
 
 /* struct with information about the threads */
@@ -33,9 +34,6 @@ typedef struct threadinfo{
 
 /* Thread execution function */
 SDL_ThreadFunction *check_ports(void* ply);
-
-/* Function for retrieving the location of Power-Up items */
-void getPowerLocation(int loc[10][2]);
 
 /* Initiation of the player struct */
 void initiatePlayer(pinfo* ply);

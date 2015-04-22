@@ -5,12 +5,13 @@ int main(int argc, char *argv[])
   SDL_Window* window;
   SDL_Init(SDL_INIT_EVERYTHING);
   TTF_Init();
+  Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024);
   window = SDL_CreateWindow("HEJ",				//Window name
 			    SDL_WINDOWPOS_UNDEFINED,		//x-position
 			    SDL_WINDOWPOS_UNDEFINED,		//y-position
 			    800,
 			    600,
-			    SDL_WINDOW_FULLSCREEN	//flags etc
+			    SDL_WINDOW_FULLSCREEN_DESKTOP	//flags etc
 			    );
   if (window==NULL)
     {

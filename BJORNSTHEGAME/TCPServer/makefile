@@ -22,4 +22,4 @@ else
 endif
 
 bjornserver : $(objectlist)
-	$(CC) -o bjornserver.ou $(CFLAGS) $(objectlist)
+	$(CC) -o bjornserver.out $(CFLAGS) $(objectlist)

@@ -3,6 +3,7 @@
 #include <string.h>
 #include "bjornthreads.h"
 #include "bjornstack.h"
+#include "../Shared/bjornshared.h"
 
 int main(int argc, char **argv){
   IPaddress sourceIP;

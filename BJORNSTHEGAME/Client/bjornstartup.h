@@ -57,6 +57,7 @@ int menu(SDL_Surface* screen, SDL_Window* window){
   			SDL_FreeSurface(playbutton);
   			SDL_FreeSurface(tapir);
   			Mix_FreeMusic(music);
+  			Mix_FreeChunk(uselt);
   			TTF_CloseFont(font);
 			return 1;
 		}

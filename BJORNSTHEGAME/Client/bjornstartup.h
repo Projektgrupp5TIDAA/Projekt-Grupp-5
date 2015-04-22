@@ -36,7 +36,7 @@ int menu(SDL_Surface* screen, SDL_Window* window){
 	Mix_PlayMusic(music, -1);
 
 	/* Initialize rectangles */
-	SDL_Rect titleplacement = {(screen->w/2 - ((title->w)/2)), 20, 0, 0};
+	SDL_Rect titleplacement = {(screen->w/2 - ((title->w)/2)), 20, 0, 0}; // x,y,w,h
 	SDL_Rect buttonplacement = {((screen->w/2) - 125), (screen->h/2), 250, 60};
 	SDL_Rect button2placement = {((screen->w/2) - 125), (screen->h/2 + 70), 250, 60};
 	SDL_Rect button3placement = {((screen->w/2) - 125), (screen->h/2 - 70), 250, 60};
@@ -63,7 +63,7 @@ int menu(SDL_Surface* screen, SDL_Window* window){
 		}
 
 		/* Blit the images to the screen */
-  		SDL_BlitScaled(background, NULL, screen, NULL);
+  		SDL_BlitScaled(background, NULL, screen, NULL); 
   		SDL_BlitSurface(title, NULL, screen, &titleplacement);
   		SDL_BlitScaled(playbutton, NULL, screen, &buttonplacement);
   		SDL_BlitScaled(playbutton, NULL, screen, &button2placement);

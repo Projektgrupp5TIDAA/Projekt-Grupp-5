@@ -11,14 +11,14 @@ int main(int argc, char *argv[])
 			    SDL_WINDOWPOS_UNDEFINED,		//y-position
 			    800,
 			    600,
-			    SDL_WINDOW_FULLSCREEN_DESKTOP	//flags etc
+                SDL_WINDOW_FULLSCREEN	//flags etc
 			    );
   if (window==NULL)
     {
       printf("Window could not be created.\n");
     }
   
-  SDL_Surface *screen = SDL_GetWindowSurface(window);
+  SDL_Surface *screen = SDL_GetWindowSurface(window); // get the screen instead of using renderer function 
   menu(screen, window);
   SDL_Color white={255,255,255};
   TTF_Font *font = TTF_OpenFont("Metropolian-Text.ttf", 40);

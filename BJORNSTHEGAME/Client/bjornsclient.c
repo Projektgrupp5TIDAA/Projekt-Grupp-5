@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 			    SDL_WINDOWPOS_UNDEFINED,		//y-position
 			    800,
 			    600,
-			    SDL_WINDOW_FULLSCREEN_DESKTOP	//flags etc
+			    SDL_WINDOW_FULLSCREEN	//flags etc
 			    );
   if (window==NULL)
     {

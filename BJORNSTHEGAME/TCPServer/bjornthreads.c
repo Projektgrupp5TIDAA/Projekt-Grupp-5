@@ -7,10 +7,10 @@ SDL_ThreadFunction *check_ports(void* ply){
   tinfo* thread = (tinfo *) ply;
   printf("Thread #%d is active!\n", (*thread).threadID);
   while(1){
-    if((*((*thread).active)) == 1){ // to be able to change the variable 
+    if((*((*thread).active)) == 1){
       if(name == 0){
           if(SDLNet_TCP_Recv(*((*thread).socket), (*thread).player.playername, 20))
-          printf("Player named: %s connected!\n", (*thread).player.playername); // register player name
+          printf("Player named: %s connected!\n", (*thread).player.playername);
           name = 1;
           SDLNet_TCP_Recv(*((*thread).socket), incoming, PACKETSIZE);
       }else{
@@ -21,16 +21,16 @@ SDL_ThreadFunction *check_ports(void* ply){
             *((*thread).active) = 0;
             name = 0;
           }else
-          if(incoming[0] == 'C'){ // if C is the first character in the array, enable chat
-            parseChat(incoming, 1, strlen(incoming)); // erase the C in the begining of the array
+          if(incoming[0] == 'C'){
+            parseChat(incoming, 1, strlen(incoming));
             if(strstr("tapir", incoming)){
               (*thread).player.drunkLevel = 4;
-              printf("Drunklevel of %s set to Phöz.\n", (*thread).player.playername);
+              printf("Codeword detected! Drunklevel of %s set to Phöz.\n", (*thread).player.playername);
             }else{
               printf("%s says: %s\n", (*thread).player.playername, incoming);
             }
           }
-          if(incoming[0] == 'D'){ // if D, enable data
+          if(incoming[0] == 'D'){
             printf("Data recieved.\n");
           }
         }

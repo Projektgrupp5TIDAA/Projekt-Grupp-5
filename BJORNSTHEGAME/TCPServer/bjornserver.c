@@ -55,7 +55,6 @@ int main(int argc, char **argv){
          printf("Request recieved, assigning socket to thread #%d.\n", currentsocket);
          break;
         }
-        printf("Drunklevel of %s is: %d\n", threadvariables[5].player.playername, threadvariables[5].player.drunkLevel);
       }
     }   
     //BROADCAST

@@ -20,7 +20,7 @@ typedef struct clientServant{
 
 /* Struct with important information regarding the thread and player */
 typedef struct playerinfo{
-  int health, drunkLevel, upgradeTimer, position[2], powerLocation, damage;
+  int health, drunkLevel, position[2], powerLocation, damage;
   char playername[20];
 }pinfo;
 

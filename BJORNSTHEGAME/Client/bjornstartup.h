@@ -11,8 +11,6 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #endif
-#define WINDOW_WIDTH 1366
-#define WINDOW_HEIGHT 768
 
 int menu(SDL_Surface* screen, SDL_Window* window){
 	SDL_Surface* background = IMG_Load("../Images/menu/MenuBack.png");
@@ -26,9 +24,9 @@ int menu(SDL_Surface* screen, SDL_Window* window){
   	SDL_Surface *helpbutton = TTF_RenderText_Solid(font, "HELP", black);
   	SDL_Surface *playbutton = IMG_Load("../Images/menu/MenuPlayButtonMin.png");
   	SDL_Surface *tapir = IMG_Load("../Images/menu/tapir_image.png");
-	SDL_Rect titleplacement = {(WINDOW_WIDTH/2 - ((title->w)/2)), 20, 0, 0};
-	SDL_Rect buttonplacement = {((WINDOW_WIDTH/2) - 125), 150, 250, 60};
-	SDL_Rect tapirplacement = {0, (WINDOW_HEIGHT - 66), 100, 66};
+	SDL_Rect titleplacement = {(screen->w/2 - ((title->w)/2)), 20, 0, 0};
+	SDL_Rect buttonplacement = {((screen->w/2) - 125), 150, 250, 60};
+	SDL_Rect tapirplacement = {0, (screen->h - 66), 100, 66};
   	SDL_BlitScaled(background, NULL, screen, NULL);
   	SDL_BlitSurface(title, NULL, screen, &titleplacement);
   	SDL_BlitScaled(playbutton, NULL, screen, &buttonplacement);

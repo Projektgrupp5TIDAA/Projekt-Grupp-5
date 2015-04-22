@@ -1,6 +1,6 @@
 #include "bjornstartup.h"
 
-int main(int argc, char const *argv[])
+int main(int argc, char *argv[])
 {
   SDL_Window* window;
   SDL_Init(SDL_INIT_EVERYTHING);
@@ -8,9 +8,9 @@ int main(int argc, char const *argv[])
   window = SDL_CreateWindow("HEJ",				//Window name
 			    SDL_WINDOWPOS_UNDEFINED,		//x-position
 			    SDL_WINDOWPOS_UNDEFINED,		//y-position
-			    WINDOW_WIDTH,
-			    WINDOW_HEIGHT,
-			    SDL_WINDOW_FULLSCREEN	//flags etc
+			    800,
+			    600,
+			    SDL_WINDOW_FULLSCREEN_DESKTOP	//flags etc
 			    );
   if (window==NULL)
     {

@@ -38,7 +38,4 @@ SDL_ThreadFunction *check_ports(void* ply);
 /* Initiation of the player struct */
 void initiatePlayer(pinfo* ply);
 
-/* Gets the port-range to be used by the server */
-void getPorts(int ports[PLAYERCOUNT + 1]);
-
 #endif

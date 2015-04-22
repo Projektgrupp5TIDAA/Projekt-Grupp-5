@@ -52,13 +52,16 @@ int main(int argc, char **argv){
       while(1){
         if((clientsockets[currentsocket] = SDLNet_TCP_Accept(socket))){
          activethread[currentsocket] = 1;
-	       printf("Request recieved, assigning socket to thread #%d.\n", currentsocket);
+         printf("Request recieved, assigning socket to thread #%d.\n", currentsocket);
          break;
         }
         printf("Drunklevel of %s is: %d\n", threadvariables[5].player.playername, threadvariables[5].player.drunkLevel);
       }
     }   
     //BROADCAST
+      /*for(i=0;i<PLAYERCOUNT;i++){
+          
+      }*/ 
   }
 
   SDLNet_TCP_Close(socket);

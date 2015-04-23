@@ -7,8 +7,8 @@ int main(int argc, char *argv[])
   char TCPData[512];
   SDL_Window* window;
   SDL_Color white={255,255,255};
-  StartInf startup = {&socket, &targethost, {0}};
-  startup.socket = &socket;
+  StartInf startup = {&socket, &targethost, {0}};// array of structs
+  startup.socket = &socket; // access to socket and targethost 
   startup.targethost = &targethost;
 
   /*TTF_Font *font = TTF_OpenFont("../Images/menu/StencilStd.ttf", 40);

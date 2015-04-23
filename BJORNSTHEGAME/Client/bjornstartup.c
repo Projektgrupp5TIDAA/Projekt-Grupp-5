@@ -3,6 +3,7 @@
 int menu(SDL_Window* window, StartInf startup){
   	SDL_Surface *screen = SDL_GetWindowSurface(window);
 	int quit = 0, mouse[2] = {0};
+    int resize_timer=0;
 
 	/* Load image-surfaces */
 	SDL_Surface* background = IMG_Load("../Images/menu/MenuBack.png");
@@ -34,6 +35,7 @@ int menu(SDL_Window* window, StartInf startup){
 		SDL_GetMouseState(&mouse[0], &mouse[1]);
 
 		if(getMouseBounds(mouse, exitplacement)){
+            if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
 			Mix_PlayChannel(-1, uselt, 1);
 			SDL_Delay(4000);
 			SDLNet_TCP_Send(*(startup.socket), "EXITCONNECTION", 14);
@@ -47,18 +49,29 @@ int menu(SDL_Window* window, StartInf startup){
   			Mix_FreeChunk(uselt);
   			TTF_CloseFont(font);
 			return 1;
+            }
 		}else
 
 		if(getMouseBounds(mouse, tapirplacement)){
 			//get name, then ip then connect
 			printf("TAPIR\n");
-			getName(startup.playerName, 20, screen);
-			getIP(startup.targethost, screen);
-			*(startup.socket) = SDLNet_TCP_Open(startup.targethost);
-			SDLNet_TCP_Send(*(startup.socket), (void*)startup.playerName, 20);
+			getName(startup.playerName, 20, screen); // get name through the readkeyboard function
+			getIP(startup.targethost, screen); // get the host address and port connection
+			*(startup.socket) = SDLNet_TCP_Open(startup.targethost); // open socket with the targethost
+			SDLNet_TCP_Send(*(startup.socket), (void*)startup.playerName, 20); //socket, data, lenght
 			connectToHost(startup.targethost, startup.socket);
 		}
-
+        else if(getMouseBounds(mouse, tapirplacement)){ // resize tapir, should be moved to the function above?
+            SDL_Surface* helpbutton = IMG_Load("../Images/menu/door.png"); // if the mouse still on SDL_Delay
+                                                                            // change later
+            SDL_Rect tapirplacement = {0, (screen->h - 2000), 700, 2000};
+            SDL_BlitScaled(tapir, NULL, screen, &tapirplacement);
+            if(resize_timer==0){
+                SDL_UpdateWindowSurface(window);
+                SDL_Delay(3000);
+                resize_timer=1;
+            }
+            resize_timer=0;
 		/* Blit the images to the screen */
   		SDL_BlitScaled(background, NULL, screen, NULL);
   		SDL_BlitSurface(title, NULL, screen, &titleplacement);
@@ -88,7 +101,7 @@ int getName(char* name, int len, SDL_Surface* screen){
 	return 0;
 }
 
-int getIP(IPaddress* targethost, SDL_Surface* screen){
+int getIP(IPaddress* targethost, SDL_Surface* screen){ // get the adress/target host and port through the readkeyboard function
 	char address[15] = {0};
 	char port[5] = {0};
 	printf("Read name, time to read address!\n");

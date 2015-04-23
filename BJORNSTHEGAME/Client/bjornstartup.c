@@ -71,6 +71,7 @@ int menu(SDL_Window* window, StartInf startup){
                 SDL_Delay(3000);
                 resize_timer=1;
             }
+        }
             resize_timer=0;
 		/* Blit the images to the screen */
   		SDL_BlitScaled(background, NULL, screen, NULL);
@@ -86,7 +87,7 @@ int menu(SDL_Window* window, StartInf startup){
   	}
 }
 
-int getMouseBounds(int mouse[2], SDL_Rect rect){
+    int getMouseBounds(int mouse[2], SDL_Rect rect){
 	if(mouse[0]>rect.x && mouse[0]<(rect.x+rect.w)){
 		if(mouse[1]>rect.y && mouse[1]<(rect.y+rect.h)){
 			return 1;

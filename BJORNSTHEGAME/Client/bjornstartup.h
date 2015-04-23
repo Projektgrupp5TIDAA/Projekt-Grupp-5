@@ -11,12 +11,20 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #endif
+/* information regarding the mouse state*/
+/*typedef struct{
+    Uint8 type;
+    Uint8 state;
+    Uint16 x, y;
+    Sint16 xrel, yrel;
+} SOL;*/
 
 int getMouseBounds(int mouse[2], SDL_Rect rect);
 
 int menu(SDL_Surface* screen, SDL_Window* window){
 	int quit = 0, mouse[2] = {0};
 	SDL_bool mouseinbounds = SDL_FALSE;
+    // SDL_Event event;
 
 	/* Load image-surfaces */
 	SDL_Surface* background = IMG_Load("../Images/menu/MenuBack.png");
@@ -45,12 +53,27 @@ int menu(SDL_Surface* screen, SDL_Window* window){
 
 	while(!quit){
 		SDL_PumpEvents();
-		SDL_GetMouseState(&mouse[0], &mouse[1]);
-
+        /*while(SDL_PollEvent(&event)){ // track the mouse movements
+            if(event.type == SDL_QUIT)
+                quit=0;
+            if(event.type == SDL_MOUSEMOTION){
+                SDL_PixelFormat* fmt = screen ->format;
+                if(event.motion.xrel <0)// mouse if the left
+                    SDL_FillRect(screen, NULL, SDL_MapRGB(fmt, 255, 0,0));
+                else if(event.motion.xrel >0) // moving to the right
+                    SDL_FillRect(screen, NULL, SDL_MapRGB(fmt, 0 ,255, 0));
+                else if(event.motion.yrel <0) // if moving up
+                    SDL_FillRect(screen, NULL, SDL_MapRGB(fmt, 0, 0, 255));
+                else if(event.motion.yrel >0) // down
+                    SDL_FillRect(screen, NULL, SDL_MapRGB(fmt, 0, 255, 255));
+            }
+        }*/
+        SDL_GetMouseState(&mouse[0], &mouse[1]); // get mouse state
 		if(getMouseBounds(mouse, helpplacement)){
-			Mix_PlayChannel(-1, uselt, 1);
+            if(SDL_GetMouseState(NULL, NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+            Mix_PlayChannel(-1, uselt, 1);
 			SDL_Delay(4000);
-
+            SDL_GetMouseState(&mouse[0], &mouse[1]);
 			/* Free the used resources and return*/
   			SDL_FreeSurface(title);
   			SDL_FreeSurface(helpbutton);
@@ -60,10 +83,11 @@ int menu(SDL_Surface* screen, SDL_Window* window){
   			Mix_FreeChunk(uselt);
   			TTF_CloseFont(font);
 			return 1;
+            }
 		}
 
 		/* Blit the images to the screen */
-  		SDL_BlitScaled(background, NULL, screen, NULL); 
+  		SDL_BlitScaled(background, NULL, screen, NULL);
   		SDL_BlitSurface(title, NULL, screen, &titleplacement);
   		SDL_BlitScaled(playbutton, NULL, screen, &buttonplacement);
   		SDL_BlitScaled(playbutton, NULL, screen, &button2placement);
@@ -80,12 +104,13 @@ int menu(SDL_Surface* screen, SDL_Window* window){
 }
 
 int getMouseBounds(int mouse[2], SDL_Rect rect){
-	if(mouse[0]>rect.x && mouse[0]<(rect.x+rect.w)){
+    int quit=0;
+    if(mouse[0]>rect.x && mouse[0]<(rect.x+rect.w)){
 		if(mouse[1]>rect.y && mouse[1]<(rect.y+rect.h)){
-			return 1;
-		}
-	}
-	return 0;
+            return 1;
+        }
+    }
+    return 0;
 }
 
 #endif

@@ -1,5 +1,6 @@
 #ifndef _HP_HEADER_
 #define _HP_HEADER_
+#include <stdio.h>
 #include "player.h"
 #include "deathflag.h"
 void HP(Player *p, bool shutt)

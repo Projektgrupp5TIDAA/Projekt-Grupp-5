@@ -1,5 +1,6 @@
 #ifndef AMMO_H_INCLUDED
 #define AMMO_H_INCLUDED
+#include <SDL2/SDL_mixer.h>
 #define AMMO 3
 
 int ammo(int newAmmo)
@@ -9,9 +10,10 @@ int ammo(int newAmmo)
 
         if(newAmmo == 0)
         {
-            wait(2);//wait 2 sek
+            SDL_Delay(2000);//wait 2 sek
 
-            //play sound effect when reloading
+            //play sound effect while reloading
+            Mix_Chunk *reload = MixLoadWav(".../Music/reload.wav");
 
             newAmmo += AMMO; //reload
         }

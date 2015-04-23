@@ -1,6 +1,7 @@
 #ifndef _HP_HEADER_
 #define _HP_HEADER_
-#include <player.h>
+#include "player.h"
+#include "deathflag.h"
 void HP(Player *p, bool shutt)
 {
 	int newHP=0;
@@ -12,7 +13,7 @@ void HP(Player *p, bool shutt)
     }
     if(p->HP==0)
     {
-       //gameOver?
+      death(p);
     }
 
 }

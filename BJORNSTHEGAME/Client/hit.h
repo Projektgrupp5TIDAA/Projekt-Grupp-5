@@ -1,5 +1,8 @@
 #ifndef HIT_H_INCLUDED
 #define HIT_H_INCLUDED
+#include <stdbool.h>
+#include <SDL2/SDL.h>
+#include "player.h"
 
 bool shut(){
   const Uint8 *state= SDL_GetKeyboardState(NULL);

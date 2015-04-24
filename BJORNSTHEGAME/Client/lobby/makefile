@@ -22,4 +22,4 @@ else
 endif
 
 bjornserver : $(objectlist)
-	$(CC) -o hej $(CFLAGS) $(objectlist)
+	$(CC) -o bjornlobby $(CFLAGS) $(objectlist)

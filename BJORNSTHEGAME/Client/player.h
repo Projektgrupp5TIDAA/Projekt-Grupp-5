@@ -3,7 +3,7 @@
 
 struct player{
 int HP, Ammo, drunkLevel, position[2], Buttons;
-char namne[31];
+char name[31];
 
 
 };

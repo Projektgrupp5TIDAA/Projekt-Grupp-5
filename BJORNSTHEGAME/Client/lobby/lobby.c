@@ -4,6 +4,7 @@ void LobbyWindow(){
 	SDL_Window* lobby;
 	SDL_Surface* lobbySurface;
 	SDL_Surface* lobbyBackground;
+	SDL_Surface* readyButton;
 
 	    //Initialize SDL
     if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
@@ -32,6 +33,10 @@ void LobbyWindow(){
             	lobbyBackground = IMG_Load("lobby.png");
 				SDL_BlitSurface(lobbyBackground, NULL, lobbySurface, NULL);
 
+				readyButton = IMG_Load("ready.png");
+
+				SDL_Rect buttonPlacement = {((lobbySurface->w/2) - 750), (lobbySurface->h/2 + 200), 600, 90};
+				SDL_BlitScaled(readyButton, NULL, lobbySurface, &buttonPlacement);
             	//Update the surface
             	SDL_UpdateWindowSurface(lobby);
 

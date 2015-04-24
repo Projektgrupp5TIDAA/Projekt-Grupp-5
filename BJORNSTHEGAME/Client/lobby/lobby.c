@@ -20,7 +20,7 @@ void LobbyWindow(){
         						1100,
         						1100,
         						SDL_WINDOW_FULLSCREEN);
-        if( Lobby == NULL )
+        if( lobby == NULL )
         	{
             	printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
         	}

@@ -7,12 +7,12 @@ WSDL2_LIB = C:\MinGW-libs\lib
 CC = gcc
 
 ifeq ($(OS),Windows_NT)
-	CFLAGS=-I$(WSDL2_INC) -L$(WSDL2_LIB) -lmingw32 -lSDL2main -lSDL2 -lSDL2_net
+	CFLAGS=-I$(WSDL2_INC) -L$(WSDL2_LIB) -lmingw32 -lSDL2main -lSDL2 -lSDL2_net -lSDL2_image
 	objectlist = main.o lobby.o
 else
 	UNAME_TARGET := $(shell uname -s)
 	ifeq ($(UNAME_TARGET),Linux)
-		CFLAGS=-lSDL2 -lSDL2_net
+		CFLAGS=-lSDL2 -lSDL2_net -lSDL2_image
 		objectlist = main.o lobby.o 
 	endif
 	ifeq ($(UNAME_TARGET),Darwin)
@@ -22,4 +22,4 @@ else
 endif
 
 bjornserver : $(objectlist)
-	$(CC) -o bjornlobby $(CFLAGS) $(objectlist)
+	$(CC) -o hej $(CFLAGS) $(objectlist)

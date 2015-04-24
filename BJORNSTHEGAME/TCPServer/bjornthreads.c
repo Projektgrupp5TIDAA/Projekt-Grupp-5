@@ -43,7 +43,7 @@ SDL_ThreadFunction *check_ports(void* ply){
 void initiatePlayer(pinfo* ply){
   (*ply).health = HEALTH;
   (*ply).drunkLevel = 0;
-  (*ply).upgradeTimer = 0;
+  // (*ply).upgradeTimer = 0;
   (*ply).position[0] = 5;
   (*ply).position[1] = 5;
   //getPowerLocation((*ply).powerLocation);

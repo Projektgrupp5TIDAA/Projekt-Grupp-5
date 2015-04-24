@@ -56,9 +56,8 @@ int menu(SDL_Window* window, StartInf startup){
 
 		if(getMouseBounds(mouse, tapirplacement)){
 			//get name, then ip then connect
+            if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
 			printf("TAPIR\n");
-            
-
 			getName(startup.playerName, 20, window); // get name through the readkeyboard function
 			if((getIP(startup.targethost, window))){ // get the host address and port connection
 				fprintf(stderr, "Could not resolve hostname.\n");
@@ -75,9 +74,9 @@ int menu(SDL_Window* window, StartInf startup){
 				SDL_Delay(1000);
 				connectToHost(startup.targethost, startup.socket);
 			}
-
+            }
 		}
-        else if(getMouseBounds(mouse, tapirplacement)){ // resize tapir, should be moved to the function above?
+        /*else if(getMouseBounds(mouse, tapirplacement)){ // resize tapir, should be moved to the function above?
                                                                             // change later
             SDL_Rect tapirplacement = {0, (screen->h - 2000), 350, 1000};
             SDL_BlitScaled(tapir, NULL, screen, &tapirplacement);
@@ -87,7 +86,7 @@ int menu(SDL_Window* window, StartInf startup){
                 resize_timer=1;
             }
         }
-            resize_timer=0;
+            resize_timer=0;*/
 		/* Blit the images to the screen */
   		SDL_BlitScaled(background, NULL, screen, NULL);
   		SDL_BlitSurface(title, NULL, screen, &titleplacement);
@@ -195,7 +194,7 @@ int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window){
 			if(event.type == SDL_TEXTINPUT){
 				temp[initlen-len] = *(event.text.text);
 				printf("LEN: %d, STRING: %s\n", len, temp);
-				textToScreen(font, place, window, temp);
+				textToScreen(font, place, window, temp); // write text on the screen 
 				len--;
 			}
 			if(event.type == SDL_KEYDOWN){

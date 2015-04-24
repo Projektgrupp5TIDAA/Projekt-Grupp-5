@@ -194,7 +194,7 @@ int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window){
 			if(event.type == SDL_TEXTINPUT){
 				temp[initlen-len] = *(event.text.text);
 				printf("LEN: %d, STRING: %s\n", len, temp);
-				textToScreen(font, place, window, temp); // write text on the screen 
+				textToScreen(font, place, window, temp); // write text on the screen
 				len--;
 			}
 			if(event.type == SDL_KEYDOWN){

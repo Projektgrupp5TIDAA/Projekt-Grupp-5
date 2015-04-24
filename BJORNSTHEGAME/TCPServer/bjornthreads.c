@@ -6,14 +6,20 @@ SDL_ThreadFunction *check_ports(void* ply){
   int name = 0;
   tinfo* thread = (tinfo *) ply;
   printf("Thread #%d is active!\n", (*thread).threadID);
+
+  /* Main loop of the thread, only run if the thread is set to active */
   while(1){
     if((*((*thread).active)) == 1){
+
+      /* Set the name at the start of connection */
       if(name == 0){
           if(SDLNet_TCP_Recv(*((*thread).socket), (*thread).player.playername, 20))
           printf("Player named: %s connected!\n", (*thread).player.playername);
           name = 1;
           SDLNet_TCP_Recv(*((*thread).socket), incoming, PACKETSIZE);
       }else{
+
+        /* If a packet is recieved, check if for the flags or if it's a end of connection transmission */
         if(SDLNet_TCP_Recv(*((*thread).socket), incoming, PACKETSIZE)){
           if(strstr("EXITCONNECTION", incoming)){
             printf("Thread #%d is now inactive!\n", (*thread).threadID);
@@ -21,6 +27,8 @@ SDL_ThreadFunction *check_ports(void* ply){
             *((*thread).active) = 0;
             name = 0;
           }else
+
+          /* Parse and post if the flag is set to chat */
           if(incoming[0] == 'C'){
             parseChat(incoming, 1, strlen(incoming));
             if(strstr("tapir", incoming)){
@@ -30,6 +38,8 @@ SDL_ThreadFunction *check_ports(void* ply){
               printf("%s says: %s\n", (*thread).player.playername, incoming);
             }
           }
+          
+          /* Functions for data will be placed here */
           if(incoming[0] == 'D'){
             printf("Data recieved.\n");
           }

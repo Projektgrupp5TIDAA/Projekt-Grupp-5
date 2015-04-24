@@ -41,7 +41,6 @@ int main(int argc, char **argv){
     threadvariables[i].threadID = i;               //Assigns the thread ID
     threadvariables[i].socket = &clientsockets[i]; //Assigns the thread it's socket
     SDL_CreateThread(check_ports, "Thr", (void *)&threadvariables[i]); //Creates the thread
-    
   }
 
   /* Main loop */

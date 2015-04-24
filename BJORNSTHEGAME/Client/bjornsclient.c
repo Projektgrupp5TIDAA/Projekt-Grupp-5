@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
   Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024);
 
   /* Create window and get the surface */
-  window = SDL_CreateWindow("HEJ",				//Window name
+  window = SDL_CreateWindow("BJORNS THE GAME",				//Window name
 			    SDL_WINDOWPOS_UNDEFINED,		//x-position
 			    SDL_WINDOWPOS_UNDEFINED,		//y-position
 			    800,

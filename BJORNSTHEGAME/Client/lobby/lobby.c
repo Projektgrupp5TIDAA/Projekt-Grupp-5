@@ -1,5 +1,4 @@
 #include "lobby.h"
-
 void LobbyWindow(){
 	SDL_Window* lobby;
 	SDL_Surface* lobbySurface;

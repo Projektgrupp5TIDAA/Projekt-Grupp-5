@@ -1,4 +1,5 @@
 #include "bjornstartup.h"
+// #include "lobby.h"
 
 int menu(SDL_Window* window, StartInf startup){
   	SDL_Surface *screen = SDL_GetWindowSurface(window);
@@ -19,6 +20,7 @@ int menu(SDL_Window* window, StartInf startup){
   	/* Load music, set volume and start */
 	Mix_Music *music = Mix_LoadMUS("../Music/Mechanolith.mp3");
 	Mix_Chunk *uselt = Mix_LoadWAV("../Sounds/uselt.wav");
+    Mix_Chunk *gifwetsvisfel =Mix_LoadWAV("../Sounds/gifwetsvisfel.wav");
 	Mix_VolumeMusic(64);
 	Mix_PlayMusic(music, -1);
 
@@ -67,6 +69,8 @@ int menu(SDL_Window* window, StartInf startup){
 				}else{
 					connected = 1;
 					printf("Connected!\n");
+                    /*SDL_DestroyWindow(window); // close when done and goto lobby
+                    LobbyWindow();*/
 				SDLNet_TCP_Send(*(startup.socket), "WAKEUP", 14); //Need to wake the socket up for some reason
 				}
 				SDL_Delay(1000);
@@ -74,8 +78,16 @@ int menu(SDL_Window* window, StartInf startup){
 			}
             }
 		}
+        else if(getMouseBounds(mouse, button3placement)){ // test
+            if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+                Mix_PlayChannel(-1, gifwetsvisfel, 1); 
+                SDL_Delay(2000);
+                Mix_FreeChunk(gifwetsvisfel);
+                return 1;
+            }
+        }
         /*else if(getMouseBounds(mouse, tapirplacement)){ // resize tapir, should be moved to the function above?
-                                                                            // change later
+                                                                        // change later
             SDL_Rect tapirplacement = {0, (screen->h - 2000), 350, 1000};
             SDL_BlitScaled(tapir, NULL, screen, &tapirplacement);
             if(resize_timer==0){

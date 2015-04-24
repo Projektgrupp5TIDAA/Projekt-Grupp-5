@@ -28,12 +28,16 @@ int menu(SDL_Window* window, StartInf startup);
 
 int getMouseBounds(int mouse[2], SDL_Rect rect);
 
-int getName(char* name, int len, SDL_Surface* screen);
+int getName(char* name, int len, SDL_Window* window);
 
-int getIP(IPaddress* targethost, SDL_Surface* screen);
+int getIP(IPaddress* targethost, SDL_Window* window);
 
 int connectToHost(IPaddress* targethost, TCPsocket* socket);
 
 int readKeyboard(char* output, int len);
+
+int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window);
+
+int emptyString(char* incoming, int len);
 
 #endif

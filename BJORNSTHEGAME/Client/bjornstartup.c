@@ -2,7 +2,7 @@
 
 int menu(SDL_Window* window, StartInf startup){
   	SDL_Surface *screen = SDL_GetWindowSurface(window);
-	int quit = 0, mouse[2] = {0};
+	int quit = 0, mouse[2] = {0}, connected = 0;
     int resize_timer=0;
 
 	/* Load image-surfaces */
@@ -38,7 +38,9 @@ int menu(SDL_Window* window, StartInf startup){
             if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
 			Mix_PlayChannel(-1, uselt, 1);
 			SDL_Delay(4000);
-			SDLNet_TCP_Send(*(startup.socket), "EXITCONNECTION", 14);
+			if(connected = 1){
+				SDLNet_TCP_Send(*(startup.socket), "EXITCONNECTION", 14);
+			}
 
 			/* Free the used resources and return*/
   			SDL_FreeSurface(title);
@@ -55,16 +57,29 @@ int menu(SDL_Window* window, StartInf startup){
 		if(getMouseBounds(mouse, tapirplacement)){
 			//get name, then ip then connect
 			printf("TAPIR\n");
-			getName(startup.playerName, 20, screen); // get name through the readkeyboard function
-			getIP(startup.targethost, screen); // get the host address and port connection
-			*(startup.socket) = SDLNet_TCP_Open(startup.targethost); // open socket with the targethost
-			SDLNet_TCP_Send(*(startup.socket), (void*)startup.playerName, 20); //socket, data, lenght
-			connectToHost(startup.targethost, startup.socket);
+            
+
+			getName(startup.playerName, 20, window); // get name through the readkeyboard function
+			if((getIP(startup.targethost, window))){ // get the host address and port connection
+				fprintf(stderr, "Could not resolve hostname.\n");
+			}else{
+
+				*(startup.socket) = SDLNet_TCP_Open(startup.targethost); // open socket with the targethost
+				if(!(SDLNet_TCP_Send(*(startup.socket), (void*)startup.playerName, 20))){ //socket, data, length
+					printf("Could not connect to host: %s\n", SDLNet_GetError());
+				}else{
+					connected = 1;
+					printf("Connected!\n");
+				SDLNet_TCP_Send(*(startup.socket), "WAKEUP", 14); //Need to wake the socket up for some reason
+				}
+				SDL_Delay(1000);
+				connectToHost(startup.targethost, startup.socket);
+			}
+
 		}
         else if(getMouseBounds(mouse, tapirplacement)){ // resize tapir, should be moved to the function above?
-            SDL_Surface* helpbutton = IMG_Load("../Images/menu/door.png"); // if the mouse still on SDL_Delay
                                                                             // change later
-            SDL_Rect tapirplacement = {0, (screen->h - 2000), 700, 2000};
+            SDL_Rect tapirplacement = {0, (screen->h - 2000), 350, 1000};
             SDL_BlitScaled(tapir, NULL, screen, &tapirplacement);
             if(resize_timer==0){
                 SDL_UpdateWindowSurface(window);
@@ -87,7 +102,7 @@ int menu(SDL_Window* window, StartInf startup){
   	}
 }
 
-    int getMouseBounds(int mouse[2], SDL_Rect rect){
+int getMouseBounds(int mouse[2], SDL_Rect rect){
 	if(mouse[0]>rect.x && mouse[0]<(rect.x+rect.w)){
 		if(mouse[1]>rect.y && mouse[1]<(rect.y+rect.h)){
 			return 1;
@@ -96,19 +111,31 @@ int menu(SDL_Window* window, StartInf startup){
 	return 0;
 }
 
-int getName(char* name, int len, SDL_Surface* screen){
+int getName(char* name, int len, SDL_Window* window){
 	//get name return success or failure
-	readKeyboard(name, len);
+  	SDL_Surface *screen = SDL_GetWindowSurface(window);
+	SDL_Surface *namemenu = IMG_Load("../Images/menu/MenuNameScreen.png");
+	SDL_BlitScaled(namemenu, NULL, screen, NULL);
+	SDL_UpdateWindowSurface(window);
+	readKeyboardToMenuWindow(name, len, window);
 	return 0;
 }
 
-int getIP(IPaddress* targethost, SDL_Surface* screen){ // get the adress/target host and port through the readkeyboard function
+int getIP(IPaddress* targethost, SDL_Window* window){ // get the adress/target host and port through the readkeyboard function
 	char address[15] = {0};
 	char port[5] = {0};
+  	SDL_Surface *screen = SDL_GetWindowSurface(window);
+	SDL_Surface *IPmenu = IMG_Load("../Images/menu/MenuIPScreen.png");
+	SDL_Surface *portmenu = IMG_Load("../Images/menu/MenuPortScreen.png");
+
+	SDL_BlitScaled(IPmenu, NULL, screen, NULL);
+	SDL_UpdateWindowSurface(window);
 	printf("Read name, time to read address!\n");
-	readKeyboard(address, 9);
+	readKeyboardToMenuWindow(address, 15, window);
+	SDL_BlitScaled(portmenu, NULL, screen, NULL);
+	SDL_UpdateWindowSurface(window);
 	printf("Read address: %s, time to read port!\n", address);
-	readKeyboard(port, 4);
+	readKeyboardToMenuWindow(port, 5, window);
 	printf("Read port: %s, time to resolve the host!\n", port);
 
 	if (SDLNet_ResolveHost(targethost, address, atoi(port)) == -1)
@@ -119,26 +146,72 @@ int getIP(IPaddress* targethost, SDL_Surface* screen){ // get the adress/target 
 		return 0;
 }
 
+int textToScreen(TTF_Font *font, SDL_Rect place, SDL_Window* window, char* text){
+  	SDL_Surface *screen = SDL_GetWindowSurface(window);
+	SDL_Colour black={0,0,0};
+	SDL_Surface *textsurface = TTF_RenderText_Solid(font, text, black);
+	SDL_BlitSurface(textsurface, NULL, screen, &place);
+	SDL_UpdateWindowSurface(window);
+}
+
 int connectToHost(IPaddress* targethost, TCPsocket* socket){
 	//try to connect to host return success or failure
 }
 
 int readKeyboard(char* output, int len){
+	char temp[len];
+	emptyString(temp, len);
+	int initlen = len;
 	SDL_Event event;
 	SDL_StartTextInput();
-	while(len != 0){
+	while(len > 0){
 		while(SDL_PollEvent(&event) != 0){
 			if(event.type == SDL_TEXTINPUT){
-				strcat(output, event.text.text);
-				printf("%s\n", output);
+				temp[initlen-len] = *(event.text.text);
+				printf("LEN: %d, STRING: %s\n", len, temp);
 				len--;
 			}
 			if(event.type == SDL_KEYDOWN){
 				if(event.key.keysym.sym == SDLK_RETURN){
+					strcpy(output, temp);
 					len = 0;
 				}
 			}
 		}
 	}
 	SDL_StopTextInput();
+}
+
+int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window){
+  	TTF_Font *font = TTF_OpenFont("../Images/menu/StencilStd.ttf", 30);
+	SDL_Rect place = {230,150, 0,0}; 
+	char temp[len];
+	emptyString(temp, len);
+	int initlen = len;
+	SDL_Event event;
+	SDL_StartTextInput();
+	while(len > 0){
+		while(SDL_PollEvent(&event) != 0){
+			if(event.type == SDL_TEXTINPUT){
+				temp[initlen-len] = *(event.text.text);
+				printf("LEN: %d, STRING: %s\n", len, temp);
+				textToScreen(font, place, window, temp);
+				len--;
+			}
+			if(event.type == SDL_KEYDOWN){
+				if(event.key.keysym.sym == SDLK_RETURN){
+					strcpy(output, temp);
+					len = 0;
+				}
+			}
+		}
+	}
+	SDL_StopTextInput();
+}
+
+int emptyString(char* incoming, int len){
+	int i;
+	for(i=0; i<len; i++){
+		*(incoming+i) = 0;
+	}
 }

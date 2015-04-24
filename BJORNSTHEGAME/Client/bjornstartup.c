@@ -54,18 +54,16 @@ int menu(SDL_Window* window, StartInf startup){
             }
 		}else
 
-		if(getMouseBounds(mouse, tapirplacement)){
-			//get name, then ip then connect
+		if(getMouseBounds(mouse, tapirplacement)){ //get name, then ip then connect
             if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
-			printf("TAPIR\n");
-			getName(startup.playerName, 20, window); // get name through the readkeyboard function
-			if((getIP(startup.targethost, window))){ // get the host address and port connection
-				fprintf(stderr, "Could not resolve hostname.\n");
-			}else{
-
-				*(startup.socket) = SDLNet_TCP_Open(startup.targethost); // open socket with the targethost
-				if(!(SDLNet_TCP_Send(*(startup.socket), (void*)startup.playerName, 20))){ //socket, data, length
-					printf("Could not connect to host: %s\n", SDLNet_GetError());
+                printf("TAPIR\n");
+                getName(startup.playerName, 20, window); // get name through the readkeyboard function
+                if((getIP(startup.targethost, window))){ // get the host address and port connection
+                    fprintf(stderr, "Could not resolve hostname.\n");
+                }else{
+                    *(startup.socket) = SDLNet_TCP_Open(startup.targethost); // open socket with the targethost
+                    if(!(SDLNet_TCP_Send(*(startup.socket), (void*)startup.playerName, 20))){ //socket, data, length
+                        printf("Could not connect to host: %s\n", SDLNet_GetError());
 				}else{
 					connected = 1;
 					printf("Connected!\n");

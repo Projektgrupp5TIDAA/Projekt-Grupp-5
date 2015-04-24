@@ -17,8 +17,8 @@ void LobbyWindow(){
         lobby = SDL_CreateWindow( "BJORNSLOBBY",
         						SDL_WINDOWPOS_UNDEFINED,
         						SDL_WINDOWPOS_UNDEFINED,
-        						1100,
-        						1100,
+        						800,
+        						600,
         						SDL_WINDOW_FULLSCREEN);
         if( lobby == NULL )
         	{
@@ -30,7 +30,7 @@ void LobbyWindow(){
             	lobbySurface = SDL_GetWindowSurface( lobby );
 
             	lobbyBackground = IMG_Load("lobby.png");
-				SDL_BlitSurface(lobbyBackground, NULL, lobbySurface, NULL);
+				SDL_BlitScaled(lobbyBackground, NULL, lobbySurface, NULL);
 
 				readyButton = IMG_Load("ready.png");
 

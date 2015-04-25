@@ -11,8 +11,8 @@ int main(int argc, char **argv){
   cServ servants = {0,{0}}; //Stack
   tinfo threadvariables[PLAYERCOUNT]; // Array of player-structs
   char incomingdata[512]; //char to clear the data input
-  int currentsocket=0, stop=0, i, activethread[PLAYERCOUNT] = {0}; //various ints
-  SDL_Thread* threads[PLAYERCOUNT + 1]; // Array of threads
+  int currentsocket=0, quit=0, i, activethread[PLAYERCOUNT] = {0}; //various ints
+  SDL_Thread* threads[PLAYERCOUNT]; // Array of threads
   
   /* Initialize SDL_net */
   if (SDLNet_Init() < 0){
@@ -40,11 +40,14 @@ int main(int argc, char **argv){
     threadvariables[i].servants = &servants;       //Gives the thread access to the stack
     threadvariables[i].threadID = i;               //Assigns the thread ID
     threadvariables[i].socket = &clientsockets[i]; //Assigns the thread it's socket
-    SDL_CreateThread(check_ports, "Thr", (void *)&threadvariables[i]); //Creates the thread
+    threadvariables[i].quit = &quit;
+    threads[i] = SDL_CreateThread(check_ports, "Thread", (void *)&threadvariables[i]); //Creates the thread
+    SDL_DetachThread(threads[i]);
   }
 
   /* Main loop */
-  while(!stop){
+  /* Maybe use another thread for connectionpolling and keep the main thread for broadcasts? */
+  while(!quit){
     /* Clears the data input then waits for a packet */
     if(!isEmptyStack(servants)){
       currentsocket = popSocketStack(&servants); // take socket id from the stack 
@@ -55,11 +58,7 @@ int main(int argc, char **argv){
          break;
         }
       }
-    }   
-    //BROADCAST
-      /*for(i=0;i<PLAYERCOUNT;i++){
-          
-      }*/ 
+    }else SDL_Delay(200);
   }
 
   SDLNet_TCP_Close(socket);

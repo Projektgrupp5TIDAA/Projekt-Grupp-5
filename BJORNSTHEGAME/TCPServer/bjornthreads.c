@@ -9,7 +9,12 @@ SDL_ThreadFunction *check_ports(void* ply){
 
   /* Main loop of the thread, only run if the thread is set to active */
   while(1){
-    if((*((*thread).active)) == 1){
+    if((*(*thread).active) == 1){
+      /* Exit the thread if the program is stopped */
+      if((*(*thread).quit) == 1){
+          SDLNet_TCP_Send((*(*thread).socket), "SERVERSHUTDOWN", 14);
+          return 0;
+      }
 
       /* Set the name at the start of connection */
       if(name == 0){
@@ -45,7 +50,7 @@ SDL_ThreadFunction *check_ports(void* ply){
           }
         }
       }
-    }
+    }else SDL_Delay(200); //If this isn't here the server will constantly take all available CPU-power unless otherwise limited.
   }
 }
 

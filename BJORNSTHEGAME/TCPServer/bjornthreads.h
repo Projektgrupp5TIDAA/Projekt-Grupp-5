@@ -27,7 +27,7 @@ typedef struct playerinfo{
 /* struct with information about the threads */
 typedef struct threadinfo{
 	TCPsocket *socket;
-	int threadID, *active;
+	int threadID, *active, *quit;
 	pinfo player;
 	cServ *servants;
 }tinfo;

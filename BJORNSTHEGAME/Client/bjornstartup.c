@@ -21,8 +21,8 @@ int menu(SDL_Window* window, StartInf startup){
     Mix_Music *music = Mix_LoadMUS("../Music/Mechanolith.mp3");
     Mix_Chunk *uselt = Mix_LoadWAV("../Sounds/uselt.wav");
     Mix_Chunk *gifwetsvisfel =Mix_LoadWAV("../Sounds/gifwetsvisfel.wav");
-    Mix_Chunk *såsvårt= Mix_LoadWAV("../Sounds/såsvårt.wav");
-    Mix_Chunk *tasåntid= Mix_LoadWAV("../Sounds/såsvårt.wav");
+    Mix_Chunk *sasvart= Mix_LoadWAV("../Sounds/sasvart.wav");
+    Mix_Chunk *tasantid= Mix_LoadWAV("../Sounds/sasvart.wav");
     Mix_VolumeMusic(64);
     Mix_PlayMusic(music, -1);
     
@@ -76,32 +76,31 @@ int menu(SDL_Window* window, StartInf startup){
                             SDLNet_TCP_Send(*(startup.socket), "WAKEUP", 14); //Need to wake the socket up for some reason
                         }
                         SDL_Delay(1000);
-                        connectToHost(startup.targethost, startup.socket);
                     }
                 }
             }
             else if(getMouseBounds(mouse, button3placement)){
                 if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                     Mix_PlayChannel(-1, gifwetsvisfel, 1);
-                    SDL_Delay(2000);
-                    Mix_FreeChunk(gifwetsvisfel);
-                    return 1;
+                    //SDL_Delay(2000);
+                    //Mix_FreeChunk(gifwetsvisfel);
+                    //return 1;
                 }
             }
             else if(getMouseBounds(mouse, button2placement)){
                 if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
-                    Mix_PlayChannel(-1 ,såsvårt, 1);
-                    SDL_Delay(4000);
-                    Mix_FreeChunk(såsvårt);
-                    return 1;
+                    Mix_PlayChannel(-1 ,sasvart, 1);
+                    //SDL_Delay(4000);
+                    //Mix_FreeChunk(sasvart);
+                    //return 1;
                 }
             }
             else if(getMouseBounds(mouse, buttonplacement)){
                 if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
-                    Mix_PlayChannel(-1, tasåntid, 1);
-                    SDL_Delay(4000);
-                    Mix_FreeChunk(tasåntid);
-                    return 1;
+                    Mix_PlayChannel(-1, tasantid, 1);
+                    //SDL_Delay(4000);
+                    //Mix_FreeChunk(tasantid);
+                    //return 1;
                 }
             }
         /*else if(getMouseBounds(mouse, tapirplacement)){ // resize tapir, should be moved to the function above?

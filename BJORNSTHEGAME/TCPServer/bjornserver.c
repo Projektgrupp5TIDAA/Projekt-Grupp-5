@@ -42,7 +42,7 @@ int main(int argc, char **argv){
     threadvariables[i].socket = &clientsockets[i]; //Assigns the thread it's socket
     threadvariables[i].quit = &quit;
     threads[i] = SDL_CreateThread(check_ports, "Thread", (void *)&threadvariables[i]); //Creates the thread
-    SDL_DetachThread(threads[i]);
+    SDL_DetachThread(threads[i]); //  let a thread clean up on exit without intervention
   }
 
   /* Main loop */

@@ -22,4 +22,4 @@ else
 endif
 
 bjornserver : $(objectlist)
-	$(CC) -o bjornsclient.out $(CFLAGS) $(objectlist)
+	$(CC) -o bjornsclient3.out $(CFLAGS) $(objectlist)

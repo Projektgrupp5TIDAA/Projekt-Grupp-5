@@ -9,7 +9,8 @@ int LobbyWindow(StartInfo lobbyConnection){
 	SDL_Surface* readyButton = IMG_Load("ready.png");
     SDL_Rect buttonPlacement;
     
-    
+    Mix_Music *lobbyMusic = Mix_LoadMUS("../Music/VolatileReaction.mp3");
+    Mix_PlayMusic(lobbyMusic, -1);
 
     // mousePosition(X-axis,Y-axis)
     int mousePosition[2] = {0, 0};

@@ -75,7 +75,7 @@ int menu(SDL_Window* window, StartInfo startup){
                             SDL_DestroyWindow(window); // close when done and goto lobby
                     
                             SDLNet_TCP_Send(*(startup.socket), "WAKEUP", 14); //Need to wake the socket up
-
+                            Mix_HaltMusic();
                             LobbyWindow(startup);
                             return 0;
                         }

@@ -78,6 +78,7 @@ void LobbyWindow(){
     SDL_FreeSurface(readyButton);
         
     SDL_Quit(); //Quit SDL subsystems
+    return;
 }
 
 int getMouseBounds(int mouse[2], SDL_Rect rect){

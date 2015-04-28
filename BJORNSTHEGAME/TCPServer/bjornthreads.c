@@ -83,7 +83,7 @@ SDL_ThreadFunction* poller(void* information){
     IPaddress listenerIP; // listen to the ip-address
     TCPsocket socket;
     
-    /* Maximum number of sockets to be handeld*/
+    /* Maximum number of sockets to be handeld (1) in this case */
     SDLNet_SocketSet activity = SDLNet_AllocSocketSet(1); // functions that works with multiple sockets and allows you to determine when a socket has data or a connection waiting to be processed.
     
     HandlerInfo connectionhandler = {(*info).quit, &socket, (*info).stack};
@@ -103,9 +103,10 @@ SDL_ThreadFunction* poller(void* information){
 
     while(!(*(*info).quit)){
         while(1){
-            if(SDLNet_CheckSockets(activity, 50) > 0){ //Check and wait for sockets in a set to have activity
+            if(SDLNet_CheckSockets(activity, 50) > 0){ //Check and wait for sockets in a set to have activity, (socket to check, time in ms)
                 printf("Activity found, starting thread!\n");
-                SDL_DetachThread(SDL_CreateThread(Handler, "Thread", (void*)&connectionhandler));
+                SDL_DetachThread(SDL_CreateThread(Handler, "Thread", (void*)&connectionhandler));//Use this function to let a thread clean up on exit without intervention.
+                
                 SDL_Delay(100);
                 break;
             }

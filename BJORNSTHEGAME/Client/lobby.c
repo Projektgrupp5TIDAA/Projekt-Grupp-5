@@ -1,6 +1,6 @@
 #include "lobby.h"
 
-int LobbyWindow(TCPsocket* lobbyConnection){
+int LobbyWindow(StartInfo lobbyConnection){
 	SDL_Window* lobby;
 	SDL_Surface* lobbySurface;
     //background pic for lobby
@@ -76,14 +76,5 @@ int LobbyWindow(TCPsocket* lobbyConnection){
     SDL_FreeSurface(readyButton);
         
     SDL_Quit(); //Quit SDL subsystems
-    return 0;
-}
-
-int getMouseBounds(int mouse[2], SDL_Rect rect){
-    if(mouse[0]>rect.x && mouse[0]<(rect.x+rect.w)){
-        if(mouse[1]>rect.y && mouse[1]<(rect.y+rect.h)){
-            return 1;
-        }
-    }
     return 0;
 }

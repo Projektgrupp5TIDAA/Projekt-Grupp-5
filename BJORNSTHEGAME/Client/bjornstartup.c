@@ -1,28 +1,28 @@
 #include "bjornstartup.h"
-// #include "lobby.h"
+#include "lobby.h"
 
-int menu(SDL_Window* window, StartInf startup){
+int menu(SDL_Window* window, StartInfo startup){
     SDL_Surface *screen = SDL_GetWindowSurface(window);
     int quit = 0, mouse[2] = {0}, connected = 0;
     int resize_timer=0;
 
     /* Load image-surfaces */
-    SDL_Surface* background = IMG_Load("Images/menu/MenuBack.png");
-    SDL_Surface* playbutton = IMG_Load("Images/menu/MenuPlayButtonMin.png");
-    SDL_Surface* tapir = IMG_Load("Images/menu/tapir_image.png");
-    SDL_Surface* exitbutton = IMG_Load("Images/menu/door.png");
+    SDL_Surface* background = IMG_Load("../Images/menu/MenuBack.png");
+    SDL_Surface* playbutton = IMG_Load("../Images/menu/MenuPlayButtonMin.png");
+    SDL_Surface* tapir = IMG_Load("../Images/menu/tapir_image.png");
+    SDL_Surface* exitbutton = IMG_Load("../Images/menu/door.png");
 
     /* Load colour, font and then render text-surfaces */
     SDL_Colour black={0,0,0};
-    TTF_Font *font = TTF_OpenFont("Images/menu/StencilStd.ttf", 120);
+    TTF_Font *font = TTF_OpenFont("../Images/menu/StencilStd.ttf", 120);
     SDL_Surface *title = TTF_RenderText_Solid(font, "MENU", black);
 
     /* Load music, set volume and start */
-    Mix_Music *music = Mix_LoadMUS("Music/Mechanolith.mp3");
-    Mix_Chunk *uselt = Mix_LoadWAV("Sounds/uselt.wav");
-    Mix_Chunk *gifwetsvisfel =Mix_LoadWAV("Sounds/gifwetsvisfel.wav");
-    Mix_Chunk *sasvart= Mix_LoadWAV("Sounds/sasvart.wav");
-    Mix_Chunk *tasantid= Mix_LoadWAV("Sounds/sasvart.wav");
+    Mix_Music *music = Mix_LoadMUS("../Music/Mechanolith.mp3");
+    Mix_Chunk *uselt = Mix_LoadWAV("../Sounds/uselt.wav");
+    Mix_Chunk *gifwetsvisfel =Mix_LoadWAV("../Sounds/gifwetsvisfel.wav");
+    Mix_Chunk *sasvart= Mix_LoadWAV("../Sounds/sasvart.wav");
+    Mix_Chunk *tasantid= Mix_LoadWAV("../Sounds/sasvart.wav");
     Mix_VolumeMusic(64);
     Mix_PlayMusic(music, -1);
 
@@ -42,7 +42,7 @@ int menu(SDL_Window* window, StartInf startup){
             if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                 Mix_PlayChannel(-1, uselt, 1);
                 SDL_Delay(4000);
-                if(connected = 1){
+                if(connected == 1){
                     SDLNet_TCP_Send(*(startup.socket), "EXITCONNECTION", 14);
                 }
 
@@ -71,9 +71,13 @@ int menu(SDL_Window* window, StartInf startup){
                         }else{
                             connected = 1;
                             printf("Connected!\n");
-                            /*SDL_DestroyWindow(window); // close when done and goto lobby
-                             LobbyWindow();*/
-                            SDLNet_TCP_Send(*(startup.socket), "WAKEUP", 14); //Need to wake the socket up for some reason
+                            
+                            SDL_DestroyWindow(window); // close when done and goto lobby
+                    
+                            SDLNet_TCP_Send(*(startup.socket), "WAKEUP", 14); //Need to wake the socket up
+
+                            LobbyWindow(startup);
+                            return 0;
                         }
                         SDL_Delay(1000);
                     }
@@ -126,6 +130,7 @@ int menu(SDL_Window* window, StartInf startup){
         /* Update the window */
         SDL_UpdateWindowSurface(window);
     }
+    return 0;
 }
 
 /* checks if the incoming coordinates are within the rectangle bounds */
@@ -141,7 +146,7 @@ int getMouseBounds(int mouse[2], SDL_Rect rect){
 int getName(char* name, int len, SDL_Window* window){
     //get name return success or failure
     SDL_Surface *screen = SDL_GetWindowSurface(window);
-    SDL_Surface *namemenu = IMG_Load("Images/menu/MenuNameScreen.png");
+    SDL_Surface *namemenu = IMG_Load("../Images/menu/MenuNameScreen.png");
     SDL_BlitScaled(namemenu, NULL, screen, NULL);
     SDL_UpdateWindowSurface(window);
     readKeyboardToMenuWindow(name, len, window);
@@ -152,8 +157,8 @@ int getIP(IPaddress* targethost, SDL_Window* window){ // get the adress/target h
     char address[15] = {0};
     char port[5] = {0};
     SDL_Surface *screen = SDL_GetWindowSurface(window);
-    SDL_Surface *IPmenu = IMG_Load("Images/menu/MenuIPScreen.png");
-    SDL_Surface *portmenu = IMG_Load("Images/menu/MenuPortScreen.png");
+    SDL_Surface *IPmenu = IMG_Load("../Images/menu/MenuIPScreen.png");
+    SDL_Surface *portmenu = IMG_Load("../Images/menu/MenuPortScreen.png");
 
     SDL_BlitScaled(IPmenu, NULL, screen, NULL);
     SDL_UpdateWindowSurface(window);
@@ -167,7 +172,7 @@ int getIP(IPaddress* targethost, SDL_Window* window){ // get the adress/target h
 
     if (SDLNet_ResolveHost(targethost, address, atoi(port)) == -1)
     {
-        fprintf(stderr, "SDLNet_ResolveHost(%s %d): %s\n", address, port, SDLNet_GetError());
+        fprintf(stderr, "SDLNet_ResolveHost(%s %d): %s\n", address, atoi(port), SDLNet_GetError());
         return 1;
     }else
         return 0;
@@ -180,6 +185,7 @@ int textToScreen(TTF_Font *font, SDL_Rect place, SDL_Window* window, char* text)
     SDL_Surface *textsurface = TTF_RenderText_Solid(font, text, black);
     SDL_BlitSurface(textsurface, NULL, screen, &place);
     SDL_UpdateWindowSurface(window);
+    return 0;
 }
 
 /* reads the keyboard input into the string with the maximum length */
@@ -205,11 +211,12 @@ int readKeyboard(char* output, int len){
         }
     }
     SDL_StopTextInput();
+    return 0;
 }
 
 /* Reads keyboard input while it post the input to the screen */
 int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window){
-    TTF_Font *font = TTF_OpenFont("Images/menu/StencilStd.ttf", 30);
+    TTF_Font *font = TTF_OpenFont("../Images/menu/StencilStd.ttf", 30);
     SDL_Rect place = {230,150, 0,0};
     char temp[len];
     emptyString(temp, len);
@@ -233,6 +240,7 @@ int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window){
         }
     }
     SDL_StopTextInput();
+    return 0;
 }
 
 /* This function empties a string from a pointer with the length 'len' */
@@ -241,4 +249,5 @@ int emptyString(char* incoming, int len){
     for(i=0; i<len; i++){
         *(incoming+i) = 0;
     }
+    return 0;
 }

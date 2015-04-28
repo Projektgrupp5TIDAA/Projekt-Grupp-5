@@ -37,10 +37,10 @@ void LobbyWindow(){
 				readyButton = IMG_Load("ready.png");
                 //place it on screen
 				SDL_Rect buttonPlacement = {
-                                            ((lobbySurface->w/3)-380),
-                                            ((lobbySurface->h/2)+350),
-                                            850,
-                                            130
+                                            ((lobbySurface->w/3)-240),
+                                            ((lobbySurface->h/2)+200),
+                                            400,
+                                            80
                                             };
 				SDL_BlitScaled(readyButton, NULL, lobbySurface, &buttonPlacement);
             	

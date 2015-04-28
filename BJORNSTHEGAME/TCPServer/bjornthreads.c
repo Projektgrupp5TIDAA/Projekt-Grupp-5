@@ -7,7 +7,7 @@
 SDL_ThreadFunction *Handler(void* ply){
     TCPsocket intermediary;
     char incoming[PACKETSIZE];
-    tinfo* thread = (tinfo *) ply;
+    tinfo* thread = (tinfo *) ply; // to be able to handle the threadinformation
     printf("Thread is active!\n");
 
     /* Sets the intermediary socket to handle the request */
@@ -80,9 +80,12 @@ SDL_ThreadFunction *Handler(void* ply){
 
 SDL_ThreadFunction* poller(void* information){
     PollInfo* info = (PollInfo*)information;
-    IPaddress listenerIP;
+    IPaddress listenerIP; // listen to the ip-address
     TCPsocket socket;
-    SDLNet_SocketSet activity = SDLNet_AllocSocketSet(1);
+    
+    /* Maximum number of sockets to be handeld*/
+    SDLNet_SocketSet activity = SDLNet_AllocSocketSet(1); // functions that works with multiple sockets and allows you to determine when a socket has data or a connection waiting to be processed.
+    
     HandlerInfo connectionhandler = {(*info).quit, &socket, (*info).stack};
 
     if(SDLNet_ResolveHost(&listenerIP,NULL,PORT) < 0){
@@ -96,11 +99,11 @@ SDL_ThreadFunction* poller(void* information){
         return 1;
     }
 
-    SDLNet_AddSocket(activity, socket);
+    SDLNet_AddSocket(activity, socket); // add socket to socket set
 
     while(!(*(*info).quit)){
         while(1){
-            if(SDLNet_CheckSockets(activity, 50) > 0){
+            if(SDLNet_CheckSockets(activity, 50) > 0){ //Check and wait for sockets in a set to have activity
                 printf("Activity found, starting thread!\n");
                 SDL_DetachThread(SDL_CreateThread(Handler, "Thread", (void*)&connectionhandler));
                 SDL_Delay(100);

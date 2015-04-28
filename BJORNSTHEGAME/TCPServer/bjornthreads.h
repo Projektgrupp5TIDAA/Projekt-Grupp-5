@@ -31,6 +31,7 @@ typedef struct Threadstack{
 	tinfo* thread[PLAYERCOUNT];
 }ThreadStack;
 
+/* struct with info regarding the stack */
 typedef struct PollerInformation{
     int* quit;
     ThreadStack* stack;

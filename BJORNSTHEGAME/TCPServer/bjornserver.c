@@ -6,22 +6,22 @@
 #include "bjornshared.h"
 
 int main(int argc, char **argv){
-    TCPsocket clientsockets[PLAYERCOUNT];
+    TCPsocket clientsockets[PLAYERCOUNT]; // array of communication sockets
     ThreadStack stack = {0,{0}};
-    tinfo threadvariables[PLAYERCOUNT];
-    pinfo players[PLAYERCOUNT] = {{HEALTH, {0}, {0}}};
-    PollInfo pollerinfo;
+    tinfo threadvariables[PLAYERCOUNT]; // array of struct regarding thread info
+    pinfo players[PLAYERCOUNT] = {{HEALTH, {0}, {0}}};//array of struct regarding players
+    PollInfo pollerinfo; // information regarding the stack
     int quit=0, i;
-    SDL_Thread* connectionpoller;
+    SDL_Thread* connectionpoller; // thread variable
 
-    pollerinfo.stack = &stack;
+    pollerinfo.stack = &stack; // access to the stack
     pollerinfo.quit = &quit;
 
     for(i=0;i<PLAYERCOUNT;i++){
         threadvariables[i].ID = i;
-        threadvariables[i].socket = &clientsockets[i];
+        threadvariables[i].socket = &clientsockets[i];//access to the clients and players
         threadvariables[i].player = &players[i];
-        pushStack(&stack, &threadvariables[i]);
+        pushStack(&stack, &threadvariables[i]); // push the incoming threadinfo to the stack
     }
 
     /* Initialize SDL */

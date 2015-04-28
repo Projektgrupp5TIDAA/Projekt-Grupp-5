@@ -28,7 +28,7 @@ typedef struct ThreadInformation{
 typedef struct Threadstack{
 	int population;
 	TCPsocket* socket;
-	tinfo* thread[PLAYERCOUNT];
+	tinfo* thread[PLAYERCOUNT]; // array of threadinformation
 }ThreadStack;
 
 /* struct with info regarding the stack */
@@ -37,6 +37,7 @@ typedef struct PollerInformation{
     ThreadStack* stack;
 }PollInfo;
 
+/* struct with info regarding the required connection variables*/
 typedef struct HandlerInformation{
     int* quit;
     TCPsocket* socket;

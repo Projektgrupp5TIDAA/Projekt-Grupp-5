@@ -9,8 +9,6 @@ void Controller(Player *p)
 {
 
     SDL_Event event;
-    p->position[0]= 0;//x
-    p->position[1] = 0; //y
     int xV =0; //xVelocity
     int yV =0; //yVelocity
     /*Game loop and Check for events*/

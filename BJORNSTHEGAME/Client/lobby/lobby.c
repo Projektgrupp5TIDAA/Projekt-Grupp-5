@@ -17,8 +17,8 @@ void LobbyWindow(){
         lobby = SDL_CreateWindow( "BJORNSLOBBY",
         						SDL_WINDOWPOS_UNDEFINED,
         						SDL_WINDOWPOS_UNDEFINED,
-        						1920,
-        						1080,
+        						1280,
+        						800,
         						SDL_WINDOW_FULLSCREEN);
         if( lobby == NULL )
         	{

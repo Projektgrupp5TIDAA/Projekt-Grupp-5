@@ -5,27 +5,27 @@ int menu(SDL_Window* window, StartInf startup){
     SDL_Surface *screen = SDL_GetWindowSurface(window);
     int quit = 0, mouse[2] = {0}, connected = 0;
     int resize_timer=0;
-    
+
     /* Load image-surfaces */
-    SDL_Surface* background = IMG_Load("../Images/menu/MenuBack.png");
-    SDL_Surface* playbutton = IMG_Load("../Images/menu/MenuPlayButtonMin.png");
-    SDL_Surface* tapir = IMG_Load("../Images/menu/tapir_image.png");
-    SDL_Surface* exitbutton = IMG_Load("../Images/menu/door.png");
-    
+    SDL_Surface* background = IMG_Load("Images/menu/MenuBack.png");
+    SDL_Surface* playbutton = IMG_Load("Images/menu/MenuPlayButtonMin.png");
+    SDL_Surface* tapir = IMG_Load("Images/menu/tapir_image.png");
+    SDL_Surface* exitbutton = IMG_Load("Images/menu/door.png");
+
     /* Load colour, font and then render text-surfaces */
     SDL_Colour black={0,0,0};
-    TTF_Font *font = TTF_OpenFont("../Images/menu/StencilStd.ttf", 120);
+    TTF_Font *font = TTF_OpenFont("Images/menu/StencilStd.ttf", 120);
     SDL_Surface *title = TTF_RenderText_Solid(font, "MENU", black);
-    
+
     /* Load music, set volume and start */
-    Mix_Music *music = Mix_LoadMUS("../Music/Mechanolith.mp3");
-    Mix_Chunk *uselt = Mix_LoadWAV("../Sounds/uselt.wav");
-    Mix_Chunk *gifwetsvisfel =Mix_LoadWAV("../Sounds/gifwetsvisfel.wav");
-    Mix_Chunk *sasvart= Mix_LoadWAV("../Sounds/sasvart.wav");
-    Mix_Chunk *tasantid= Mix_LoadWAV("../Sounds/sasvart.wav");
+    Mix_Music *music = Mix_LoadMUS("Music/Mechanolith.mp3");
+    Mix_Chunk *uselt = Mix_LoadWAV("Sounds/uselt.wav");
+    Mix_Chunk *gifwetsvisfel =Mix_LoadWAV("Sounds/gifwetsvisfel.wav");
+    Mix_Chunk *sasvart= Mix_LoadWAV("Sounds/sasvart.wav");
+    Mix_Chunk *tasantid= Mix_LoadWAV("Sounds/sasvart.wav");
     Mix_VolumeMusic(64);
     Mix_PlayMusic(music, -1);
-    
+
     /* Initialize rectangles */
     SDL_Rect titleplacement = {(screen->w/2 - ((title->w)/2)), 20, 0, 0};
     SDL_Rect buttonplacement = {((screen->w/2) - 125), (screen->h/2), 250, 60};
@@ -33,11 +33,11 @@ int menu(SDL_Window* window, StartInf startup){
     SDL_Rect button3placement = {((screen->w/2) - 125), (screen->h/2 - 70), 250, 60};
     SDL_Rect exitplacement = {(screen->w - 126), (screen->h - 206), 120, 200};
     SDL_Rect tapirplacement = {0, (screen->h - 66), 100, 66};
-    
+
     while(!quit){
         SDL_PumpEvents();
         SDL_GetMouseState(&mouse[0], &mouse[1]);
-        
+
         if(getMouseBounds(mouse, exitplacement)){
             if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                 Mix_PlayChannel(-1, uselt, 1);
@@ -45,7 +45,7 @@ int menu(SDL_Window* window, StartInf startup){
                 if(connected = 1){
                     SDLNet_TCP_Send(*(startup.socket), "EXITCONNECTION", 14);
                 }
-                
+
                 /* Free the used resources and return*/
                 SDL_FreeSurface(title);
                 SDL_FreeSurface(exitbutton);
@@ -57,15 +57,16 @@ int menu(SDL_Window* window, StartInf startup){
                 return 1;
             }
         }else
-            if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
-                if(getMouseBounds(mouse, tapirplacement)){ //get name, then ip then connect
+
+            if(getMouseBounds(mouse, tapirplacement)){ //get name, then ip then connect
+                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                     printf("TAPIR\n");
                     getName(startup.playerName, 20, window); // get name through the readkeyboard function
                     if((getIP(startup.targethost, window))){ // get the host address and port connection
                         fprintf(stderr, "Could not resolve hostname.\n");
                     }else{
                         *(startup.socket) = SDLNet_TCP_Open(startup.targethost); // open socket with the targethost
-                        if(!(SDLNet_TCP_Send(*(startup.socket), (void*)startup.playerName, 20))){ //socket, data, length
+                        if(!(SDLNet_TCP_Send(*(startup.socket), "I", 1))){ //socket, data, length
                             printf("Could not connect to host: %s\n", SDLNet_GetError());
                         }else{
                             connected = 1;
@@ -76,28 +77,32 @@ int menu(SDL_Window* window, StartInf startup){
                         }
                         SDL_Delay(1000);
                     }
-                } // if tapir
-                else if(getMouseBounds(mouse, button3placement)){
+                }
+            }
+            else if(getMouseBounds(mouse, button3placement)){
+                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                     Mix_PlayChannel(-1, gifwetsvisfel, 1);
-                    SDL_Delay(2000);
+                    //SDL_Delay(2000);
                     //Mix_FreeChunk(gifwetsvisfel);
                     //return 1;
                 }
-                else if(getMouseBounds(mouse, button2placement)){
+            }
+            else if(getMouseBounds(mouse, button2placement)){
+                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                     Mix_PlayChannel(-1 ,sasvart, 1);
-                    SDL_Delay(4000);
+                    //SDL_Delay(4000);
                     //Mix_FreeChunk(sasvart);
                     //return 1;
                 }
-                else if(getMouseBounds(mouse, buttonplacement)){
+            }
+            else if(getMouseBounds(mouse, buttonplacement)){
+                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                     Mix_PlayChannel(-1, tasantid, 1);
-                    SDL_Delay(4000);
+                    //SDL_Delay(4000);
                     //Mix_FreeChunk(tasantid);
-                    // return 1;
+                    //return 1;
                 }
-            
-            }// if mouse button clicked
-        
+            }
         /*else if(getMouseBounds(mouse, tapirplacement)){ // resize tapir, should be moved to the function above?
          // change later
          SDL_Rect tapirplacement = {0, (screen->h - 2000), 350, 1000};
@@ -117,7 +122,7 @@ int menu(SDL_Window* window, StartInf startup){
         SDL_BlitScaled(playbutton, NULL, screen, &button3placement);
         SDL_BlitScaled(exitbutton, NULL, screen, &exitplacement);
         SDL_BlitScaled(tapir, NULL, screen, &tapirplacement);
-        
+
         /* Update the window */
         SDL_UpdateWindowSurface(window);
     }
@@ -136,7 +141,7 @@ int getMouseBounds(int mouse[2], SDL_Rect rect){
 int getName(char* name, int len, SDL_Window* window){
     //get name return success or failure
     SDL_Surface *screen = SDL_GetWindowSurface(window);
-    SDL_Surface *namemenu = IMG_Load("../Images/menu/MenuNameScreen.png");
+    SDL_Surface *namemenu = IMG_Load("Images/menu/MenuNameScreen.png");
     SDL_BlitScaled(namemenu, NULL, screen, NULL);
     SDL_UpdateWindowSurface(window);
     readKeyboardToMenuWindow(name, len, window);
@@ -147,9 +152,9 @@ int getIP(IPaddress* targethost, SDL_Window* window){ // get the adress/target h
     char address[15] = {0};
     char port[5] = {0};
     SDL_Surface *screen = SDL_GetWindowSurface(window);
-    SDL_Surface *IPmenu = IMG_Load("../Images/menu/MenuIPScreen.png");
-    SDL_Surface *portmenu = IMG_Load("../Images/menu/MenuPortScreen.png");
-    
+    SDL_Surface *IPmenu = IMG_Load("Images/menu/MenuIPScreen.png");
+    SDL_Surface *portmenu = IMG_Load("Images/menu/MenuPortScreen.png");
+
     SDL_BlitScaled(IPmenu, NULL, screen, NULL);
     SDL_UpdateWindowSurface(window);
     printf("Read name, time to read address!\n");
@@ -159,7 +164,7 @@ int getIP(IPaddress* targethost, SDL_Window* window){ // get the adress/target h
     printf("Read address: %s, time to read port!\n", address);
     readKeyboardToMenuWindow(port, 5, window);
     printf("Read port: %s, time to resolve the host!\n", port);
-    
+
     if (SDLNet_ResolveHost(targethost, address, atoi(port)) == -1)
     {
         fprintf(stderr, "SDLNet_ResolveHost(%s %d): %s\n", address, port, SDLNet_GetError());
@@ -204,7 +209,7 @@ int readKeyboard(char* output, int len){
 
 /* Reads keyboard input while it post the input to the screen */
 int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window){
-    TTF_Font *font = TTF_OpenFont("../Images/menu/StencilStd.ttf", 30);
+    TTF_Font *font = TTF_OpenFont("Images/menu/StencilStd.ttf", 30);
     SDL_Rect place = {230,150, 0,0};
     char temp[len];
     emptyString(temp, len);

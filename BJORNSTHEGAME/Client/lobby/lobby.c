@@ -16,6 +16,8 @@ int LobbyWindow(){
 
     // mousePosition(X-axis,Y-axis)
     int mousePosition[2] = {0, 0};
+
+    //gameloop
     int endLobby = 0;
 
     if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
@@ -26,12 +28,12 @@ int LobbyWindow(){
     else
     {
         //Create window 
-    lobby = SDL_CreateWindow(   "BJORNSLOBBY",
-                            SDL_WINDOWPOS_UNDEFINED,
-                            SDL_WINDOWPOS_UNDEFINED,
-                            1280,
-                            800,
-                            SDL_WINDOW_FULLSCREEN);
+        lobby = SDL_CreateWindow("BJORNSLOBBY",
+                                SDL_WINDOWPOS_UNDEFINED,
+                                SDL_WINDOWPOS_UNDEFINED,
+                                1280,
+                                800,
+                                SDL_WINDOW_FULLSCREEN);
         if( lobby == NULL )
             {
                 printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
@@ -68,7 +70,6 @@ int LobbyWindow(){
         SDL_UpdateWindowSurface(lobby);
 
     }  
-    SDL_Delay(5000);
 
     printf("Shut down in progress\n");
     SDL_DestroyWindow(lobby); //Destroy window

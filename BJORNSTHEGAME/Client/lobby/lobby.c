@@ -17,8 +17,8 @@ void LobbyWindow(){
         lobby = SDL_CreateWindow( "BJORNSLOBBY",
         						SDL_WINDOWPOS_UNDEFINED,
         						SDL_WINDOWPOS_UNDEFINED,
-        						800,
-        						600,
+        						1920,
+        						1080,
         						SDL_WINDOW_FULLSCREEN);
         if( lobby == NULL )
         	{
@@ -29,20 +29,29 @@ void LobbyWindow(){
             	//Get window surface
             	lobbySurface = SDL_GetWindowSurface( lobby );
 
+                //load background pic to window
             	lobbyBackground = IMG_Load("lobby.png");
 				SDL_BlitScaled(lobbyBackground, NULL, lobbySurface, NULL);
 
+                //load the ready button
 				readyButton = IMG_Load("ready.png");
-
-				SDL_Rect buttonPlacement = {((lobbySurface->w/2) - 750), (lobbySurface->h/2 + 200), 600, 90};
+                //place it on screen
+				SDL_Rect buttonPlacement = {
+                                            ((lobbySurface->w/3)-380),
+                                            ((lobbySurface->h/2)+350),
+                                            850,
+                                            130
+                                            };
 				SDL_BlitScaled(readyButton, NULL, lobbySurface, &buttonPlacement);
-            	//Update the surface
+            	
+                //Update the surface
             	SDL_UpdateWindowSurface(lobby);
-
         }
     }
 
     SDL_Delay(5000);
+
+
     //Destroy window
     SDL_DestroyWindow(lobby);
     //Quit SDL subsystems

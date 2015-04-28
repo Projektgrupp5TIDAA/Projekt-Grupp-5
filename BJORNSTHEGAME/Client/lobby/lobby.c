@@ -3,7 +3,7 @@
 int getMouseBounds(int mouse[2], SDL_Rect rect);
 
 
-void LobbyWindow(){
+int LobbyWindow(){
 	SDL_Window* lobby;
 	SDL_Surface* lobbySurface;
     //background pic for lobby
@@ -78,7 +78,7 @@ void LobbyWindow(){
     SDL_FreeSurface(readyButton);
         
     SDL_Quit(); //Quit SDL subsystems
-    return;
+    return 0;
 }
 
 int getMouseBounds(int mouse[2], SDL_Rect rect){

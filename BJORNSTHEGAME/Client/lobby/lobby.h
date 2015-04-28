@@ -13,5 +13,5 @@
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_net.h>
 #endif
-void LobbyWindow();
+int LobbyWindow();
 #endif

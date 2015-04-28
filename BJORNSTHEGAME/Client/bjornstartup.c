@@ -57,9 +57,8 @@ int menu(SDL_Window* window, StartInf startup){
                 return 1;
             }
         }else
-            
-            if(getMouseBounds(mouse, tapirplacement)){ //get name, then ip then connect
-                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+            if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+                if(getMouseBounds(mouse, tapirplacement)){ //get name, then ip then connect
                     printf("TAPIR\n");
                     getName(startup.playerName, 20, window); // get name through the readkeyboard function
                     if((getIP(startup.targethost, window))){ // get the host address and port connection
@@ -77,32 +76,28 @@ int menu(SDL_Window* window, StartInf startup){
                         }
                         SDL_Delay(1000);
                     }
-                }
-            }
-            else if(getMouseBounds(mouse, button3placement)){
-                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+                } // if tapir
+                else if(getMouseBounds(mouse, button3placement)){
                     Mix_PlayChannel(-1, gifwetsvisfel, 1);
-                    //SDL_Delay(2000);
+                    SDL_Delay(2000);
                     //Mix_FreeChunk(gifwetsvisfel);
                     //return 1;
                 }
-            }
-            else if(getMouseBounds(mouse, button2placement)){
-                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+                else if(getMouseBounds(mouse, button2placement)){
                     Mix_PlayChannel(-1 ,sasvart, 1);
-                    //SDL_Delay(4000);
+                    SDL_Delay(4000);
                     //Mix_FreeChunk(sasvart);
                     //return 1;
                 }
-            }
-            else if(getMouseBounds(mouse, buttonplacement)){
-                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+                else if(getMouseBounds(mouse, buttonplacement)){
                     Mix_PlayChannel(-1, tasantid, 1);
-                    //SDL_Delay(4000);
+                    SDL_Delay(4000);
                     //Mix_FreeChunk(tasantid);
-                    //return 1;
+                    // return 1;
                 }
-            }
+            
+            }// if mouse button clicked
+        
         /*else if(getMouseBounds(mouse, tapirplacement)){ // resize tapir, should be moved to the function above?
          // change later
          SDL_Rect tapirplacement = {0, (screen->h - 2000), 350, 1000};

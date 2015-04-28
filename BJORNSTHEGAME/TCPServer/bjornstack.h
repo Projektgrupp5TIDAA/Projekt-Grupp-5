@@ -2,12 +2,16 @@
 #define BJORN_STACK_H
 #include "bjornthreads.h"
 
-void pushSocketStack(cServ *stack, int pushSock);
+/* Push the incoming tinfo to the stack */
+void pushStack(ThreadStack *stack, tinfo *pushSock);
 
-int popSocketStack(cServ *stack);
+/* Grab the ID of the socket at the top of the stack */
+tinfo* popStack(ThreadStack *stack);
 
-int isEmptyStack(cServ stack);
+/* Check if the stack is empty */
+int isEmptyStack(ThreadStack stack);
 
-int isFullStack(cServ stack);
+/* Check if the stack is full */
+int isFullStack(ThreadStack stack);
 
 #endif

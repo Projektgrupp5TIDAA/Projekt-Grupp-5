@@ -6,63 +6,47 @@
 #include "bjornshared.h"
 
 int main(int argc, char **argv){
-  IPaddress sourceIP;
-  TCPsocket socket, clientsockets[PLAYERCOUNT];
-  cServ servants = {0,{0}}; //Stack
-  tinfo threadvariables[PLAYERCOUNT]; // Array of player-structs
-  char incomingdata[512]; //char to clear the data input
-  int currentsocket=0, quit=0, i, activethread[PLAYERCOUNT] = {0}; //various ints
-  SDL_Thread* threads[PLAYERCOUNT]; // Array of threads
-  
-  /* Initialize SDL_net */
-  if (SDLNet_Init() < 0){
-    fprintf(stderr, "SDLNet_Init: %s\n", SDLNet_GetError());
-    exit(EXIT_FAILURE);
-  }
+    TCPsocket clientsockets[PLAYERCOUNT];
+    ThreadStack stack = {0,{0}};
+    tinfo threadvariables[PLAYERCOUNT];
+    pinfo players[PLAYERCOUNT] = {{HEALTH, {0}, {0}}};
+    PollInfo pollerinfo;
+    int quit=0, i;
+    SDL_Thread* connectionpoller;
 
-  if(SDLNet_ResolveHost(&sourceIP,NULL,PORT) < 0){
-      printf("SDLNet_ResolveHost: %s\n", SDLNet_GetError());
-      exit(EXIT_FAILURE);
-  }
-    
-  /* Open the sockets */
-  if (!(socket = SDLNet_TCP_Open(&sourceIP))){
-    fprintf(stderr, "SDLNet_TCP_Open: %s\n", SDLNet_GetError());
-    exit(EXIT_FAILURE);
-  }
-    
+    pollerinfo.stack = &stack;
+    pollerinfo.quit = &quit;
 
-  //Put in a function(Populate stack)
-  for(i=0;i<PLAYERCOUNT;i++){
-    pushSocketStack(&servants, i); //Pushes the current socket that is being handled onto the stack
-    initiatePlayer(&(threadvariables[i].player));  //Initiate the player-struct
-    threadvariables[i].active = &activethread[i];  //Gives the current thread the active flag-pointer
-    threadvariables[i].servants = &servants;       //Gives the thread access to the stack
-    threadvariables[i].threadID = i;               //Assigns the thread ID
-    threadvariables[i].socket = &clientsockets[i]; //Assigns the thread it's socket
-    threadvariables[i].quit = &quit;
-    threads[i] = SDL_CreateThread(check_ports, "Thread", (void *)&threadvariables[i]); //Creates the thread
-    SDL_DetachThread(threads[i]); //  let a thread clean up on exit without intervention
-  }
+    for(i=0;i<PLAYERCOUNT;i++){
+        threadvariables[i].ID = i;
+        threadvariables[i].socket = &clientsockets[i];
+        threadvariables[i].player = &players[i];
+        pushStack(&stack, &threadvariables[i]);
+    }
 
-  /* Main loop */
-  /* Maybe use another thread for connectionpolling and keep the main thread for broadcasts? */
-  while(!quit){
-    /* Clears the data input then waits for a packet */
-    if(!isEmptyStack(servants)){
-      currentsocket = popSocketStack(&servants); // take socket id from the stack 
-      while(1){
-        if((clientsockets[currentsocket] = SDLNet_TCP_Accept(socket))){
-         activethread[currentsocket] = 1;
-         printf("Request recieved, assigning socket to thread #%d.\n", currentsocket);
-         break;
-        }
-      }
-    }else SDL_Delay(200);
-  }
+    /* Initialize SDL */
+    if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
+        fprintf(stderr, "Error initializing SDL: %s\n", SDL_GetError());
+        exit(EXIT_FAILURE);
+    }
 
-  SDLNet_TCP_Close(socket);
-  SDLNet_Quit();
-  return EXIT_SUCCESS;
+    /* Initialize SDL_net */
+    if (SDLNet_Init() != 0){
+        fprintf(stderr, "Error initializing SDL_net: %s\n", SDLNet_GetError());
+        exit(EXIT_FAILURE);
+    }
+
+    connectionpoller = SDL_CreateThread(poller, "ConnectionPoller", (void*)&pollerinfo);
+    if(connectionpoller == NULL){
+        fprintf(stderr, "Error creating the connection-polling-thread: %s\n", SDL_GetError());
+        exit(EXIT_FAILURE);
+    }
+
+    while(!quit){
+        SDL_Delay(200);
+    }
+
+    SDLNet_Quit();
+    return 0;
 }
 

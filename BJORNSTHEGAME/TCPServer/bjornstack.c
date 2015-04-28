@@ -1,27 +1,30 @@
+#include <stdio.h>
+#include <string.h>
 #include "bjornstack.h"
 
 /* Push the ID of a socket to the cServ stack top */
-void pushSocketStack(cServ *stack, int pushSock){
+void pushStack(ThreadStack *stack, tinfo *pushThread){
 	if(isFullStack(*stack)){
 		fprintf(stderr, "Error adding to the stack: Stack is full\n");
 	}else{
-		(*stack).socket[(*stack).population] = pushSock;
+		(*stack).thread[(*stack).population] = pushThread;
 		(*stack).population++;
 	}
 }
 
 /* Grab the ID of the socket at the top of the stack */
-int popSocketStack(cServ *stack){
+tinfo* popStack(ThreadStack *stack){
 	if(isEmptyStack(*stack)){
 		fprintf(stderr, "Error taking from stack: Stack is Empty\n");
+		return NULL;
 	}else{
 		(*stack).population--;
-		return ((*stack).socket[(*stack).population]); 
+		return ((*stack).thread[(*stack).population]);
 	}
 }
 
 /* Check if the stack is empty */
-int isEmptyStack(cServ stack){
+int isEmptyStack(ThreadStack stack){
 	if(stack.population == 0){
 		return 1;
 	}else
@@ -29,7 +32,7 @@ int isEmptyStack(cServ stack){
 }
 
 /* Check if the stack is full */
-int isFullStack(cServ stack){
+int isFullStack(ThreadStack stack){
 	if(stack.population > PLAYERCOUNT){
 		return 1;
 	}else{

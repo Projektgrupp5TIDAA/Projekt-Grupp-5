@@ -1,7 +1,6 @@
 #include "lobby.h"
 
 int LobbyWindow(StartInfo lobbyConnection){
-
     //********************** INIT *************************
 	SDL_Window* lobby;
 	SDL_Surface* lobbySurface;
@@ -51,20 +50,17 @@ int LobbyWindow(StartInfo lobbyConnection){
                                     SDL_WINDOWPOS_UNDEFINED,
                                     1280,
                                     800,
-                                    SDL_WINDOW_FULLSCREEN);
+                                 SDL_WINDOW_FULLSCREEN);
         if( lobby == NULL )
         {
             printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
         }
-
         else
-
         {
             //Get window surface
 
             {
                     //Get window surface
-
             lobbySurface = SDL_GetWindowSurface( lobby );
  
             //rectangle for button
@@ -79,6 +75,7 @@ int LobbyWindow(StartInfo lobbyConnection){
             clockPlace.w =  400;
             clockPlace.h =  80;
 
+            }
         }
     }
 
@@ -103,8 +100,7 @@ int LobbyWindow(StartInfo lobbyConnection){
          //Update the surface
         SDL_UpdateWindowSurface(lobby);
 
-    }  
-
+    }
     printf("Shut down in progress\n");
     SDL_DestroyWindow(lobby); //Destroy window
     
@@ -114,10 +110,10 @@ int LobbyWindow(StartInfo lobbyConnection){
         
     SDL_Quit(); //Quit SDL subsystems
     return 0;
-}
+    }
 
 //a thread that updates time left in lobby.
-SDL_ThreadFunction* TimeThread(void* clockInfo){
+    SDL_ThreadFunction* TimeThread(void* clockInfo){
     clkInfo* changeclk;
     changeclk = (clkInfo*) clockInfo;
     
@@ -129,4 +125,8 @@ SDL_ThreadFunction* TimeThread(void* clockInfo){
         SDL_Delay(995);
         sprintf((changeclk->sendingTime), "%d", (changeclk->seconds_left));
     }
+<<<<<<< Updated upstream
 }
+=======
+    }
+>>>>>>> Stashed changes

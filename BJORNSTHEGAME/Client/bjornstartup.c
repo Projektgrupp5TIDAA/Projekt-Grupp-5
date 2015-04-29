@@ -66,9 +66,9 @@ int menu(StartInfo startup){
                 return 1;
             }
         }else
-
-            if(getMouseBounds(mouse, tapirplacement)){ //get name, then ip then connect
-                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+            
+            if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){ //get name, then ip then connect
+                if(getMouseBounds(mouse, tapirplacement)){
                     getName(startup.playerName, 20, window); // get name through the readkeyboard function
                     if((getIP(startup.targethost, window))){ // get the host address and port connection
                         fprintf(stderr, "Could not resolve hostname.\n");
@@ -97,29 +97,23 @@ int menu(StartInfo startup){
                         SDL_Delay(1000);
                     }
                 }
-            }
-            else if(getMouseBounds(mouse, button3placement)){
-                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
-                    Mix_PlayChannel(-1, gifwetsvisfel, 1);
-                    //SDL_Delay(2000);
-                    //Mix_FreeChunk(gifwetsvisfel);
-                    //return 1;
+                else if(getMouseBounds(mouse, button3placement)){
+                        Mix_PlayChannel(-1, gifwetsvisfel, 1);
+                        //SDL_Delay(2000);
+                        //Mix_FreeChunk(gifwetsvisfel);
+                        //return 1;
                 }
-            }
-            else if(getMouseBounds(mouse, button2placement)){
-                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
-                    Mix_PlayChannel(-1 ,sasvart, 1);
-                    //SDL_Delay(4000);
-                    //Mix_FreeChunk(sasvart);
-                    //return 1;
+                else if(getMouseBounds(mouse, button2placement)){
+                        Mix_PlayChannel(-1 ,sasvart, 1);
+                        //SDL_Delay(4000);
+                        //Mix_FreeChunk(sasvart);
+                        //return 1;
                 }
-            }
-            else if(getMouseBounds(mouse, buttonplacement)){
-                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+                else if(getMouseBounds(mouse, buttonplacement)){
                     Mix_PlayChannel(-1, tasantid, 1);
-                    //SDL_Delay(4000);
-                    //Mix_FreeChunk(tasantid);
-                    //return 1;
+                        //SDL_Delay(4000);
+                        //Mix_FreeChunk(tasantid);
+                        //return 1;
                 }
             }
         /*else if(getMouseBounds(mouse, tapirplacement)){ // resize tapir, should be moved to the function above?
@@ -252,7 +246,7 @@ int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window, SDL_Surf
                     strcpy(output, temp);
                     len = 0;
                 }
-                if(event.key.keysym.sym == SDLK_BACKSPACE){
+                if(event.key.keysym.sym == SDLK_BACKSPACE){ // erase text
                     if(len<initlen){
                         len++;
                         temp[initlen-len]=0;

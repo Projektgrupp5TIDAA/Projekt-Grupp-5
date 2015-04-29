@@ -10,7 +10,7 @@
 #define HEALTH 5
 #define PLAYERCOUNT 6
 #define PACKETSIZE 512
-#define SERVERNAME Server
+#define SERVERNAME "Server"
 
 /* Struct with important information regarding the thread and player */
 typedef struct playerinfo{
@@ -18,26 +18,27 @@ typedef struct playerinfo{
   char playername[20];
 }pinfo;
 
+/* Struct with all the information a thread will have to get when getting a slot from the stack */
 typedef struct ThreadInformation{
     int ID;
     TCPsocket* socket;
     pinfo* player;
 }tinfo;
 
-/* struct with important information about the sockets id */
+/* The stack containing pointers to all of the information regarding the slots on the server */
 typedef struct Threadstack{
 	int population;
 	TCPsocket* socket;
-	tinfo* thread[PLAYERCOUNT]; // array of threadinformation
+	tinfo* thread[PLAYERCOUNT];
 }ThreadStack;
 
-/* struct with info regarding the stack */
+/* Struct with pointers required for the Poller to work */
 typedef struct PollerInformation{
     int* quit;
     ThreadStack* stack;
 }PollInfo;
 
-/* struct with info regarding the required connection variables*/
+/* Struct with pointers required for the Clienthandlers to work */
 typedef struct HandlerInformation{
     int* quit;
     TCPsocket* socket;

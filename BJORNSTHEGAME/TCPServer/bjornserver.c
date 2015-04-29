@@ -6,22 +6,24 @@
 #include "bjornshared.h"
 
 int main(int argc, char **argv){
-    TCPsocket clientsockets[PLAYERCOUNT]; // array of communication sockets
+    TCPsocket clientsockets[PLAYERCOUNT];
     ThreadStack stack = {0,{0}};
-    tinfo threadvariables[PLAYERCOUNT]; // array of struct regarding thread info
-    pinfo players[PLAYERCOUNT] = {{HEALTH, {0}, {0}}};//array of struct regarding players
-    PollInfo pollerinfo; // information regarding the stack
+    tinfo threadvariables[PLAYERCOUNT];
+    pinfo players[PLAYERCOUNT] = {{HEALTH, {0}, {0}}};
+    PollInfo pollerinfo;
     int quit=0, i;
-    SDL_Thread* connectionpoller; // thread variable
+    SDL_Thread* connectionpoller;
 
-    pollerinfo.stack = &stack; // access to the stack
+    /* Initiates the pointers for the connectionpoller-thread */
+    pollerinfo.stack = &stack;
     pollerinfo.quit = &quit;
 
+    /* Initializing the information for the stack and threads */
     for(i=0;i<PLAYERCOUNT;i++){
         threadvariables[i].ID = i;
-        threadvariables[i].socket = &clientsockets[i];//access to the clients and players
+        threadvariables[i].socket = &clientsockets[i];
         threadvariables[i].player = &players[i];
-        pushStack(&stack, &threadvariables[i]); // push the incoming threadinfo to the stack
+        pushStack(&stack, &threadvariables[i]);
     }
 
     /* Initialize SDL */
@@ -36,12 +38,14 @@ int main(int argc, char **argv){
         exit(EXIT_FAILURE);
     }
 
+    /* Start the connectionpoller-thread */
     connectionpoller = SDL_CreateThread(poller, "ConnectionPoller", (void*)&pollerinfo);
     if(connectionpoller == NULL){
         fprintf(stderr, "Error creating the connection-polling-thread: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
 
+    /* Broadcasting loop */
     while(!quit){
         SDL_Delay(200);
     }
@@ -49,4 +53,3 @@ int main(int argc, char **argv){
     SDLNet_Quit();
     return 0;
 }
-

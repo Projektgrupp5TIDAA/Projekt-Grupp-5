@@ -4,27 +4,46 @@
 #include "bjornshared.h"
 
 /* Thread execution function */
-SDL_ThreadFunction *Handler(void* ply){
+SDL_ThreadFunction *Handler(void* thr){
     TCPsocket intermediary;
-    char incoming[PACKETSIZE];
-    tinfo* thread = (tinfo *) ply; // to be able to handle the threadinformation
+    char packet[PACKETSIZE];
+    HandlerInfo* thread = (HandlerInfo *) thr;
     printf("Thread is active!\n");
 
     /* Sets the intermediary socket to handle the request */
     intermediary = SDLNet_TCP_Accept((*(*thread).socket));
 
     /* Recieves the request */
-    SDLNet_TCP_Recv(intermediary, incoming, PACKETSIZE);
+    SDLNet_TCP_Recv(intermediary, packet, PACKETSIZE);
 
-    switch(incoming[0]){
+    /* Handles the incoming request depending on type */
+    switch(packet[0]){
         case 'I':
-            //send info
+            /* If the incoming request is an information-probing request the server will send the necessary information */
+            printf("Information request recieved, sending.\n");
+            if(isEmptyStack(*(*thread).stack)){
+                SDLNet_TCP_Send(intermediary, "F", 1);
+            }else{
+                sprintf(packet, "I%d/%dN%s", (PLAYERCOUNT - ((*(*thread).stack).population)), PLAYERCOUNT, SERVERNAME);
+                SDLNet_TCP_Send(intermediary, packet, PACKETSIZE);
+                SDLNet_TCP_Close(intermediary);
+                printf("Information sent, now exiting thread!\n");
+            }
             return 0;
         case 'C':
-            //check for serverslot
+            /* If the incoming request is a connection-request the server will, if possible assign an open slot */
+            printf("Connection request recieved, assigning.\n");
+            if(isEmptyStack(*((*thread).stack)))
+                SDLNet_TCP_Send(intermediary, "F", 1);
+            else{
+                tinfo* clientvar = popStack((*thread).stack);
+                (*(*clientvar).socket) = intermediary;
+                SDLNet_TCP_Close(intermediary);
+            }
             return 0;
         default:
-            //send error message, connection failed
+            /* If the request is not recognized the server will return error */
+            SDLNet_TCP_Send(intermediary, "ERROR: Bad request.", 40);
             return 1;
     }
 
@@ -80,33 +99,31 @@ SDL_ThreadFunction *Handler(void* ply){
 
 SDL_ThreadFunction* poller(void* information){
     PollInfo* info = (PollInfo*)information;
-    IPaddress listenerIP; // listen to the ip-address
+    IPaddress listenerIP;
     TCPsocket socket;
-    
-    /* Maximum number of sockets to be handeld (1) in this case */
-    SDLNet_SocketSet activity = SDLNet_AllocSocketSet(1); // functions that works with multiple sockets and allows you to determine when a socket has data or a connection waiting to be processed.
-    
+    SDLNet_SocketSet activity = SDLNet_AllocSocketSet(1);
     HandlerInfo connectionhandler = {(*info).quit, &socket, (*info).stack};
 
+    /* Resolve listener ip */
     if(SDLNet_ResolveHost(&listenerIP,NULL,PORT) < 0){
         printf("SDLNet_ResolveHost: %s\n", SDLNet_GetError());
         return 1;
     }
 
-    /* Open the sockets */
+    /* Open the socket and add it to the socketset */
     if (!(socket = SDLNet_TCP_Open(&listenerIP))){
         fprintf(stderr, "SDLNet_TCP_Open: %s\n", SDLNet_GetError());
         return 1;
     }
+    SDLNet_AddSocket(activity, socket);
 
-    SDLNet_AddSocket(activity, socket); // add socket to socket set
-
+    /* Main connection assignment loop */
     while(!(*(*info).quit)){
         while(1){
-            if(SDLNet_CheckSockets(activity, 50) > 0){ //Check and wait for sockets in a set to have activity, (socket to check, time in ms)
+            /* Whenever there is activity on the socket a thread is spawned to handle it */
+            if(SDLNet_CheckSockets(activity, 50) > 0){
                 printf("Activity found, starting thread!\n");
-                SDL_DetachThread(SDL_CreateThread(Handler, "Thread", (void*)&connectionhandler));//Use this function to let a thread clean up on exit without intervention.
-                
+                SDL_DetachThread(SDL_CreateThread(Handler, "Thread", (void*)&connectionhandler));
                 SDL_Delay(100);
                 break;
             }

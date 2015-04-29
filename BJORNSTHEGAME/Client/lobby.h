@@ -15,6 +15,7 @@
 #endif
 #include "bjornstartup.h"
 #include <time.h>
+
 int LobbyWindow(StartInfo lobbyConnection);
 typedef struct clockInformation
 {
@@ -22,6 +23,7 @@ typedef struct clockInformation
     char sendingTime[3];
 
 }clkInfo;
+
 SDL_ThreadFunction* TimeThread(void* clockInfo);
 
 #endif

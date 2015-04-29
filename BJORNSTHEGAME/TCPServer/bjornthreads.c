@@ -11,7 +11,7 @@ SDL_ThreadFunction *Handler(void* thr){
     printf("Thread is active!\n");
 
     /* Sets the intermediary socket to handle the request */
-    intermediary = SDLNet_TCP_Accept((*(*thread).socket));
+    intermediary = SDLNet_TCP_Accept((*(thread->socket)));
 
     /* Recieves the request */
     SDLNet_TCP_Recv(intermediary, packet, PACKETSIZE);
@@ -21,10 +21,10 @@ SDL_ThreadFunction *Handler(void* thr){
         case 'I':
             /* If the incoming request is an information-probing request the server will send the necessary information */
             printf("Information request recieved, sending.\n");
-            if(isEmptyStack(*(*thread).stack)){
+            if(isEmptyStack(*(thread->stack))){
                 SDLNet_TCP_Send(intermediary, "F", 1);
             }else{
-                sprintf(packet, "I%d/%dN%s", (PLAYERCOUNT - ((*(*thread).stack).population)), PLAYERCOUNT, SERVERNAME);
+                sprintf(packet, "%s - %d/%d", SERVERNAME, (PLAYERCOUNT - (thread->stack->population)), PLAYERCOUNT);
                 SDLNet_TCP_Send(intermediary, packet, PACKETSIZE);
                 SDLNet_TCP_Close(intermediary);
                 printf("Information sent, now exiting thread!\n");
@@ -33,11 +33,11 @@ SDL_ThreadFunction *Handler(void* thr){
         case 'C':
             /* If the incoming request is a connection-request the server will, if possible assign an open slot */
             printf("Connection request recieved, assigning.\n");
-            if(isEmptyStack(*((*thread).stack)))
+            if(isEmptyStack(*(thread->stack)))
                 SDLNet_TCP_Send(intermediary, "F", 1);
             else{
-                tinfo* clientvar = popStack((*thread).stack);
-                (*(*clientvar).socket) = intermediary;
+                tinfo* clientvar = popStack(thread->stack);
+                *(clientvar->socket) = intermediary;
                 SDLNet_TCP_Close(intermediary);
             }
             return 0;
@@ -102,7 +102,7 @@ SDL_ThreadFunction* poller(void* information){
     IPaddress listenerIP;
     TCPsocket socket;
     SDLNet_SocketSet activity = SDLNet_AllocSocketSet(1);
-    HandlerInfo connectionhandler = {(*info).quit, &socket, (*info).stack};
+    HandlerInfo connectionhandler = {info->quit, &socket, info->stack};
 
     /* Resolve listener ip */
     if(SDLNet_ResolveHost(&listenerIP,NULL,PORT) < 0){
@@ -117,8 +117,10 @@ SDL_ThreadFunction* poller(void* information){
     }
     SDLNet_AddSocket(activity, socket);
 
+    printf("Connection-poller thread is now active, awaiting incoming connections.\n");
+
     /* Main connection assignment loop */
-    while(!(*(*info).quit)){
+    while(!*(info->quit)){
         while(1){
             /* Whenever there is activity on the socket a thread is spawned to handle it */
             if(SDLNet_CheckSockets(activity, 50) > 0){
@@ -134,7 +136,7 @@ SDL_ThreadFunction* poller(void* information){
 
 /* Initiation of the player struct */
 void initiatePlayer(pinfo* ply){
-    (*ply).health = HEALTH;
-    (*ply).position[0] = 5;
-    (*ply).position[1] = 5;
+    ply->health = HEALTH;
+    ply->position[0] = 5;
+    ply->position[1] = 5;
 }

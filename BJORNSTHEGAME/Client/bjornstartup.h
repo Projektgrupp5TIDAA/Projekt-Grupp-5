@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <SDL2/SDL.h>
+#define PACKETSIZE 512
 #ifdef __APPLE__
 #include <SDL2_ttf/SDL_ttf.h>
 #include <SDL2_image/SDL_image.h>
@@ -31,6 +32,8 @@ int getName(char* name, int len, SDL_Window* window);
 int getIP(IPaddress* targethost, SDL_Window* window);
 
 int connectToHost(IPaddress* targethost, TCPsocket* socket);
+
+int textToScreen(TTF_Font *font, SDL_Rect place, SDL_Window* window, char* text);
 
 int readKeyboard(char* output, int len);
 

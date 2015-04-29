@@ -2,7 +2,8 @@
 #include "lobby.h"
 
 int menu(StartInfo startup){
-    int quit = 0, mouse[2] = {0}, connected = 0;
+    int quit = 0, mouse[2] = {0};
+    char packet[PACKETSIZE];
 
     /* Create window and get the surface */
     SDL_Window* window = SDL_CreateWindow("BJORNS THE GAME - MENU", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, 0);
@@ -22,15 +23,18 @@ int menu(StartInfo startup){
 
     /* Load colour, font and then render text-surfaces */
     SDL_Colour black={0,0,0};
+    SDL_Colour white={255,255,255};
     TTF_Font *font = TTF_OpenFont("../Images/menu/StencilStd.ttf", 120);
+    TTF_Font *fontsmall = TTF_OpenFont("../Images/menu/StencilStd.ttf", 30);
     SDL_Surface *title = TTF_RenderText_Solid(font, "MENU", black);
+    SDL_Surface *connectask = TTF_RenderText_Solid(font, "Connect?", black);
 
     /* Load music, set volume and start */
     Mix_Music *music = Mix_LoadMUS("../Sounds/Music/Mechanolith.mp3");
     Mix_Chunk *uselt = Mix_LoadWAV("../Sounds/uselt.wav");
     Mix_Chunk *gifwetsvisfel =Mix_LoadWAV("../Sounds/gifwetsvisfel.wav");
     Mix_Chunk *sasvart= Mix_LoadWAV("../Sounds/sasvart.wav");
-    Mix_Chunk *tasantid= Mix_LoadWAV("../Sounds/sasvart.wav");
+    Mix_Chunk *tasantid= Mix_LoadWAV("../Sounds/tasantid.wav");
     Mix_VolumeMusic(64);
     Mix_PlayMusic(music, -1);
 
@@ -50,9 +54,6 @@ int menu(StartInfo startup){
             if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                 Mix_PlayChannel(-1, uselt, 1);
                 SDL_Delay(4000);
-                if(connected == 1){
-                    SDLNet_TCP_Send(*(startup.socket), "EXITCONNECTION", 14);
-                }
 
                 /* Free the used resources and return*/
                 SDL_FreeSurface(title);
@@ -68,7 +69,6 @@ int menu(StartInfo startup){
 
             if(getMouseBounds(mouse, tapirplacement)){ //get name, then ip then connect
                 if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
-                    printf("TAPIR\n");
                     getName(startup.playerName, 20, window); // get name through the readkeyboard function
                     if((getIP(startup.targethost, window))){ // get the host address and port connection
                         fprintf(stderr, "Could not resolve hostname.\n");
@@ -77,14 +77,21 @@ int menu(StartInfo startup){
                         if(!(SDLNet_TCP_Send(*(startup.socket), "I", 1))){ //socket, data, length
                             printf("Could not connect to host: %s\n", SDLNet_GetError());
                         }else{
-                            connected = 1;
-                            printf("Connected!\n");
+                            while(1){
+                                if(SDLNet_TCP_Recv(*(startup.socket), packet, PACKETSIZE)){
+                                    printf("INFO RECIEVED: %s\n", packet);
+                                    SDL_Surface* serverscreen = IMG_Load("../Images/menu/ConnectConfirmScreen.png");
+                                    SDL_BlitSurface(serverscreen, NULL, screen, NULL);
+                                    SDL_UpdateWindowSurface(window);
+                                    SDL_Rect place = {230, 150, 0, 0};
+                                    textToScreen(fontsmall, place, window, packet);
+                                    SDL_Delay(10000);
+                                    break;
+                                }
+                            }
 
                             SDL_DestroyWindow(window); // close when done and goto lobby
-
                             SDLNet_TCP_Send(*(startup.socket), "WAKEUP", 14); //Need to wake the socket up
-                            Mix_HaltMusic();
-                            LobbyWindow(startup);
                             return 0;
                         }
                         SDL_Delay(1000);
@@ -246,12 +253,14 @@ int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window, SDL_Surf
                     len = 0;
                 }
                 if(event.key.keysym.sym == SDLK_BACKSPACE){
-                    len++;
-                    temp[initlen-len]=0;
-                    SDL_BlitScaled(bg, NULL, screen, NULL);
-                    SDL_UpdateWindowSurface(window);
-                    textToScreen(font, place, window, temp);
-                    printf("DELETED %s\n", temp);
+                    if(len<initlen){
+                        len++;
+                        temp[initlen-len]=0;
+                        SDL_BlitScaled(bg, NULL, screen, NULL);
+                        SDL_UpdateWindowSurface(window);
+                        textToScreen(font, place, window, temp);
+                        printf("Backspace: %s\n", temp);
+                    }else printf("No text to delete.\n");
                 }
             }
         }

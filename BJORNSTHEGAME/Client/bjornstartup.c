@@ -93,7 +93,7 @@ int menu(StartInfo startup){
                                     break;
                                 }else SDL_Delay(10);
                             }
-                            while(1){
+                            while(1){//if yes-button open TCP connection with targethost
                                 SDL_PumpEvents();
                                 SDL_GetMouseState(&mouse[0], &mouse[1]);
                                 if(getMouseBounds(mouse, yespos)){
@@ -255,7 +255,7 @@ int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window, SDL_Surf
                     strcpy(output, temp);
                     len = 0;
                 }
-                if(event.key.keysym.sym == SDLK_BACKSPACE){
+                if(event.key.keysym.sym == SDLK_BACKSPACE){ // erase text
                     if(len<initlen){
                         len++;
                         temp[initlen-len]=0;

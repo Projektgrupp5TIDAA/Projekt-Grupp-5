@@ -36,7 +36,7 @@ SDL_ThreadFunction *Handler(void* thr){
             if(isEmptyStack(*(thread->stack)))
                 SDLNet_TCP_Send(intermediary, "F", 1);
             else{
-                tinfo* clientvar = popStack(thread->stack);
+                tinfo* clientvar = popStack(thread->stack); // if full stack grab an id of the socket for the connection 
                 *(clientvar->socket) = intermediary;
                 SDLNet_TCP_Close(intermediary);
             }

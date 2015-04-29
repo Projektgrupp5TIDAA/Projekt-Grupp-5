@@ -18,7 +18,7 @@ int menu(SDL_Window* window, StartInfo startup){
     SDL_Surface *title = TTF_RenderText_Solid(font, "MENU", black);
 
     /* Load music, set volume and start */
-    Mix_Music *music = Mix_LoadMUS("../Music/Mechanolith.mp3");
+    Mix_Music *music = Mix_LoadMUS("../Sounds/Music/Mechanolith.mp3");
     Mix_Chunk *uselt = Mix_LoadWAV("../Sounds/uselt.wav");
     Mix_Chunk *gifwetsvisfel =Mix_LoadWAV("../Sounds/gifwetsvisfel.wav");
     Mix_Chunk *sasvart= Mix_LoadWAV("../Sounds/sasvart.wav");

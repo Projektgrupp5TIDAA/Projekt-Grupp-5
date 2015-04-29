@@ -114,9 +114,8 @@ int LobbyWindow(StartInfo lobbyConnection){
 
 //a thread that updates time left in lobby.
     SDL_ThreadFunction* TimeThread(void* clockInfo){
-    clkInfo* changeclk;
-    changeclk = (clkInfo*) clockInfo;
-    
+    clkInfo* changeclk = (clkInfo*) clockInfo;
+        
     changeclk->seconds_left = 120;
 
     while(changeclk->seconds_left > 0)

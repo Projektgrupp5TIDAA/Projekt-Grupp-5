@@ -2,7 +2,7 @@
 #include <time.h>
 
  
-int main ()
+void(int )
 {
 	unsigned int time_milliseconds = 0;
 	unsigned int time_seconds = 0;

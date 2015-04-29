@@ -58,16 +58,13 @@ int LobbyWindow(StartInfo lobbyConnection){
         }
 
         else
-<<<<<<< HEAD
+
         {
             //Get window surface
-=======
+
             {
                     //Get window surface
-<<<<<<< Updated upstream
-=======
->>>>>>> origin/master
->>>>>>> Stashed changes
+
             lobbySurface = SDL_GetWindowSurface( lobby );
  
             //rectangle for button

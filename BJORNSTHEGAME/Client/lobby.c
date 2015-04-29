@@ -125,8 +125,8 @@ int LobbyWindow(StartInfo lobbyConnection){
         SDL_Delay(995);
         sprintf((changeclk->sendingTime), "%d", (changeclk->seconds_left));
     }
-<<<<<<< Updated upstream
+
 }
-=======
-    }
->>>>>>> Stashed changes
+
+
+

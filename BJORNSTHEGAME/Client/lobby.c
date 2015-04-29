@@ -126,7 +126,7 @@ SDL_ThreadFunction* TimeThread(void* clockInfo){
     while(changeclk->seconds_left > 0)
     {
         changeclk->seconds_left = (changeclk->seconds_left) -1;
-        SDL_Delay(990);
+        SDL_Delay(995);
         sprintf((changeclk->sendingTime), "%d", (changeclk->seconds_left));
     }
     

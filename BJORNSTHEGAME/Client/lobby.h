@@ -18,12 +18,6 @@
 int LobbyWindow(StartInfo lobbyConnection);
 typedef struct clockInformation
 {
-	/*unsigned int time_milliseconds;
-    unsigned int time_seconds;
-    
-    unsigned int countdown_secs, time_left, startTime;
-    //checks if seconds has changed
-    unsigned int check;*/
     int seconds_left;
     char sendingTime[3];
 

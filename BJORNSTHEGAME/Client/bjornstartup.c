@@ -20,14 +20,15 @@ int menu(StartInfo startup){
     SDL_Surface* playbutton = IMG_Load("../Images/menu/MenuPlayButtonMin.png");
     SDL_Surface* tapir = IMG_Load("../Images/menu/tapir_image.png");
     SDL_Surface* exitbutton = IMG_Load("../Images/menu/door.png");
+    SDL_Surface* yesbutton = IMG_Load("../Images/menu/YesButton.png");
+    SDL_Surface* nobutton = IMG_Load("../Images/menu/NoButton.png");
 
     /* Load colour, font and then render text-surfaces */
     SDL_Colour black={0,0,0};
     SDL_Colour white={255,255,255};
     TTF_Font *font = TTF_OpenFont("../Images/menu/StencilStd.ttf", 120);
-    TTF_Font *fontsmall = TTF_OpenFont("../Images/menu/StencilStd.ttf", 30);
+    TTF_Font *fontsmall = TTF_OpenFont("../Images/menu/coolvetica.ttf", 30);
     SDL_Surface *title = TTF_RenderText_Solid(font, "MENU", black);
-    SDL_Surface *connectask = TTF_RenderText_Solid(font, "Connect?", black);
 
     /* Load music, set volume and start */
     Mix_Music *music = Mix_LoadMUS("../Sounds/Music/Mechanolith.mp3");
@@ -45,6 +46,9 @@ int menu(StartInfo startup){
     SDL_Rect button3placement = {((screen->w/2) - 125), (screen->h/2 - 70), 250, 60};
     SDL_Rect exitplacement = {(screen->w - 126), (screen->h - 206), 120, 200};
     SDL_Rect tapirplacement = {0, (screen->h - 66), 100, 66};
+    SDL_Rect menutextpos = {230, 150, 0, 0};
+    SDL_Rect yespos = {200, 400, 180, 64};
+    SDL_Rect nopos = {420, 400, 180, 64};
 
     while(!quit){
         SDL_PumpEvents();
@@ -66,9 +70,9 @@ int menu(StartInfo startup){
                 return 1;
             }
         }else
-            
-            if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){ //get name, then ip then connect
-                if(getMouseBounds(mouse, tapirplacement)){
+
+            if(getMouseBounds(mouse, tapirplacement)){ //get name, then ip then connect
+                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                     getName(startup.playerName, 20, window); // get name through the readkeyboard function
                     if((getIP(startup.targethost, window))){ // get the host address and port connection
                         fprintf(stderr, "Could not resolve hostname.\n");
@@ -82,38 +86,57 @@ int menu(StartInfo startup){
                                     printf("INFO RECIEVED: %s\n", packet);
                                     SDL_Surface* serverscreen = IMG_Load("../Images/menu/ConnectConfirmScreen.png");
                                     SDL_BlitSurface(serverscreen, NULL, screen, NULL);
+                                    textToScreen(fontsmall, menutextpos, window, packet);
+                                    SDL_BlitScaled(yesbutton, NULL, screen, &yespos);
+                                    SDL_BlitScaled(nobutton, NULL, screen, &nopos);
                                     SDL_UpdateWindowSurface(window);
-                                    SDL_Rect place = {230, 150, 0, 0};
-                                    textToScreen(fontsmall, place, window, packet);
-                                    SDL_Delay(10000);
                                     break;
+                                }else SDL_Delay(10);
+                            }
+                            while(1){
+                                SDL_PumpEvents();
+                                SDL_GetMouseState(&mouse[0], &mouse[1]);
+                                if(getMouseBounds(mouse, yespos)){
+                                    if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+                                        *(startup.socket) = SDLNet_TCP_Open(startup.targethost);
+                                        SDLNet_TCP_Send(*(startup.socket), "C", 1);
+                                        SDL_DestroyWindow(window); // close when done and goto lobby
+                                        return 0;
+                                        break;
+                                    }
+                                }else if(getMouseBounds(mouse, nopos)){
+                                    if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+                                        break;
+                                    }
                                 }
                             }
-
-                            SDL_DestroyWindow(window); // close when done and goto lobby
-                            SDLNet_TCP_Send(*(startup.socket), "WAKEUP", 14); //Need to wake the socket up
-                            return 0;
                         }
                         SDL_Delay(1000);
                     }
                 }
-                else if(getMouseBounds(mouse, button3placement)){
-                        Mix_PlayChannel(-1, gifwetsvisfel, 1);
-                        //SDL_Delay(2000);
-                        //Mix_FreeChunk(gifwetsvisfel);
-                        //return 1;
+            }
+            else if(getMouseBounds(mouse, button3placement)){
+                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+                    Mix_PlayChannel(-1, gifwetsvisfel, 1);
+                    //SDL_Delay(2000);
+                    //Mix_FreeChunk(gifwetsvisfel);
+                    //return 1;
                 }
-                else if(getMouseBounds(mouse, button2placement)){
-                        Mix_PlayChannel(-1 ,sasvart, 1);
-                        //SDL_Delay(4000);
-                        //Mix_FreeChunk(sasvart);
-                        //return 1;
+            }
+            else if(getMouseBounds(mouse, button2placement)){
+                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+                    Mix_PlayChannel(-1 ,sasvart, 1);
+                    //SDL_Delay(4000);
+                    //Mix_FreeChunk(sasvart);
+                    //return 1;
                 }
-                else if(getMouseBounds(mouse, buttonplacement)){
+            }
+            else if(getMouseBounds(mouse, buttonplacement)){
+                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                     Mix_PlayChannel(-1, tasantid, 1);
-                        //SDL_Delay(4000);
-                        //Mix_FreeChunk(tasantid);
-                        //return 1;
+                    //SDL_Delay(4000);
+                    //Mix_FreeChunk(tasantid);
+                    //return 1;
                 }
             }
         /*else if(getMouseBounds(mouse, tapirplacement)){ // resize tapir, should be moved to the function above?
@@ -179,8 +202,7 @@ int getIP(IPaddress* targethost, SDL_Window* window){ // get the adress/target h
     readKeyboardToMenuWindow(port, 5, window, portmenu);
     printf("Read port: %s, time to resolve the host!\n", port);
 
-    if (SDLNet_ResolveHost(targethost, address, atoi(port)) == -1)
-    {
+    if (SDLNet_ResolveHost(targethost, address, atoi(port)) == -1){
         fprintf(stderr, "SDLNet_ResolveHost(%s %d): %s\n", address, atoi(port), SDLNet_GetError());
         return 1;
     }else
@@ -225,9 +247,9 @@ int readKeyboard(char* output, int len){
 
 /* Reads keyboard input while it post the input to the screen */
 int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window, SDL_Surface* bg){
-    TTF_Font *font = TTF_OpenFont("../Images/menu/StencilStd.ttf", 30);
+    TTF_Font *font = TTF_OpenFont("../Images/menu/coolvetica.ttf", 40);
     SDL_Surface* screen = SDL_GetWindowSurface(window);
-    SDL_Rect place = {230,150, 0,0};
+    SDL_Rect place = {230,142, 0,0};
     char temp[len];
     emptyString(temp, len);
     int initlen = len;
@@ -246,7 +268,7 @@ int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window, SDL_Surf
                     strcpy(output, temp);
                     len = 0;
                 }
-                if(event.key.keysym.sym == SDLK_BACKSPACE){ // erase text
+                if(event.key.keysym.sym == SDLK_BACKSPACE){
                     if(len<initlen){
                         len++;
                         temp[initlen-len]=0;

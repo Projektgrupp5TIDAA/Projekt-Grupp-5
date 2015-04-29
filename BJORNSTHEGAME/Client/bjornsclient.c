@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
     /* Call the menu */
     menu(startup);
     Mix_HaltMusic();
-    LobbyWindow(startup);
+    //LobbyWindow(startup);
 
     /* Clean up */
     SDL_Quit();

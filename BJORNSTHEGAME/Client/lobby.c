@@ -38,7 +38,7 @@ int LobbyWindow(StartInfo lobbyConnection){
             }
         else
             {
-                //Get window surface
+                    //Get window surface
             lobbySurface = SDL_GetWindowSurface( lobby );
  
             //rectangle for button

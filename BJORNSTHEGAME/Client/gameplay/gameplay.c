@@ -12,8 +12,8 @@ void gameplayWindow()
     else
     {
         //Create a window
-        gameplay = SDL_CreateWindow("BJORNSGAMEPLAY", SDL_WINDOWPOS_UNDEFINED,
-                                    SDL_WINDOWPOS_UNDEFINED,
+        gameplay = SDL_CreateWindow("BJORNSGAMEPLAY", SDL_WINDOWPOS_UNDEFIEND,
+                                    SDL_WINDOWPOS_UNDEFIEND,
                                     1920,1080,
                                     SDL_WINDOW_FULLSCREEN);
         if(gameplay == NULL){
@@ -27,10 +27,10 @@ void gameplayWindow()
             SDL_BlitScaled(gameBackground, NULL, gameSurface, NULL);
 
             //Update the surface
-            SDL_UpdateWindowSurface(gameplay);
+            SDL_UpdateWindowSurface(lobby);
         }
     }
-    SDL_Delay(2000);
+    SDL_Delay(4000);
     //Destroy window
     SDL_DestroyWindow(gameplay);
     //Quit SDL subsystems

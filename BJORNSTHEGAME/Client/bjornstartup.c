@@ -1,13 +1,21 @@
 #include "bjornstartup.h"
 #include "lobby.h"
 
-int menu(SDL_Window* window, StartInfo startup){
-    SDL_Surface *screen = SDL_GetWindowSurface(window);
+int menu(StartInfo startup){
     int quit = 0, mouse[2] = {0}, connected = 0;
-    int resize_timer=0;
+
+    /* Create window and get the surface */
+    SDL_Window* window = SDL_CreateWindow("BJORNS THE GAME - MENU", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, 0);
+    if (window==NULL){
+        printf("Window could not be created.\n");
+    }
+    SDL_Surface *screen = SDL_GetWindowSurface(window);
 
     /* Load image-surfaces */
     SDL_Surface* background = IMG_Load("../Images/menu/MenuBack.png");
+    if(background == NULL){
+        printf("BG NULL\n");
+    }
     SDL_Surface* playbutton = IMG_Load("../Images/menu/MenuPlayButtonMin.png");
     SDL_Surface* tapir = IMG_Load("../Images/menu/tapir_image.png");
     SDL_Surface* exitbutton = IMG_Load("../Images/menu/door.png");
@@ -71,9 +79,9 @@ int menu(SDL_Window* window, StartInfo startup){
                         }else{
                             connected = 1;
                             printf("Connected!\n");
-                            
+
                             SDL_DestroyWindow(window); // close when done and goto lobby
-                    
+
                             SDLNet_TCP_Send(*(startup.socket), "WAKEUP", 14); //Need to wake the socket up
                             Mix_HaltMusic();
                             LobbyWindow(startup);

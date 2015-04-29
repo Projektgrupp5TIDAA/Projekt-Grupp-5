@@ -24,9 +24,7 @@ typedef struct startUpInfo{
 
 int getMouseBounds(int mouse[2], SDL_Rect rect);
 
-int menu(SDL_Window* window, StartInfo startup);
-
-int getMouseBounds(int mouse[2], SDL_Rect rect);
+int menu(StartInfo startup);
 
 int getName(char* name, int len, SDL_Window* window);
 

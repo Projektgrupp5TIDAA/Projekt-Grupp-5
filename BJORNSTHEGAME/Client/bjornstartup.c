@@ -17,7 +17,6 @@ int menu(StartInfo startup){
     if(background == NULL){
         printf("BG NULL\n");
     }
-
     SDL_Surface* playbutton = IMG_Load("../Images/menu/MenuPlayButtonMin.png");
     SDL_Surface* tapir = IMG_Load("../Images/menu/tapir_image.png");
     SDL_Surface* exitbutton = IMG_Load("../Images/menu/door.png");
@@ -25,8 +24,8 @@ int menu(StartInfo startup){
     SDL_Surface* nobutton = IMG_Load("../Images/menu/NoButton.png");
 
     /* Load colour, font and then render text-surfaces */
-    SDL_Colour black= {0,0,0};
-    SDL_Colour white= {255,255,255};
+    SDL_Colour black={0,0,0};
+    SDL_Colour white={255,255,255};
     TTF_Font *font = TTF_OpenFont("../Images/menu/StencilStd.ttf", 120);
     TTF_Font *fontsmall = TTF_OpenFont("../Images/menu/coolvetica.ttf", 30);
     SDL_Surface *title = TTF_RenderText_Solid(font, "MENU", black);
@@ -37,7 +36,6 @@ int menu(StartInfo startup){
     Mix_Chunk *gifwetsvisfel =Mix_LoadWAV("../Sounds/gifwetsvisfel.wav");
     Mix_Chunk *sasvart= Mix_LoadWAV("../Sounds/sasvart.wav");
     Mix_Chunk *tasantid= Mix_LoadWAV("../Sounds/tasantid.wav");
-    Mix_Chunk *tmp;
     Mix_VolumeMusic(64);
     Mix_PlayMusic(music, -1);
 
@@ -71,21 +69,18 @@ int menu(StartInfo startup){
                 TTF_CloseFont(font);
                 return 1;
             }
-        }
-        else
-
-            if(getMouseBounds(mouse, tapirplacement)){
-                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
-                    getName(startup.playerName, 20, window); // get name through the readkeyboard function
-                    if((getIP(startup.targethost, window))){
-                        fprintf(stderr, "Could not resolve hostname.\n");
-                    }
-                    else{
-                        *(startup.socket) = SDLNet_TCP_Open(startup.targethost); // open socket with the targethost
-                        if(!(SDLNet_TCP_Send(*(startup.socket), "I", 1))){
+        }else if(getMouseBounds(mouse, tapirplacement)){ //get name, then ip then connect
+            if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+                getName(startup.playerName, 20, window); // get name through the readkeyboard function
+                if((getIP(startup.targethost, window))){ // get the host address and port connection
+                    fprintf(stderr, "Could not resolve hostname.\n");
+                    return 1;
+                }else{
+                    *(startup.socket) = SDLNet_TCP_Open(startup.targethost); // open socket with the targethost
+                    if(*(startup.socket) != NULL){
+                        if(!(SDLNet_TCP_Send(*(startup.socket), "I", 1))){ //socket, data, length
                             printf("Could not connect to host: %s\n", SDLNet_GetError());
-                        }
-                        else{
+                        }else{
                             while(1){
                                 if(SDLNet_TCP_Recv(*(startup.socket), packet, PACKETSIZE)){
                                     printf("INFO RECIEVED: %s\n", packet);
@@ -96,8 +91,7 @@ int menu(StartInfo startup){
                                     SDL_BlitScaled(nobutton, NULL, screen, &nopos);
                                     SDL_UpdateWindowSurface(window);
                                     break;
-                                }
-                                else SDL_Delay(10);
+                                }else SDL_Delay(10);
                             }
                             while(1){
                                 SDL_PumpEvents();
@@ -105,131 +99,43 @@ int menu(StartInfo startup){
                                 if(getMouseBounds(mouse, yespos)){
                                     if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                                         *(startup.socket) = SDLNet_TCP_Open(startup.targethost);
+                                        if(*(startup.socket) == NULL) return 1;
                                         SDLNet_TCP_Send(*(startup.socket), "C", 1);
+                                        SDL_Delay(100);
+                                        SDLNet_TCP_Send(*(startup.socket), startup.playerName, 20);
                                         SDL_DestroyWindow(window); // close when done and goto lobby
                                         return 0;
-                                        break;
                                     }
-                                }
-                                else if(getMouseBounds(mouse, nopos)){
+                                }else if(getMouseBounds(mouse, nopos)){
                                     if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                                         break;
                                     }
                                 }
                             }
                         }
-                        SDL_Delay(1000);
                     }
                 }
             }
-            else if(getMouseBounds(mouse, button3placement)){
-                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
-                    int i;
-                    for(i=0; i<3; i++){
-                        int music= rand()%3+0;
-                        if(music==0){
-                            tmp=gifwetsvisfel;
-                            SDL_Delay(100);
-                            break;
-                        }
-                        if(music==1){
-                            tmp=sasvart;
-                            SDL_Delay(100);
-                            SDL_Delay(100);
-
-                            break;
-                        }
-                        if(music==2){
-                            tmp=tasantid;
-                            SDL_Delay(100);
-                            break;
-                        }
-
-                        break;
-                    }
-                    Mix_PlayChannel(-1, tmp , 1);
-
-                    // Mix_PlayChannel(-1, gifwetsvisfel, 1);
-                    //SDL_Delay(2000);
-                    //Mix_FreeChunk(gifwetsvisfel);
-                    //return 1;
-                }
+        }
+        else if(getMouseBounds(mouse, button3placement)){
+            if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+                Mix_PlayChannel(-1, gifwetsvisfel, 1);
+                SDL_Delay(100);
             }
-            else if(getMouseBounds(mouse, button2placement)){
-                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
-                    int i;
-                    for(i=0; i<3; i++){
-                        int music= rand()%3+0;
-                        if(music==0){
-                            tmp=gifwetsvisfel;
-                            SDL_Delay(100);
-                            break;
-                        }
-                        if(music==1){
-                            tmp=sasvart;
-                            SDL_Delay(100);
-                            SDL_Delay(100);
-
-                            break;
-                        }
-                        if(music==2){
-                            tmp==tasantid;
-                            SDL_Delay(100);
-                            break;
-                        }
-                        break;
-                    }
-                    Mix_PlayChannel(-1, tmp , 1);
-
-                    //Mix_PlayChannel(-1 ,sasvart, 1);
-                    //SDL_Delay(4000);
-                    //Mix_FreeChunk(sasvart);
-                    //return 1;
-                }
+        }
+        else if(getMouseBounds(mouse, button2placement)){
+            if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+                Mix_PlayChannel(-1 ,sasvart, 1);
+                SDL_Delay(100);
             }
-            else if(getMouseBounds(mouse, buttonplacement)){
-                if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
-                    int i;
-                    for(i=0; i<3; i++){
-                        int music= rand()%3+0;
-                        if(music==0){
-                            tmp=gifwetsvisfel;
-                            SDL_Delay(100);
-                            break;
-                        }
-                        if(music==1){
-                            tmp=sasvart;
-                            SDL_Delay(100);
-                            SDL_Delay(100);
-                            break;
-                        }
-                        if(music==2){
-                            tmp==tasantid;
-                            SDL_Delay(100);
-                            break;
-                        }
-
-                        break;
-                    }
-                    Mix_PlayChannel(-1, tmp , 1);
-
-                    // Mix_PlayChannel(-1, tasantid, 1);
-                    //SDL_Delay(4000);
-                    //Mix_FreeChunk(tasantid);
-                    //return 1;
-                }
+        }
+        else if(getMouseBounds(mouse, buttonplacement)){
+            if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
+                Mix_PlayChannel(-1, tasantid, 1);
+                SDL_Delay(100);
             }
-        /*else if(getMouseBounds(mouse, tapirplacement)){ // resize tapir, should be moved to the function above?
-         // change later
-         SDL_Rect tapirplacement = {0, (screen->h - 2000), 350, 1000};
-         SDL_BlitScaled(tapir, NULL, screen, &tapirplacement);
-         if(resize_timer==0){
-         SDL_UpdateWindowSurface(window);
-         SDL_Delay(3000);
-         resize_timer=1;
-         }
-         }
-         resize_timer=0;*/
+        }
+
         /* Blit the images to the screen */
         SDL_BlitScaled(background, NULL, screen, NULL);
         SDL_BlitSurface(title, NULL, screen, &titleplacement);
@@ -245,7 +151,7 @@ int menu(StartInfo startup){
     return 0;
 }
 
-/* checks if the incoming coordinates are within the rectangle bounds */
+/* Checks if the incoming coordinates are within the rectangle bounds */
 int getMouseBounds(int mouse[2], SDL_Rect rect){
     if(mouse[0]>rect.x && mouse[0]<(rect.x+rect.w)){
         if(mouse[1]>rect.y && mouse[1]<(rect.y+rect.h)){
@@ -255,7 +161,7 @@ int getMouseBounds(int mouse[2], SDL_Rect rect){
     return 0;
 }
 
-/* Puts the incoming text into the name-array and prints it to the window */
+/* Saves the name in the incoming variable aswell as posting it to the window */
 int getName(char* name, int len, SDL_Window* window){
     SDL_Surface *screen = SDL_GetWindowSurface(window);
     SDL_Surface *namemenu = IMG_Load("../Images/menu/MenuNameScreen.png");
@@ -265,7 +171,7 @@ int getName(char* name, int len, SDL_Window* window){
     return 0;
 }
 
-/* Puts the incoming text into the IP-array and prints it to the window */
+/* Saves the IP-address into the incoming variable aswell as posting it to the screen */
 int getIP(IPaddress* targethost, SDL_Window* window){
     char address[15] = {0};
     char port[5] = {0};
@@ -286,15 +192,14 @@ int getIP(IPaddress* targethost, SDL_Window* window){
     if (SDLNet_ResolveHost(targethost, address, atoi(port)) == -1){
         fprintf(stderr, "SDLNet_ResolveHost(%s %d): %s\n", address, atoi(port), SDLNet_GetError());
         return 1;
-    }
-    else
+    }else
         return 0;
 }
 
 /* Posts the incoming string to the window, with the incoming font aswell as the incoming placement */
 int textToScreen(TTF_Font *font, SDL_Rect place, SDL_Window* window, char* text){
     SDL_Surface *screen = SDL_GetWindowSurface(window);
-    SDL_Colour black= {0,0,0};
+    SDL_Colour black={0,0,0};
     SDL_Surface *textsurface = TTF_RenderText_Solid(font, text, black);
     SDL_BlitSurface(textsurface, NULL, screen, &place);
     SDL_UpdateWindowSurface(window);
@@ -358,8 +263,7 @@ int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window, SDL_Surf
                         SDL_UpdateWindowSurface(window);
                         textToScreen(font, place, window, temp);
                         printf("Backspace: %s\n", temp);
-                    }
-                    else printf("No text to delete.\n");
+                    }else printf("No text to delete.\n");
                 }
             }
         }
@@ -376,42 +280,3 @@ int emptyString(char* incoming, int len){
     }
     return 0;
 }
-
-/*Mix_Chunk* randomMusic()
-{
-    int i;
-    Mix_Chunk *gifwetsvisfel =Mix_LoadWAV("../Sounds/gifwetsvisfel.wav");
-    Mix_Chunk *sasvart= Mix_LoadWAV("../Sounds/sasvart.wav");
-    Mix_Chunk *tasantid= Mix_LoadWAV("../Sounds/tasantid.wav");
-    Mix_Chunk * temp;
-    for(i=0; i<3; i++)
-    {
-        srand(time(NULL));
-        int music= rand()%3;
-        // switch(music){
-        // case 0: tmp= gifwetsvisfel;break;
-        // case 1: tmp= sasvart;break;
-        // case 2: tmp=tasantid;break;
-
-        //}}
-        if(music ==0)
-        {
-            temp=gifwetsvisfel;
-            break;
-        }
-        if(music==1)
-        {
-            temp=sasvart;
-            break;
-        }
-        if(music==2)
-        {
-            temp==tasantid;
-        }
-
-
-    }
-    return temp;
-
-}*/
-

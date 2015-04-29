@@ -157,7 +157,7 @@ int getName(char* name, int len, SDL_Window* window){
     SDL_Surface *namemenu = IMG_Load("../Images/menu/MenuNameScreen.png");
     SDL_BlitScaled(namemenu, NULL, screen, NULL);
     SDL_UpdateWindowSurface(window);
-    readKeyboardToMenuWindow(name, len, window);
+    readKeyboardToMenuWindow(name, len, window, namemenu);
     return 0;
 }
 
@@ -171,11 +171,11 @@ int getIP(IPaddress* targethost, SDL_Window* window){ // get the adress/target h
     SDL_BlitScaled(IPmenu, NULL, screen, NULL);
     SDL_UpdateWindowSurface(window);
     printf("Read name, time to read address!\n");
-    readKeyboardToMenuWindow(address, 15, window);
+    readKeyboardToMenuWindow(address, 15, window, IPmenu);
     SDL_BlitScaled(portmenu, NULL, screen, NULL);
     SDL_UpdateWindowSurface(window);
     printf("Read address: %s, time to read port!\n", address);
-    readKeyboardToMenuWindow(port, 5, window);
+    readKeyboardToMenuWindow(port, 5, window, portmenu);
     printf("Read port: %s, time to resolve the host!\n", port);
 
     if (SDLNet_ResolveHost(targethost, address, atoi(port)) == -1)
@@ -223,8 +223,9 @@ int readKeyboard(char* output, int len){
 }
 
 /* Reads keyboard input while it post the input to the screen */
-int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window){
+int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window, SDL_Surface* bg){
     TTF_Font *font = TTF_OpenFont("../Images/menu/StencilStd.ttf", 30);
+    SDL_Surface* screen = SDL_GetWindowSurface(window);
     SDL_Rect place = {230,150, 0,0};
     char temp[len];
     emptyString(temp, len);
@@ -243,6 +244,14 @@ int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window){
                 if(event.key.keysym.sym == SDLK_RETURN){
                     strcpy(output, temp);
                     len = 0;
+                }
+                if(event.key.keysym.sym == SDLK_BACKSPACE){
+                    len++;
+                    temp[initlen-len]=0;
+                    SDL_BlitScaled(bg, NULL, screen, NULL);
+                    SDL_UpdateWindowSurface(window);
+                    textToScreen(font, place, window, temp);
+                    printf("DELETED %s\n", temp);
                 }
             }
         }

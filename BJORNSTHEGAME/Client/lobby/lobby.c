@@ -57,7 +57,7 @@ int LobbyWindow(TCPsocket* lobbyConnection){
         {
             if(  getMouseBounds(mousePosition, buttonPlacement) )
             {
-                printf("PLAYER IS READY!\n");
+                printf("PLAYER %s IS READY!\n", startup.playernName);
                 endLobby = 1;
             }
         }

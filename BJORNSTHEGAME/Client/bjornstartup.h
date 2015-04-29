@@ -34,7 +34,7 @@ int connectToHost(IPaddress* targethost, TCPsocket* socket);
 
 int readKeyboard(char* output, int len);
 
-int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window);
+int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window, SDL_Surface* bg);
 
 int emptyString(char* incoming, int len);
 

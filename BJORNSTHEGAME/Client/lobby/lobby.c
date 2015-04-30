@@ -1,6 +1,6 @@
 #include "lobby.h"
 
-int LobbyWindow(StartInfo lobbyConnection){
+int LobbyWindow(TCPsocket* lobbyConnection){
 	SDL_Window* lobby;
 	SDL_Surface* lobbySurface;
     //background pic for lobby
@@ -9,8 +9,7 @@ int LobbyWindow(StartInfo lobbyConnection){
 	SDL_Surface* readyButton = IMG_Load("ready.png");
     SDL_Rect buttonPlacement;
     
-    Mix_Music *lobbyMusic = Mix_LoadMUS("../Sounds/Music/VolatileReaction.mp3");
-    Mix_PlayMusic(lobbyMusic, -1);
+    
 
     // mousePosition(X-axis,Y-axis)
     int mousePosition[2] = {0, 0};
@@ -58,7 +57,7 @@ int LobbyWindow(StartInfo lobbyConnection){
         {
             if(  getMouseBounds(mousePosition, buttonPlacement) )
             {
-                printf("PLAYER IS READY!\n");
+                printf("PLAYER %s IS READY!\n", startup.playernName);
                 endLobby = 1;
             }
         }
@@ -77,5 +76,14 @@ int LobbyWindow(StartInfo lobbyConnection){
     SDL_FreeSurface(readyButton);
         
     SDL_Quit(); //Quit SDL subsystems
+    return 0;
+}
+
+int getMouseBounds(int mouse[2], SDL_Rect rect){
+    if(mouse[0]>rect.x && mouse[0]<(rect.x+rect.w)){
+        if(mouse[1]>rect.y && mouse[1]<(rect.y+rect.h)){
+            return 1;
+        }
+    }
     return 0;
 }

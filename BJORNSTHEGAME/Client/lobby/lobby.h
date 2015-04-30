@@ -13,6 +13,6 @@
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_net.h>
 #endif
-#include "bjornstartup.h"
-int LobbyWindow(StartInfo lobbyConnection);
+int LobbyWindow(TCPsocket* lobbyConnection);
+int getMouseBounds(int mouse[2], SDL_Rect rect);
 #endif

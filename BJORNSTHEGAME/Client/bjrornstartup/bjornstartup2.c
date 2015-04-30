@@ -33,10 +33,7 @@ int menu(StartInfo startup){
     /* Load music, set volume and start */
     Mix_Music *music = Mix_LoadMUS("../Sounds/Music/Mechanolith.mp3");
     Mix_Chunk *uselt = Mix_LoadWAV("../Sounds/uselt.wav");
-    Mix_Chunk *gifwetsvisfel =Mix_LoadWAV("../Sounds/gifwetsvisfel.wav");
-    Mix_Chunk *sasvart= Mix_LoadWAV("../Sounds/sasvart.wav");
-    Mix_Chunk *tasantid= Mix_LoadWAV("../Sounds/tasantid.wav");
-    Mix_Chunk * tmp;
+    Mix_Chunk *tmp;
     Mix_VolumeMusic(64);
     Mix_PlayMusic(music, -1);
 
@@ -295,7 +292,7 @@ Mix_Chunk* randomMusic()
     Mix_Chunk *gifwetsvisfel =Mix_LoadWAV("../Sounds/gifwetsvisfel.wav");
     Mix_Chunk *sasvart= Mix_LoadWAV("../Sounds/sasvart.wav");
     Mix_Chunk *tasantid= Mix_LoadWAV("../Sounds/tasantid.wav");
-    Mix_Chunk * temp;
+    Mix_Chunk *temp;
     for(i=0; i<3; i++)
     {
 

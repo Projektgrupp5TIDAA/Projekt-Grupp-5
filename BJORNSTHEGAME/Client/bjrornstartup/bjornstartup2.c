@@ -315,7 +315,7 @@ Mix_Chunk* randomMusic()
         }
         if(music==2)
         {
-            temp==tasantid;
+            temp=tasantid;
             SDL_Delay(100);
             break
         }

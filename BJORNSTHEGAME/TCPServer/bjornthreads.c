@@ -5,16 +5,18 @@
 
 /* Thread execution function */
 SDL_ThreadFunction *Handler(void* thr){
-    TCPsocket intermediary;
+    TCPsocket socket;
     char packet[PACKETSIZE];
+    char name[20];
+    tinfo* clientvar;
     HandlerInfo* thread = (HandlerInfo *) thr;
     printf("Thread is active!\n");
 
-    /* Sets the intermediary socket to handle the request */
-    intermediary = SDLNet_TCP_Accept((*(thread->socket)));
+    /* Accepts the incoming connection on the socket to handle the request */
+    socket = SDLNet_TCP_Accept((*(thread->socket)));
 
     /* Recieves the request */
-    SDLNet_TCP_Recv(intermediary, packet, PACKETSIZE);
+    SDLNet_TCP_Recv(socket, packet, PACKETSIZE);
 
     /* Handles the incoming request depending on type */
     switch(packet[0]){
@@ -22,11 +24,11 @@ SDL_ThreadFunction *Handler(void* thr){
             /* If the incoming request is an information-probing request the server will send the necessary information */
             printf("Information request recieved, sending.\n");
             if(isEmptyStack(*(thread->stack))){
-                SDLNet_TCP_Send(intermediary, "F", 1);
+                SDLNet_TCP_Send(socket, "F", 1);
             }else{
                 sprintf(packet, "%s - %d/%d", SERVERNAME, (PLAYERCOUNT - (thread->stack->population)), PLAYERCOUNT);
-                SDLNet_TCP_Send(intermediary, packet, PACKETSIZE);
-                SDLNet_TCP_Close(intermediary);
+                SDLNet_TCP_Send(socket, packet, PACKETSIZE);
+                SDLNet_TCP_Close(socket);
                 printf("Information sent, now exiting thread!\n");
             }
             return 0;
@@ -34,31 +36,36 @@ SDL_ThreadFunction *Handler(void* thr){
             /* If the incoming request is a connection-request the server will, if possible assign an open slot */
             printf("Connection request recieved, assigning.\n");
             if(isEmptyStack(*(thread->stack)))
-                SDLNet_TCP_Send(intermediary, "F", 1);
+                SDLNet_TCP_Send(socket, "F", 1);
             else{
-                tinfo* clientvar = popStack(thread->stack); // if full stack grab an id of the socket for the connection 
-                *(clientvar->socket) = intermediary;
-                SDLNet_TCP_Close(intermediary);
+                clientvar = popStack(thread->stack);
+                *(clientvar->socket) = socket;
             }
-            return 0;
+            break;
         default:
             /* If the request is not recognized the server will return error */
-            SDLNet_TCP_Send(intermediary, "ERROR: Bad request.", 40);
+            SDLNet_TCP_Send(socket, "ERROR: Bad request.", 40);
             return 1;
     }
 
-
-
-
-    /* Main loop of the thread, only run if the thread is set to active
     while(1){
-        if((*(*thread).active) == 1){
-        // Exit the thread if the program is stopped
-        if((*(*thread).quit) == 1){
-            SDLNet_TCP_Send((*(*thread).socket), "SERVERSHUTDOWN", 14);
-            return 0;
+        if(SDLNet_TCP_Recv(socket, clientvar->player->playername, 20)){
+            break;
         }
+    }
 
+    printf("Player %s was assigned to thread %d.\n", clientvar->player->playername, clientvar->ID);
+
+    while(1){
+        if(SDLNet_TCP_Recv(socket, packet, PACKETSIZE)){
+            if((strstr("EXITCONNECTION", packet))){
+                printf("Exit command recieved, quitting thread %d!\n", clientvar->ID);
+                pushStack(thread->stack, clientvar);
+                return 0;
+            }
+        }
+    }
+    /*
         // Set the name at the start of connection
         if(name == 0){
             if(SDLNet_TCP_Recv(*((*thread).socket), (*thread).player.playername, 20))

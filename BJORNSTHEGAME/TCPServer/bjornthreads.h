@@ -20,9 +20,10 @@ typedef struct playerinfo{
 
 /* Struct with all the information a thread will have to get when getting a slot from the stack */
 typedef struct ThreadInformation{
-    int ID;
+    int ID, *active;
     TCPsocket* socket;
     pinfo* player;
+    char* names[PLAYERCOUNT];
 }tinfo;
 
 /* The stack containing pointers to all of the information regarding the slots on the server */

@@ -7,11 +7,11 @@
 
 int main(int argc, char **argv){
     TCPsocket clientsockets[PLAYERCOUNT];
-    ThreadStack stack = {0,{0}};
+    ThreadStack stack = {0, 0, {0}};
     tinfo threadvariables[PLAYERCOUNT];
     pinfo players[PLAYERCOUNT] = {{HEALTH, {0}, {0}}};
     PollInfo pollerinfo;
-    int quit=0, i;
+    int quit=0, i, threadactive[PLAYERCOUNT];
     SDL_Thread* connectionpoller;
 
     /* Initiates the pointers for the connectionpoller-thread */
@@ -23,6 +23,10 @@ int main(int argc, char **argv){
         threadvariables[i].ID = i;
         threadvariables[i].socket = &clientsockets[i];
         threadvariables[i].player = &players[i];
+        threadvariables[i].active = &threadactive[i];
+        for(int j=0;j<PLAYERCOUNT;j++){
+            threadvariables[i].names[j] = players[j].playername;
+        }
         pushStack(&stack, &threadvariables[i]);
     }
 

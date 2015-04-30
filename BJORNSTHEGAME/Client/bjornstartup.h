@@ -20,7 +20,7 @@
 typedef struct startUpInfo{
 	TCPsocket* socket;
 	IPaddress* targethost;
-	char playerName[20];
+	char *playerName;
 }StartInfo;
 
 int getMouseBounds(int mouse[2], SDL_Rect rect);

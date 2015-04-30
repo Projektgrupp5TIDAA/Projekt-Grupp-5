@@ -5,7 +5,8 @@
 int main(int argc, char *argv[]){
     IPaddress targethost;
     TCPsocket socket;
-    StartInfo startup = {&socket, &targethost, {0}};
+    char playerName[20];
+    StartInfo startup = {&socket, &targethost, playerName};
     startup.socket = &socket;
     startup.targethost = &targethost;
 
@@ -20,6 +21,7 @@ int main(int argc, char *argv[]){
         printf("Menu quit or exited with an error.\n");
         return 0;
     }
+    printf("Player %s is going to the lobby!\n", playerName);
     Mix_HaltMusic();
     LobbyWindow(startup);
 

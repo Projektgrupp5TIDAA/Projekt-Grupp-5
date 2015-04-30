@@ -83,13 +83,12 @@ int LobbyWindow(StartInfo lobbyConnection){
         // Mouse events handling
         SDL_PumpEvents();
         SDL_GetMouseState(&mousePosition[0], &mousePosition[1]);
-        printf("PLAYER %s is awaited to be ready!\n", lobbyConnection.playerName);
 
         if((  SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)  ) )
         {
             if(  getMouseBounds(mousePosition, buttonPlacement) )
             {
-                printf("PLAYER %s IS READY!\n", lobbyConnection.playerName);
+                printf("PLAYER IS READY!\n");
                 endLobby = 1;
             }
         }

@@ -33,7 +33,9 @@ int menu(StartInfo startup){
     /* Load music, set volume and start */
     Mix_Music *music = Mix_LoadMUS("../Sounds/Music/Mechanolith.mp3");
     Mix_Chunk *uselt = Mix_LoadWAV("../Sounds/uselt.wav");
-    Mix_Chunk *tmp;
+    Mix_Chunk *gifwetsvisfel =Mix_LoadWAV("../Sounds/gifwetsvisfel.wav");
+    Mix_Chunk *sasvart= Mix_LoadWAV("../Sounds/sasvart.wav");
+    Mix_Chunk *tasantid= Mix_LoadWAV("../Sounds/tasantid.wav");
     Mix_VolumeMusic(64);
     Mix_PlayMusic(music, -1);
 
@@ -42,7 +44,7 @@ int menu(StartInfo startup){
     SDL_Rect buttonplacement = {((screen->w/2) - 125), (screen->h/2), 250, 60};
     SDL_Rect button2placement = {((screen->w/2) - 125), (screen->h/2 + 70), 250, 60};
     SDL_Rect button3placement = {((screen->w/2) - 125), (screen->h/2 - 70), 250, 60};
-    SDL_Rect exitplacement = {(screen->w - 66), (screen->h - 106), 60, 100};
+    SDL_Rect exitplacement = {(screen->w - 126), (screen->h - 206), 120, 200};
     SDL_Rect tapirplacement = {0, (screen->h - 66), 100, 66};
     SDL_Rect menutextpos = {230, 150, 0, 0};
     SDL_Rect yespos = {200, 400, 180, 64};
@@ -91,7 +93,7 @@ int menu(StartInfo startup){
                                     break;
                                 }else SDL_Delay(10);
                             }
-                            while(1){
+                            while(1){//if yes-button open TCP connection with targethost
                                 SDL_PumpEvents();
                                 SDL_GetMouseState(&mouse[0], &mouse[1]);
                                 if(getMouseBounds(mouse, yespos)){
@@ -117,25 +119,19 @@ int menu(StartInfo startup){
         }
         else if(getMouseBounds(mouse, button3placement)){
             if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
-                tmp=randomMusic();
-                Mix_HaltChannel(3);
-                Mix_PlayChannel(3, tmp, 0);
+                Mix_PlayChannel(-1, gifwetsvisfel, 1);
                 SDL_Delay(100);
             }
         }
         else if(getMouseBounds(mouse, button2placement)){
             if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
-                tmp=randomMusic();
-                Mix_HaltChannel(3);
-                Mix_PlayChannel(3, tmp, 0);
+                Mix_PlayChannel(-1 ,sasvart, 1);
                 SDL_Delay(100);
             }
         }
         else if(getMouseBounds(mouse, buttonplacement)){
             if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
-                tmp=randomMusic();
-                Mix_HaltChannel(3);
-                Mix_PlayChannel(3, tmp, 0);
+                Mix_PlayChannel(-1, tasantid, 1);
                 SDL_Delay(100);
             }
         }
@@ -259,7 +255,7 @@ int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window, SDL_Surf
                     strcpy(output, temp);
                     len = 0;
                 }
-                if(event.key.keysym.sym == SDLK_BACKSPACE){
+                if(event.key.keysym.sym == SDLK_BACKSPACE){ // erase text
                     if(len<initlen){
                         len++;
                         temp[initlen-len]=0;
@@ -283,41 +279,4 @@ int emptyString(char* incoming, int len){
         *(incoming+i) = 0;
     }
     return 0;
-}
-
-Mix_Chunk* randomMusic()
-{
-    int i;
-    Mix_Chunk *gifwetsvisfel =Mix_LoadWAV("../Sounds/gifwetsvisfel.wav");
-    Mix_Chunk *sasvart= Mix_LoadWAV("../Sounds/sasvart.wav");
-    Mix_Chunk *tasantid= Mix_LoadWAV("../Sounds/tasantid.wav");
-    Mix_Chunk *temp;
-    for(i=0; i<3; i++)
-    {
-
-        int music= rand()%3+0;
-
-        if(music ==0)
-        {
-            temp=gifwetsvisfel;
-            SDL_Delay(100);
-            break;
-        }
-        if(music==1)
-        {
-            temp=sasvart;
-            SDL_Delay(100);
-            break;
-        }
-        if(music==2)
-        {
-            temp=tasantid;
-            SDL_Delay(100);
-            break;
-        }
-
-
-    }
-    return temp;
-
 }

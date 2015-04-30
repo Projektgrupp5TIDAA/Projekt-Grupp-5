@@ -41,6 +41,4 @@ int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window, SDL_Surf
 
 int emptyString(char* incoming, int len);
 
-Mix_Chunk* randomMusic();
-
 #endif

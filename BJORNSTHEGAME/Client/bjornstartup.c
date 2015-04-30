@@ -22,6 +22,9 @@ int menu(StartInfo startup){
     SDL_Surface* exitbutton = IMG_Load("../Images/menu/door.png");
     SDL_Surface* yesbutton = IMG_Load("../Images/menu/YesButton.png");
     SDL_Surface* nobutton = IMG_Load("../Images/menu/NoButton.png");
+    SDL_Surface * openDoor = IMG_Load("../Images/menu/dooropen.png");
+    SDL_Surface * lamp = IMG_Load("../Images/menu/lampa.png");
+
 
     /* Load colour, font and then render text-surfaces */
     SDL_Colour black={0,0,0};
@@ -47,6 +50,8 @@ int menu(StartInfo startup){
     SDL_Rect menutextpos = {230, 150, 0, 0};
     SDL_Rect yespos = {200, 400, 180, 64};
     SDL_Rect nopos = {420, 400, 180, 64};
+    SDL_Rect door = {(screen->w - 66), (screen ->h - 160), 60, 200};
+    SDL_Rect lamp1 = {(screen->w -66) , (screen->h -205),  100,100};
 
     while(!quit){
         SDL_PumpEvents();
@@ -55,16 +60,23 @@ int menu(StartInfo startup){
         if(getMouseBounds(mouse, exitplacement)){
             if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                 Mix_PlayChannel(-1, uselt, 1);
+                door;
+                SDL_BlitScaled(openDoor,NULL, screen, &exitplacement);
+                SDL_Delay(500);
+                SDL_UpdateWindowSurface(window);
                 SDL_Delay(4000);
+
 
                 /* Free the used resources and return*/
                 SDL_FreeSurface(title);
                 SDL_FreeSurface(exitbutton);
                 SDL_FreeSurface(playbutton);
                 SDL_FreeSurface(tapir);
+                SDL_FreeSurface(openDoor);
                 Mix_FreeMusic(music);
                 Mix_FreeChunk(uselt);
                 TTF_CloseFont(font);
+
                 return 1;
             }
         }else if(getMouseBounds(mouse, tapirplacement)){ //get name, then ip then connect
@@ -148,6 +160,7 @@ int menu(StartInfo startup){
         SDL_BlitScaled(playbutton, NULL, screen, &button3placement);
         SDL_BlitScaled(exitbutton, NULL, screen, &exitplacement);
         SDL_BlitScaled(tapir, NULL, screen, &tapirplacement);
+        SDL_BlitScaled(lamp, NULL , screen , &lamp1);
 
         /* Update the window */
         SDL_UpdateWindowSurface(window);

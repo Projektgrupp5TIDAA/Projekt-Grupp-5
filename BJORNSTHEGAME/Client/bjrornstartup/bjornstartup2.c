@@ -304,16 +304,20 @@ Mix_Chunk* randomMusic()
         if(music ==0)
         {
             temp=gifwetsvisfel;
+            SDL_Delay(100);
             break;
         }
         if(music==1)
         {
             temp=sasvart;
+            SDL_Delay(100);
             break;
         }
         if(music==2)
         {
             temp==tasantid;
+            SDL_Delay(100);
+            break
         }
 
 

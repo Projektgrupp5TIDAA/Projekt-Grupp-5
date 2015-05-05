@@ -25,17 +25,16 @@ int LobbyWindow(StartInfo lobbyConnection){
     Mix_Music *lobbyMusic = Mix_LoadMUS("../Sounds/Music/VolatileReaction.mp3");
     Mix_PlayMusic(lobbyMusic, -1);
 
-<<<<<<< Updated upstream
+
     timerfunc = SDL_CreateThread(TimeThread, "TimeThread", (void*)&clockInfo);
         if(timerfunc==NULL)
         {
             fprintf(stderr, "Cant create thread for clock, %s\n", SDL_GetError());
         }
     // asssign active flag
-=======
+
     
 
->>>>>>> Stashed changes
     // mousePosition(X-axis,Y-axis)
     int mousePosition[2] = {0, 0};
     //gameloop
@@ -76,7 +75,6 @@ int LobbyWindow(StartInfo lobbyConnection){
             buttonPlacement.w =  400;
             buttonPlacement.h =  80;
 
-<<<<<<< Updated upstream
             //rectangle for clock
             clockPlace.x = (lobbySurface->w/3)+240;
             clockPlace.y = (lobbySurface->h/2)-200;
@@ -88,8 +86,7 @@ int LobbyWindow(StartInfo lobbyConnection){
                 player1.y=(lobbySurface->h/2)-150;
                 player1.w=350;
                 player1.h=70;
-=======
->>>>>>> Stashed changes
+
             }
         }
         timerfunc = SDL_CreateThread(TimeThread, "TimeThread", (void*)lobby);
@@ -156,11 +153,10 @@ int LobbyWindow(StartInfo lobbyConnection){
             }
         }
 
-<<<<<<< Updated upstream
        textToScreen(clockFont, clockPlace, lobby, clockInfo.sendingTime);
-=======
+
         //textToScreen(clockFont, clockPlace, lobby, clockInfo.sendingTime);
->>>>>>> Stashed changes
+
 
         SDL_BlitScaled(lobbyBackground, NULL, lobbySurface, NULL);
         SDL_BlitScaled(readyButton, NULL, lobbySurface, &buttonPlacement);

@@ -47,6 +47,7 @@ int Handler(void* thr){
             return 1;
     }
 
+    /* Gets the name from the client */
     while(1){
         if(SDLNet_TCP_Recv(socket, clientvar->player->playername, 20)){
             break;
@@ -55,7 +56,14 @@ int Handler(void* thr){
 
     printf("Player %s was assigned to thread %d.\n", clientvar->player->playername, clientvar->ID);
 
+    /* The main thread-loop */
     while(1){
+        /*
+            If anything is recieved from the socket it will be handled differently depending on what type of message it is, it can be 1 of 3:
+            1. A data-message with the message-prefix 'D' which is put on the data-stack and will be redistributed to the clients.
+            2. A player-update-message with the message-prefix 'P' which is handled internally by the thread by directly updating the player-data.
+            3. A chat-message with the message-prefix 'C' which is put on the chat-stack and will be redistributed to the clients.(With less priority than Data)
+        */
         if(SDLNet_TCP_Recv(socket, packet, PACKETSIZE)){
             if((strstr("EXITCONNECTION", packet))){
                 printf("Exit command recieved, quitting thread %d!\n", clientvar->ID);
@@ -64,14 +72,14 @@ int Handler(void* thr){
             }else{
                 switch(packet[0]){
                     case 'D':
-                        //Add things to the field, aka bullets
+                        pushString(thread->dstack, packet);
                         break;
                     case 'P':
-                        //Change playervariables
+                        //updatePlayer(packet, clientvar->player);
                         break;
                     case 'C':
                         parseChat(packet, 1, strlen(packet));
-                        //pushChat(cstack, packet);
+                        pushString(thread->cstack, packet);
                         break;
                 }
             }
@@ -79,12 +87,13 @@ int Handler(void* thr){
     }
 }
 
+/* Thread-function which purpose is to handle the incoming connections and assign them to threads */
 int poller(void* information){
     PollInfo* info = (PollInfo*)information;
     IPaddress listenerIP;
     TCPsocket socket;
     SDLNet_SocketSet activity = SDLNet_AllocSocketSet(1);
-    HandlerInfo connectionhandler = {info->quit, &socket, info->stack};
+    HandlerInfo connectionhandler = {info->quit, &socket, info->stack, info->cstack, info->dstack};
 
     /* Resolve listener ip */
     if(SDLNet_ResolveHost(&listenerIP,NULL,PORT) < 0){
@@ -116,20 +125,24 @@ int poller(void* information){
     return 0;
 }
 
+/* Thread-function which main function is to handle all the timed events */
 int timer(void* information){
     TimerInfo* info = (TimerInfo*) information;
-    short timerset[50]={0}, i;
+    short timerset[10], i;
     printf("Timer thread running!\n");
     SDL_Delay(1000);
+    for(i=0;i<10;i++)
+        timerset[i] = GAMELENGTH+1;
     while(1){
+        /* Thread will only ever do anything if the main-timer is > 0 */
         if(*(info->main) > 0){
             printf("Ticking. Timer: %d, Powerups: %d\n", *(info->main), *(info->powerup));
-            for(i=0;i<50;i++){
+            for(i=0;i<10;i++){
                 if(!(is_set((*(info->powerup)), i+1))){
                     if(*(info->main) == timerset[i]){
                         set_bit(info->powerup, i);
                     }else if(timerset[i] > *(info->main)){
-                        if(*(info->main)-POWERTIMER > 0){
+                        if(main-POWERTIMER > 0){
                             timerset[i] = *(info->main)-POWERTIMER;
                         }else{
                             timerset[i] = 0;

@@ -11,9 +11,9 @@
 #define PLAYERCOUNT 6
 #define PACKETSIZE 512
 #define SERVERNAME "Server"
-#define POWERTIMER 3
-#define LOBBYLENGTH 15
-#define GAMELENGTH 30
+#define POWERTIMER 20
+#define LOBBYLENGTH 120
+#define GAMELENGTH 300
 
 /* Struct with important information regarding the thread and player */
 typedef struct playerinfo{
@@ -46,6 +46,8 @@ typedef struct Datastack{
 typedef struct PollerInformation{
     int* quit;
     ThreadStack* stack;
+    DataStack* cstack;
+    DataStack* dstack;
 }PollInfo;
 
 /* Struct for counting down all the timers */
@@ -58,6 +60,8 @@ typedef struct HandlerInformation{
     int* quit;
     TCPsocket* socket;
     ThreadStack* stack;
+    DataStack* cstack;
+    DataStack* dstack;
 }HandlerInfo;
 
 #include "bjornstack.h"

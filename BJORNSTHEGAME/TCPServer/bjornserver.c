@@ -8,15 +8,19 @@
 int main(int argc, char **argv){
     TCPsocket clientsockets[PLAYERCOUNT];
     ThreadStack stack = {0, 0, {0}};
+    DataStack cstack = {0, {0}}, dstack = {0, {0}};
     tinfo threadvariables[PLAYERCOUNT];
     pinfo players[PLAYERCOUNT] = {{HEALTH, {0}, {0}}};
     int quit=0, i, threadactive[PLAYERCOUNT], maintimer=0, powerup=0;
+    char cmess[40];
     PollInfo pollerinfo;
     TimerInfo timerinfo = {&maintimer, &powerup};
     SDL_Thread* connectionpoller, *timerthr;
 
     /* Initiates the pointers for the connectionpoller-thread */
     pollerinfo.stack = &stack;
+    pollerinfo.cstack = &cstack;
+    pollerinfo.dstack = &dstack;
     pollerinfo.quit = &quit;
 
     /* Initializing the information for the stack and threads */
@@ -70,7 +74,20 @@ int main(int argc, char **argv){
 
             /* Keeps the lobby active as long as there is players connected to the server */
             while(maintimer > 0 && !(isFullStack(stack))){
-                SDL_Delay(200);
+                /* Every time the timer hits a number dividable by 10 the server will send a time-syncronization */
+                if(!(maintimer%10)){
+                    /*for(i=0;i<PLAYERCOUNT;i++){
+                        SDLNet_TCP_Send(clientsockets[i], maintimer, sizeof(maintimer));
+                    }*/
+                    SDL_Delay(1000);
+                }
+                /* If there is a message waiting to be handled it will be sent within the lobby */
+                if(!(isEmptyStrStack(cstack))){
+                    strcpy(popString(&cstack), cmess);
+                    for(i=0;i<PLAYERCOUNT;i++){
+                        SDLNet_TCP_Send(clientsockets[i], cmess, 40);
+                    }
+                }else SDL_Delay(200);
             }
             SDL_Delay(1000);
 
@@ -78,7 +95,7 @@ int main(int argc, char **argv){
             printf("Game starting.\n");
             maintimer = GAMELENGTH;
 
-            /* Keeps the game active as long as there is players connected to the server*/
+            /* Keeps the game active as long as there is players connected to the server */
             while(maintimer > 0 && !(isFullStack(stack))){
                 SDL_Delay(200);
             }

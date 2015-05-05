@@ -2,7 +2,7 @@
 
 /* Check if the bit at place 'bit' is set in int comp */
 int is_set(int comp, int bit){
-	return comp & 1<<bit;
+	return (comp & 1<<bit);
 }
 
 /* Set the bit at place 'bit' of num to 1 */

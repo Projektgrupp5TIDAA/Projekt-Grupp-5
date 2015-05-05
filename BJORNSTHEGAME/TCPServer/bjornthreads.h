@@ -11,10 +11,13 @@
 #define PLAYERCOUNT 6
 #define PACKETSIZE 512
 #define SERVERNAME "Server"
+#define POWERTIMER 3
+#define LOBBYLENGTH 15
+#define GAMELENGTH 30
 
 /* Struct with important information regarding the thread and player */
 typedef struct playerinfo{
-  int health, position[2];
+  short health, position[2];
   char playername[20];
 }pinfo;
 
@@ -33,11 +36,22 @@ typedef struct Threadstack{
 	tinfo* thread[PLAYERCOUNT];
 }ThreadStack;
 
+/* The struct for adding to stack from incoming data */
+typedef struct Datastack{
+    int population;
+    char item[PLAYERCOUNT];
+}DataStack;
+
 /* Struct with pointers required for the Poller to work */
 typedef struct PollerInformation{
     int* quit;
     ThreadStack* stack;
 }PollInfo;
+
+/* Struct for counting down all the timers */
+typedef struct TimerInformation{
+    int *main, *powerup;
+}TimerInfo;
 
 /* Struct with pointers required for the Clienthandlers to work */
 typedef struct HandlerInformation{
@@ -49,10 +63,13 @@ typedef struct HandlerInformation{
 #include "bjornstack.h"
 
 /* Connection handler execution function */
-SDL_ThreadFunction* handler(void* ply);
+int handler(void* ply);
 
 /* Connection poller execution function */
-SDL_ThreadFunction* poller(void* information);
+int poller(void* information);
+
+/* Thread counting down the main timer aswell as handle the powerup timers based on that */
+int timer(void* information);
 
 /* Initiation of the player struct */
 void initiatePlayer(pinfo* ply);

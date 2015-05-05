@@ -6,4 +6,6 @@ int is_set(int comp, int bit);
 
 void set_bit(int *num, int bit);
 
+void parseChat(char* inc, int hops, int len);
+
 #endif

@@ -4,10 +4,9 @@
 #include "bjornshared.h"
 
 /* Thread execution function */
-SDL_ThreadFunction *Handler(void* thr){
+int Handler(void* thr){
     TCPsocket socket;
     char packet[PACKETSIZE];
-    char name[20];
     tinfo* clientvar;
     HandlerInfo* thread = (HandlerInfo *) thr;
     printf("Thread is active!\n");
@@ -62,49 +61,25 @@ SDL_ThreadFunction *Handler(void* thr){
                 printf("Exit command recieved, quitting thread %d!\n", clientvar->ID);
                 pushStack(thread->stack, clientvar);
                 return 0;
-            }
-        }
-    }
-    /*
-        // Set the name at the start of connection
-        if(name == 0){
-            if(SDLNet_TCP_Recv(*((*thread).socket), (*thread).player.playername, 20))
-            printf("Player named: %s connected!\n", (*thread).player.playername);
-            name = 1;
-            SDLNet_TCP_Recv(*((*thread).socket), incoming, PACKETSIZE);
-        }else{
-
-        // If a packet is recieved, check if for the flags or if it's a end of connection transmission
-        if(SDLNet_TCP_Recv(*((*thread).socket), incoming, PACKETSIZE)){
-            if(strstr("EXITCONNECTION", incoming)){
-                printf("Thread #%d is now inactive!\n", (*thread).threadID);
-                pushSocketStack((*thread).servants, (*thread).threadID); // pushes sockets id to the stack
-                *((*thread).active) = 0;
-                name = 0;
-            }else
-
-            // Parse and post if the flag is set to chat
-            if(incoming[0] == 'C'){
-                parseChat(incoming, 1, strlen(incoming));
-                if(strstr("tapir", incoming)){
-                //(*thread).player.drunkLevel = 4;
-                printf("Codeword detected! Drunklevel of %s set to Phöz.\n", (*thread).player.playername);
-                }else{
-                    printf("%s says: %s\n", (*thread).player.playername, incoming);
+            }else{
+                switch(packet[0]){
+                    case 'D':
+                        //Add things to the field, aka bullets
+                        break;
+                    case 'P':
+                        //Change playervariables
+                        break;
+                    case 'C':
+                        parseChat(packet, 1, strlen(packet));
+                        //pushChat(cstack, packet);
+                        break;
                 }
             }
-
-            // Functions for data will be placed here
-            if(incoming[0] == 'D'){
-                printf("Data recieved.\n");
-            }
         }
     }
-    }else SDL_Delay(200); //If this isn't here the server will constantly take all available CPU-power unless otherwise limited.
-  }*/
 }
 
-SDL_ThreadFunction* poller(void* information){
+int poller(void* information){
     PollInfo* info = (PollInfo*)information;
     IPaddress listenerIP;
     TCPsocket socket;
@@ -137,6 +112,35 @@ SDL_ThreadFunction* poller(void* information){
                 break;
             }
         }
+    }
+    return 0;
+}
+
+int timer(void* information){
+    TimerInfo* info = (TimerInfo*) information;
+    short timerset[50]={0}, i;
+    printf("Timer thread running!\n");
+    SDL_Delay(1000);
+    while(1){
+        if(*(info->main) > 0){
+            printf("Ticking. Timer: %d, Powerups: %d\n", *(info->main), *(info->powerup));
+            for(i=0;i<50;i++){
+                if(!(is_set((*(info->powerup)), i+1))){
+                    if(*(info->main) == timerset[i]){
+                        set_bit(info->powerup, i);
+                    }else if(timerset[i] > *(info->main)){
+                        if(main-POWERTIMER > 0){
+                            timerset[i] = *(info->main)-POWERTIMER;
+                        }else{
+                            timerset[i] = 0;
+                        }
+                    }
+                }
+            }
+            (*(info->main))--;
+        }//else
+        //printf("Timer is 0, no tick.\n");
+        SDL_Delay(1000);
     }
     return 0;
 }

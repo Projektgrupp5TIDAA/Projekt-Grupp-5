@@ -33,7 +33,7 @@ int isEmptyStack(ThreadStack stack){
 
 /* Check if the stack is full */
 int isFullStack(ThreadStack stack){
-	if(stack.population > PLAYERCOUNT){
+	if(stack.population > PLAYERCOUNT-1){
 		return 1;
 	}else{
 		return 0;

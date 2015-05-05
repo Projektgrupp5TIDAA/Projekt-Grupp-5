@@ -10,9 +10,10 @@ int main(int argc, char **argv){
     ThreadStack stack = {0, 0, {0}};
     tinfo threadvariables[PLAYERCOUNT];
     pinfo players[PLAYERCOUNT] = {{HEALTH, {0}, {0}}};
+    int quit=0, i, threadactive[PLAYERCOUNT], maintimer=0, powerup=0;
     PollInfo pollerinfo;
-    int quit=0, i, threadactive[PLAYERCOUNT];
-    SDL_Thread* connectionpoller;
+    TimerInfo timerinfo = {&maintimer, &powerup};
+    SDL_Thread* connectionpoller, *timerthr;
 
     /* Initiates the pointers for the connectionpoller-thread */
     pollerinfo.stack = &stack;
@@ -49,9 +50,40 @@ int main(int argc, char **argv){
         exit(EXIT_FAILURE);
     }
 
-    /* Broadcasting loop */
+    SDL_Delay(1000);
+
+    /* Start the timehandler-thread */
+    timerthr = SDL_CreateThread(timer, "ConnectionPoller", (void*)&timerinfo);
+    if(timerthr == NULL){
+        fprintf(stderr, "Error creating the timer-thread: %s\n", SDL_GetError());
+        exit(EXIT_FAILURE);
+    }
+
+    SDL_Delay(300);
+    /* Main broadcasting loop */
     while(!quit){
-        SDL_Delay(200);
+        maintimer = 0;
+        /* Starts the lobby-timer if a player is connected to the server */
+        if(!(isFullStack(stack))){
+            printf("Lobby started.\n");
+            maintimer = LOBBYLENGTH;
+
+            /* Keeps the lobby active as long as there is players connected to the server */
+            while(maintimer > 0 && !(isFullStack(stack))){
+                SDL_Delay(200);
+            }
+            SDL_Delay(1000);
+
+            /* Goes over to the game-loop */
+            printf("Game starting.\n");
+            maintimer = GAMELENGTH;
+
+            /* Keeps the game active as long as there is players connected to the server*/
+            while(maintimer > 0 && !(isFullStack(stack))){
+                SDL_Delay(200);
+            }
+            printf("Game stopping.\n");
+        }
     }
 
     SDLNet_Quit();

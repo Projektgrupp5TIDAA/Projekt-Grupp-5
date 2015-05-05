@@ -97,20 +97,7 @@ int main(int argc, char **argv){
 
             /* Keeps the game active as long as there is players connected to the server */
             while(maintimer > 0 && !(isFullStack(stack))){
-                /*
-                if(!(isEmptyStrStack(dstack))){
-                    /*for(i=0;i<PLAYERCOUNT;i++){
-                        SDLNet_TCP_Send(clientsockets[i], maintimer, sizeof(maintimer));
-                    }
-                    SDL_Delay(1000);
-                }else
-                /* If there is a message waiting to be handled it will be sent within the lobby
-                if(!(isEmptyStrStack(cstack))){
-                    strcpy(popString(&cstack), cmess);
-                    for(i=0;i<PLAYERCOUNT;i++){
-                        SDLNet_TCP_Send(clientsockets[i], cmess, 40);
-                    }
-                }else*/ SDL_Delay(200);
+                SDL_Delay(200);
             }
             printf("Game stopping.\n");
         }

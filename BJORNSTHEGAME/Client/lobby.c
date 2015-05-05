@@ -16,24 +16,11 @@ int LobbyWindow(StartInfo lobbyConnection){
 
     // Struct for clock, see lobby.h
     clkInfo clockInfo;
-
-    //font for texts and clock
-    TTF_Font *clockFont = TTF_OpenFont("../Images/menu/StencilStd.ttf", 30);
     
 
     //the music for the lobby
     Mix_Music *lobbyMusic = Mix_LoadMUS("../Sounds/Music/VolatileReaction.mp3");
     Mix_PlayMusic(lobbyMusic, -1);
-
-
-    timerfunc = SDL_CreateThread(TimeThread, "TimeThread", (void*)&clockInfo);
-        if(timerfunc==NULL)
-        {
-            fprintf(stderr, "Cant create thread for clock, %s\n", SDL_GetError());
-        }
-    // asssign active flag
-
-    
 
     // mousePosition(X-axis,Y-axis)
     int mousePosition[2] = {0, 0};
@@ -74,12 +61,6 @@ int LobbyWindow(StartInfo lobbyConnection){
             buttonPlacement.y = (lobbySurface->h/2)+200;
             buttonPlacement.w =  400;
             buttonPlacement.h =  80;
-
-            //rectangle for clock
-            clockPlace.x = (lobbySurface->w/3)+240;
-            clockPlace.y = (lobbySurface->h/2)-200;
-            clockPlace.w =  400;
-            clockPlace.h =  80;
 
             // rectangle for playername
                 player1.x=(lobbySurface->w/3)+150;

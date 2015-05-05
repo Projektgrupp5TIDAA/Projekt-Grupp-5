@@ -5,9 +5,9 @@ int LobbyWindow(StartInfo lobbyConnection){
 	SDL_Window* lobby;
 	SDL_Surface* lobbySurface;
     //background pic for lobby
-	SDL_Surface* lobbyBackground = IMG_Load("lobby.png");
+	SDL_Surface* lobbyBackground = IMG_Load("../Images/lobby/lobby.png");
     // image for ready button
-	SDL_Surface* readyButton = IMG_Load("ready.png");
+	SDL_Surface* readyButton = IMG_Load("../Images/lobby/ready.png");
     SDL_Rect buttonPlacement;
 
     SDL_Thread* timerfunc;
@@ -18,7 +18,7 @@ int LobbyWindow(StartInfo lobbyConnection){
     //font for texts and clock
     TTF_Font *clockFont = TTF_OpenFont("../Images/menu/StencilStd.ttf", 30);
     SDL_Rect clockPlace;
-    
+
     //the music for the lobby
     Mix_Music *lobbyMusic = Mix_LoadMUS("../Sounds/Music/VolatileReaction.mp3");
     Mix_PlayMusic(lobbyMusic, -1);
@@ -44,7 +44,7 @@ int LobbyWindow(StartInfo lobbyConnection){
 
     else
     {
-        //Create window 
+        //Create window
         lobby = SDL_CreateWindow(   "BJORNSLOBBY",
                                     SDL_WINDOWPOS_UNDEFINED,
                                     SDL_WINDOWPOS_UNDEFINED,
@@ -62,12 +62,12 @@ int LobbyWindow(StartInfo lobbyConnection){
             {
                     //Get window surface
             lobbySurface = SDL_GetWindowSurface( lobby );
- 
+
             //rectangle for button
             buttonPlacement.x = (lobbySurface->w/3)-240;
             buttonPlacement.y = (lobbySurface->h/2)+200;
             buttonPlacement.w =  400;
-            buttonPlacement.h =  80; 
+            buttonPlacement.h =  80;
 
             //rectangle for clock
             clockPlace.x = (lobbySurface->w/3)+240;
@@ -103,11 +103,11 @@ int LobbyWindow(StartInfo lobbyConnection){
     }
     printf("Shut down in progress\n");
     SDL_DestroyWindow(lobby); //Destroy window
-    
+
     SDL_FreeSurface(lobbySurface);
     SDL_FreeSurface(lobbyBackground);
     SDL_FreeSurface(readyButton);
-        
+
     SDL_Quit(); //Quit SDL subsystems
     return 0;
     }
@@ -115,7 +115,7 @@ int LobbyWindow(StartInfo lobbyConnection){
 //a thread that updates time left in lobby.
     SDL_ThreadFunction* TimeThread(void* clockInfo){
     clkInfo* changeclk = (clkInfo*) clockInfo;
-        
+
     changeclk->seconds_left = 120;
 
     while(changeclk->seconds_left > 0)

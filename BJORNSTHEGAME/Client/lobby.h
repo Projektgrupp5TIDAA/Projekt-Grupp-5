@@ -26,4 +26,6 @@ typedef struct clockInformation
 
 SDL_ThreadFunction* TimeThread(SDL_Window* screen);
 
+int Players_names(StartInfo players , SDL_Window* lobbyscreen, SDL_Surface* lobbySurface); 
+
 #endif

@@ -41,19 +41,6 @@ int Handler(void* thr){
                 *(clientvar->socket) = socket;
             }
             break;
-        /* player name request */
-        case 'N':
-            printf("Player name request recieved\n");
-            if(isEmptyStack(*thread->stack))
-                SDLNet_TCP_Send(socket,"F", 1);
-            else{
-                // sprintf(packet, "%s ", clientvar->player->playername);
-                //strcpy(packet, clientvar->player->playername);
-                SDLNet_TCP_Send(socket, clientvar->player->playername, PACKETSIZE);
-                SDLNet_TCP_Close(socket);
-                printf("Player name: %s  sent!\n", clientvar->player->playername);
-            }
-            break;
         default:
             /* If the request is not recognized the server will return error */
             SDLNet_TCP_Send(socket, "ERROR: Bad request.", 40);
@@ -155,7 +142,7 @@ int timer(void* information){
                     if(*(info->main) == timerset[i]){
                         set_bit(info->powerup, i);
                     }else if(timerset[i] > *(info->main)){
-                        if(*(info->main) -POWERTIMER > 0){
+                        if(main-POWERTIMER > 0){
                             timerset[i] = *(info->main)-POWERTIMER;
                         }else{
                             timerset[i] = 0;

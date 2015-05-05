@@ -2,13 +2,15 @@
 
 int LobbyWindow(StartInfo lobbyConnection){
     //********************** INIT *************************
-	SDL_Window* lobby;
+	char packet[512];
+    SDL_Window* lobby;
 	SDL_Surface* lobbySurface;
     //background pic for lobby
 	SDL_Surface* lobbyBackground = IMG_Load("../Images/lobby/lobby.png");
     // image for ready button
 	SDL_Surface* readyButton = IMG_Load("../Images/lobby/ready.png");
     SDL_Rect buttonPlacement;
+    SDL_Rect player1;
 
     SDL_Thread* timerfunc;
 
@@ -28,7 +30,7 @@ int LobbyWindow(StartInfo lobbyConnection){
         {
             fprintf(stderr, "Cant create thread for clock, %s\n", SDL_GetError());
         }
-
+    // asssign active flag
     // mousePosition(X-axis,Y-axis)
     int mousePosition[2] = {0, 0};
     //gameloop
@@ -75,6 +77,11 @@ int LobbyWindow(StartInfo lobbyConnection){
             clockPlace.w =  400;
             clockPlace.h =  80;
 
+            // rectangle for playername
+                player1.x=(lobbySurface->w/3)+150;
+                player1.y=(lobbySurface->h/2)-150;
+                player1.w=350;
+                player1.h=70;
             }
         }
     }
@@ -83,17 +90,60 @@ int LobbyWindow(StartInfo lobbyConnection){
         // Mouse events handling
         SDL_PumpEvents();
         SDL_GetMouseState(&mousePosition[0], &mousePosition[1]);
-
-        if( getMouseBounds(mousePosition, buttonPlacement ) )
+        
+        /* get how many players in the lobby and determine which place the playername will showup on the screen - not done yet */
+        *(lobbyConnection.socket)=SDLNet_TCP_Open(lobbyConnection.targethost);
+        if(*(lobbyConnection.socket) != NULL){
+            if(!(SDLNet_TCP_Send(*(lobbyConnection.socket), "I", 1))){
+                printf("Could not connect to host: %s\n", SDLNet_GetError());
+            }else{
+                while(1){
+                    if(SDLNet_TCP_Recv(*(lobbyConnection.socket),packet, 512)){
+                        printf("Got the info: %s\n", packet);
+                        // if any player disconnects = problem
+                        if(strstr("Server - 1/6", packet)){
+                            // rectangle player1
+                            textToScreen(clockFont, player1, lobby, packet);
+                            break;
+                        }
+                        else if(strstr("Server - 2/6", packet)){
+                            // rectangle player2
+                            break;
+                        }
+                        else if(strstr("Server - 3/6", packet)){
+                            // rectangle player3
+                            break;
+                        }
+                        else if(strstr("Server - 4/6", packet)){
+                            // rectangle player4
+                            break;
+                        }
+                        else if(strstr("Server - 5/6", packet)){
+                            // rectangle player5
+                            break;
+                        }
+                        else if(strstr("Server - 6/6", packet)){
+                            // rectangle player6
+                            break;
+                        }
+                        // textToScreen(clockFont, player1, lobby, lobbyConnection.playerName);
+                        // SDL_UpdateWindowSurface(lobby);
+                    }else SDL_Delay(15);
+                }
+            }
+        }
+        
+        if( getMouseBounds(mousePosition, buttonPlacement))
         {
-            if(SDL_GetMouseState(NULL, NULL) && SDL_BUTTON(1)) //leftclick
+            if(SDL_GetMouseState(NULL, NULL) && SDL_BUTTON(SDL_BUTTON_LEFT)) //leftclick
             {
                 printf("PLAYER IS READY!\n");
+                /* go to the game window when time is over - not written yet */
                 endLobby = 1;
             }
         }
 
-        textToScreen(clockFont, clockPlace, lobby, clockInfo.sendingTime);
+       textToScreen(clockFont, clockPlace, lobby, clockInfo.sendingTime);
 
         SDL_BlitScaled(lobbyBackground, NULL, lobbySurface, NULL);
         SDL_BlitScaled(readyButton, NULL, lobbySurface, &buttonPlacement);

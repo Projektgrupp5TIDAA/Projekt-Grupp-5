@@ -176,7 +176,7 @@ int LobbyWindow(StartInfo lobbyConnection){
 
 //a thread that updates time left in lobby.
 
- SDL_ThreadFunction* TimeThread(SDL_Window* screen)
+ SDL_ThreadFunction* TimeThread(SDL_Window* lobbyscreen)
 
 {
     //få tid av server

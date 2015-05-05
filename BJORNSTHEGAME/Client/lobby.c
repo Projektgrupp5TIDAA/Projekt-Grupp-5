@@ -13,6 +13,7 @@ int LobbyWindow(StartInfo lobbyConnection){
     SDL_Rect player1;
 
     TTF_Font *playerFont = TTF_OpenFont("../Images/menu/StencilStd.ttf", 30);
+    TTF_Font* playerfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 30);
     SDL_Thread* timerfunc;
 
     // Struct for clock, see lobby.h
@@ -64,14 +65,14 @@ int LobbyWindow(StartInfo lobbyConnection){
             buttonPlacement.h =  80;
 
             // rectangle for playername
-                player1.x=(lobbySurface->w/3)+150;
-                player1.y=(lobbySurface->h/2)-150;
-                player1.w=350;
-                player1.h=70;
+            player1.x=(lobbySurface->w/2)-350;
+            player1.y=(lobbySurface->h/2)-50;
+            player1.w=450;
+            player1.h=400;
 
             }
         }
-        timerfunc = SDL_CreateThread(TimeThread, "TimeThread", (void*)lobby);
+       timerfunc = SDL_CreateThread(TimeThread, "TimeThread", (void*)lobby);
             if(timerfunc==NULL)
             {
                 fprintf(stderr, "Cant create thread for clock, %s\n", SDL_GetError());
@@ -86,7 +87,7 @@ int LobbyWindow(StartInfo lobbyConnection){
         
         /* get how many players in the lobby and determine which place the playername will showup on the screen - not done yet */
         *(lobbyConnection.socket)=SDLNet_TCP_Open(lobbyConnection.targethost);
-        if(*(lobbyConnection.socket) != NULL){
+        if(*(lobbyConnection.socket)!= NULL){
             if(!(SDLNet_TCP_Send(*(lobbyConnection.socket), "I", 1))){
                 printf("Could not connect to host: %s\n", SDLNet_GetError());
             }else{
@@ -96,31 +97,45 @@ int LobbyWindow(StartInfo lobbyConnection){
                         // if any player disconnects = problem
                         if(strstr("Server - 1/6", packet)){
                             // rectangle player1
+
                             textToScreen(playerFont, player1, lobby, packet);
+
+                            textToScreen(playerfont, player1, lobby, packet);
+                            SDL_Delay(500);
+
                             break;
                         }
                         else if(strstr("Server - 2/6", packet)){
                             // rectangle player2
+                            textToScreen(playerfont, player1, lobby, packet);
+                            SDL_Delay(500);
                             break;
                         }
                         else if(strstr("Server - 3/6", packet)){
                             // rectangle player3
+                            textToScreen(playerfont, player1, lobby, packet);
+                            SDL_Delay(500);
                             break;
                         }
                         else if(strstr("Server - 4/6", packet)){
                             // rectangle player4
+                            textToScreen(playerfont, player1, lobby, packet);
+                            SDL_Delay(500);
                             break;
                         }
                         else if(strstr("Server - 5/6", packet)){
                             // rectangle player5
+                            textToScreen(playerfont, player1, lobby, packet);
+                            SDL_Delay(500);
                             break;
                         }
                         else if(strstr("Server - 6/6", packet)){
                             // rectangle player6
+                            textToScreen(playerfont, player1, lobby, packet);
+                            SDL_Delay(500);
                             break;
                         }
-                        // textToScreen(clockFont, player1, lobby, lobbyConnection.playerName);
-                        // SDL_UpdateWindowSurface(lobby);
+                       
                     }else SDL_Delay(15);
                 }
             }
@@ -136,9 +151,12 @@ int LobbyWindow(StartInfo lobbyConnection){
             }
         }
 
+
         //textToScreen(clockFont, clockPlace, lobby, clockInfo.sendingTime);
 
 
+
+        // textToScreen(playerfont, player1, lobby, packet);
         SDL_BlitScaled(lobbyBackground, NULL, lobbySurface, NULL);
         SDL_BlitScaled(readyButton, NULL, lobbySurface, &buttonPlacement);
          //Update the surface
@@ -157,7 +175,9 @@ int LobbyWindow(StartInfo lobbyConnection){
 }
 
 //a thread that updates time left in lobby.
-SDL_ThreadFunction* TimeThread(SDL_Window* lobbyscreen)
+
+ SDL_ThreadFunction* TimeThread(SDL_Window* screen)
+
 {
     //få tid av server
     int time = 12;
@@ -188,6 +208,25 @@ SDL_ThreadFunction* TimeThread(SDL_Window* lobbyscreen)
         printf("threadloop is working\n");
     }
     printf("GAME HAS STARTED\n");
+
+
+
+
+
+
+
+   /*  clkInfo* changeclk = (clkInfo*) clockInfo;
+
+    changeclk->seconds_left = 120;
+
+    while(changeclk->seconds_left > 0)
+    {
+        changeclk->seconds_left = (changeclk->seconds_left) -1;
+        SDL_Delay(995);
+        sprintf((changeclk->sendingTime), "%d", (changeclk->seconds_left));
+    } 
+    */
+
 }
 
 

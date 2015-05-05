@@ -48,17 +48,16 @@ void gameplayWindow()
             SDL_Rect platformplacement6 = {(gameSurface ->w/5 -300), (gameSurface ->h - 850), 1920, 150};
             SDL_Rect platformplacement7 = {(gameSurface ->w/3 -207), (gameSurface ->h - 370), 200, 40};
             SDL_Rect platformplacement8 = {(gameSurface ->w -400), (gameSurface ->h - 450), 400, 60};
-            SDL_Rect platformplacement9 = {(gameSurface ->w/2 -186), (gameSurface ->h - 390), 250, 25};
+            SDL_Rect platformplacement9 = {(gameSurface ->w/2 -186), (gameSurface ->h - 490), 250, 25};
             SDL_Rect platformplacement10 = {(gameSurface ->w/2 -186), (gameSurface ->h - 366), 150, 25};
-            SDL_Rect platformplacement11 = {(gameSurface ->w -400), (gameSurface ->h - 260), 300, 40};
+            SDL_Rect platformplacement11 = {(gameSurface ->w -400), (gameSurface ->h - 130), 300, 40};
             SDL_Rect platformplacement12 = {(gameSurface ->w/2 -50), (gameSurface ->h - 366), 220, 25};
-            SDL_Rect platformplacement13 = {(gameSurface ->w -650), (gameSurface ->h - 345), 220, 25};
-            SDL_Rect platformplacement14 = {(gameSurface ->w -600), (gameSurface ->h - 325), 220, 25};
-            SDL_Rect platformplacement15 = {(gameSurface ->w -550), (gameSurface ->h - 305), 220, 25};
-            SDL_Rect platformplacement16 = {(gameSurface ->w -500), (gameSurface ->h - 285), 220, 25};
-           // SDL_Rect platformplacement17 = {(gameSurface ->w -200), (gameSurface ->h - 200), 300, 50};
-            SDL_Rect platformplacement18 = {(gameSurface ->w/2 -160), (gameSurface ->h - 210), 60, 50};
-            SDL_Rect platformplacement19 = {(gameSurface ->w/2 +360), (gameSurface ->h - 500), 60, 50};
+            SDL_Rect platformplacement13 = {(gameSurface ->w/2 +470), (gameSurface ->h - 230), 220, 25};
+            SDL_Rect platformplacement14 = {(gameSurface ->w/2 +130), (gameSurface ->h - 550), 220, 25};
+            SDL_Rect platformplacement15 = {(gameSurface ->w/2 +160), (gameSurface ->h - 280), 220, 25};
+
+            SDL_Rect bjornd1 = {(gameSurface ->w/2 -160), (gameSurface ->h - 210), 60, 50};
+            SDL_Rect bjornd2 = {(gameSurface ->w/2 +360), (gameSurface ->h - 500), 60, 50};
             SDL_Rect caps = {(gameSurface ->w/2 +600), (gameSurface ->h - 755), 60, 50};
             SDL_Rect caps2 = {(gameSurface ->w/2 +530), (gameSurface ->h - 755), 60, 50};
             SDL_Rect caps3 = {(gameSurface ->w/2 +460), (gameSurface ->h - 755), 60, 50};
@@ -85,10 +84,9 @@ void gameplayWindow()
             SDL_BlitScaled(platform1, NULL , gameSurface ,&platformplacement13);
             SDL_BlitScaled(platform1, NULL , gameSurface ,&platformplacement14);
             SDL_BlitScaled(platform1, NULL , gameSurface ,&platformplacement15);
-            SDL_BlitScaled(platform1, NULL , gameSurface ,&platformplacement16);
-           // SDL_BlitScaled(platform1, NULL , gameSurface ,&platformplacement17);
-            SDL_BlitScaled(bjrons, NULL , gameSurface ,&platformplacement18);
-            SDL_BlitScaled(bjrons, NULL , gameSurface ,&platformplacement19);
+
+            SDL_BlitScaled(bjrons, NULL , gameSurface ,&bjornd1);
+            SDL_BlitScaled(bjrons, NULL , gameSurface ,&bjornd2);
             SDL_BlitScaled(ammo, NULL , gameSurface ,&caps);
             SDL_BlitScaled(ammo, NULL , gameSurface ,&caps2);
             SDL_BlitScaled(ammo, NULL , gameSurface ,&caps3);

@@ -129,7 +129,7 @@ int timer(void* information){
                     if(*(info->main) == timerset[i]){
                         set_bit(info->powerup, i);
                     }else if(timerset[i] > *(info->main)){
-                        if(main-POWERTIMER > 0){
+                        if(*(info->main)-POWERTIMER > 0){
                             timerset[i] = *(info->main)-POWERTIMER;
                         }else{
                             timerset[i] = 0;

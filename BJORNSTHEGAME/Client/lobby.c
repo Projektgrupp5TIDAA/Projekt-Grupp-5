@@ -19,18 +19,23 @@ int LobbyWindow(StartInfo lobbyConnection){
 
     //font for texts and clock
     TTF_Font *clockFont = TTF_OpenFont("../Images/menu/StencilStd.ttf", 30);
-    SDL_Rect clockPlace;
+    
 
     //the music for the lobby
     Mix_Music *lobbyMusic = Mix_LoadMUS("../Sounds/Music/VolatileReaction.mp3");
     Mix_PlayMusic(lobbyMusic, -1);
 
+<<<<<<< Updated upstream
     timerfunc = SDL_CreateThread(TimeThread, "TimeThread", (void*)&clockInfo);
         if(timerfunc==NULL)
         {
             fprintf(stderr, "Cant create thread for clock, %s\n", SDL_GetError());
         }
     // asssign active flag
+=======
+    
+
+>>>>>>> Stashed changes
     // mousePosition(X-axis,Y-axis)
     int mousePosition[2] = {0, 0};
     //gameloop
@@ -71,6 +76,7 @@ int LobbyWindow(StartInfo lobbyConnection){
             buttonPlacement.w =  400;
             buttonPlacement.h =  80;
 
+<<<<<<< Updated upstream
             //rectangle for clock
             clockPlace.x = (lobbySurface->w/3)+240;
             clockPlace.y = (lobbySurface->h/2)-200;
@@ -82,8 +88,15 @@ int LobbyWindow(StartInfo lobbyConnection){
                 player1.y=(lobbySurface->h/2)-150;
                 player1.w=350;
                 player1.h=70;
+=======
+>>>>>>> Stashed changes
             }
         }
+        timerfunc = SDL_CreateThread(TimeThread, "TimeThread", (void*)lobby);
+            if(timerfunc==NULL)
+            {
+                fprintf(stderr, "Cant create thread for clock, %s\n", SDL_GetError());
+            }
     }
 
     while(!endLobby){
@@ -143,7 +156,11 @@ int LobbyWindow(StartInfo lobbyConnection){
             }
         }
 
+<<<<<<< Updated upstream
        textToScreen(clockFont, clockPlace, lobby, clockInfo.sendingTime);
+=======
+        //textToScreen(clockFont, clockPlace, lobby, clockInfo.sendingTime);
+>>>>>>> Stashed changes
 
         SDL_BlitScaled(lobbyBackground, NULL, lobbySurface, NULL);
         SDL_BlitScaled(readyButton, NULL, lobbySurface, &buttonPlacement);
@@ -160,11 +177,41 @@ int LobbyWindow(StartInfo lobbyConnection){
 
     SDL_Quit(); //Quit SDL subsystems
     return 0;
-    }
+}
 
 //a thread that updates time left in lobby.
-    SDL_ThreadFunction* TimeThread(void* clockInfo){
-    clkInfo* changeclk = (clkInfo*) clockInfo;
+SDL_ThreadFunction* TimeThread(SDL_Window* screen)
+{
+    //få tid av server
+    int time = 120;
+    char time_in_text[3];
+
+    SDL_Surface* window = SDL_GetWindowSurface(screen);
+    SDL_Rect clockPlace;
+
+            //rectangle for clock
+            clockPlace.x = (window->w/3)+240;
+            clockPlace.y = (window->h/2)-200;
+            clockPlace.w =  400;
+            clockPlace.h =  80;
+    TTF_Font *font = TTF_OpenFont("../Images/menu/StencilStd.ttf", 30);
+
+
+    for (int i = time; i > 0; --i)
+    {
+        sprintf(time_in_text, "%d", i);
+        SDL_Delay(1000);
+        textToScreen(font, clockPlace, screen, time_in_text);
+    }
+    printf("GAME HAS STARTED\n");
+
+
+
+
+
+
+
+    /*clkInfo* changeclk = (clkInfo*) clockInfo;
 
     changeclk->seconds_left = 120;
 
@@ -173,7 +220,7 @@ int LobbyWindow(StartInfo lobbyConnection){
         changeclk->seconds_left = (changeclk->seconds_left) -1;
         SDL_Delay(995);
         sprintf((changeclk->sendingTime), "%d", (changeclk->seconds_left));
-    }
+    }*/
 
 }
 

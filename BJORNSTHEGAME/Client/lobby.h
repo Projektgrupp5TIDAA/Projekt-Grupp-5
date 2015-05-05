@@ -24,6 +24,6 @@ typedef struct clockInformation
 
 }clkInfo;
 
-SDL_ThreadFunction* TimeThread(void* clockInfo);
+SDL_ThreadFunction* TimeThread(SDL_Window* screen);
 
 #endif

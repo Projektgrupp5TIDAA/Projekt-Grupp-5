@@ -99,18 +99,13 @@ int LobbyWindow(StartInfo lobbyConnection){
                 player6.h=400;
             }
         }
-<<<<<<< Updated upstream
     }
-       /* timerfunc = SDL_CreateThread(TimeThread, "TimeThread", (void*)lobby);
-=======
         timerfunc = SDL_CreateThread(TimeThread, "TimeThread", (void*)&lobby);
->>>>>>> Stashed changes
             if(timerfunc==NULL)
             {
                 fprintf(stderr, "Cant create thread for clock, %s\n", SDL_GetError());
             }
-        
-        // *(lobbyConnection.socket)=SDLNet_TCP_Open(lobbyConnection.targethost);
+
         if(*(lobbyConnection.socket)!= NULL){
             if(!(SDLNet_TCP_Send(*(lobbyConnection.socket), "N", 1))){
                 printf("Could not connect to host: %s\n", SDLNet_GetError());
@@ -198,100 +193,11 @@ int LobbyWindow(StartInfo lobbyConnection){
         changeclk->seconds_left = (changeclk->seconds_left) -1;
         SDL_Delay(995);
         sprintf((changeclk->sendingTime), "%d", (changeclk->seconds_left));
-    } 
-    */
+    }*/ 
+
 
 }
 
-int Players_names(StartInfo players , SDL_Window* lobbyscreen, SDL_Surface* lobbySurface){
-    
-        SDL_Rect player1;
-        SDL_Rect player2;
-        SDL_Rect player3;
-        SDL_Rect player4;
-        SDL_Rect player5;
-        SDL_Rect player6;
-        char packet[512];
-        player1.x=(lobbySurface->w/2)-370;
-        player1.y=(lobbySurface->h/2)-50;
-        player1.w=450;
-        player1.h=400;
-    
-        player2.x=(lobbySurface->w/2)-370;
-        player2.y=(lobbySurface->h/2)+25;
-        player2.w=450;
-        player2.h=400;
-    
-        player3.x=(lobbySurface->w/2)-370;
-        player3.y=(lobbySurface->h/2)+125;
-        player3.w=450;
-        player3.h=400;
-    
-        player4.x=(lobbySurface->w/2)-90;
-        player4.y=(lobbySurface->h/2)-50;
-        player4.w=300;
-        player4.h=400;
-    
-        player5.x=(lobbySurface->w/2)-90;
-        player5.y=(lobbySurface->h/2)+25;
-        player5.w=300;
-        player5.h=400;
-    
-        player6.x=(lobbySurface->w/2)-90;
-        player6.y=(lobbySurface->h/2)+125;
-        player6.w=300;
-        player6.h=400;
-    
-        TTF_Font* playerfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 30);
-    
-        *(players.socket)=SDLNet_TCP_Open(players.targethost);
-        if(*(players.socket)!= NULL){
-            if(!(SDLNet_TCP_Send(*(players.socket), "N", 1))){
-                printf("Could not connect to host: %s\n", SDLNet_GetError());
-            }else{
-                while(1){
-                    printf("Got the info %s\n", packet);
-                    textToScreen(playerfont, player1, lobbyscreen, packet);
-                    SDL_Delay(500);
-                    break;
-                    /*if(SDLNet_TCP_Recv(*(players.socket),packet, 512)){
-                        printf("Got the info: %s\n", packet);
-                        if(strstr("Server - 1/6", packet)){
-                            textToScreen(playerfont, player1, lobbyscreen, packet);
-                            SDL_Delay(500);
-                            break;
-                        }
-                        else if(strstr("Server - 2/6", packet)){
-                            textToScreen(playerfont, player2, lobbyscreen, packet);
-                            SDL_Delay(500);
-                            break;
-                        }
-                        else if(strstr("Server - 3/6", packet)){
-                            textToScreen(playerfont, player3, lobbyscreen, packet);
-                            SDL_Delay(500);
-                            break;
-                        }
-                        else if(strstr("Server - 4/6", packet)){
-                            textToScreen(playerfont, player4, lobbyscreen, packet);
-                            SDL_Delay(500);
-                            break;
-                        }
-                        else if(strstr("Server - 5/6", packet)){
-                            textToScreen(playerfont, player5, lobbyscreen, packet);
-                            SDL_Delay(500);
-                            break;
-                        }
-                        else if(strstr("Server - 6/6", packet)){
-                            textToScreen(playerfont, player6, lobbyscreen, packet);
-                            SDL_Delay(500);
-                            break;*/
-                        //}
-                    //}
-                }
-            }
-        }
-    return 0;
-}
 
 
 

@@ -76,21 +76,25 @@ int Handler(void* thr){
             }else{
                 switch(packet[0]){
                     case 'D':
+			printf("Data recieved, pushing to stack!\n");
                         pushString(thread->dstack, packet);
                         break;
                     case 'P':
+			printf("Playerupdate recieved, updating!\n");
                         //updatePlayer(packet, clientvar->player);
                         break;
                     case 'C':
+			printf("Chat message recieved, pushing to stack!\n");
                         parseChat(packet, 1, strlen(packet));
                         pushString(thread->cstack, packet);
                         break;
                     /* player name request */
                     case 'N':
-                        printf("Begining to send the struct!\n");
+                        printf("Name request recieved, sending!\n");
                         for(i=0;i<PLAYERCOUNT;i++){
                             names.ID[i] = i;
                             strcpy(names.names[i], clientvar->names[i]);
+		            printf("Player #%d: %s\n", i, names.names[i]);
                         }
                         memcpy(&serialnames, &names, sizeof(names));
                         SDLNet_TCP_Send(socket, serialnames, sizeof(serialnames));

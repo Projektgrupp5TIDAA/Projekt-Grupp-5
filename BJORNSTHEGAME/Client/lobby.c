@@ -147,11 +147,17 @@ int LobbyWindow(StartInfo lobbyConnection){
         if(*(lobbyConnection.socket)!= NULL){
             if(!(SDLNet_TCP_Send(*(lobbyConnection.socket), "N", 1))){
                 printf("Could not connect to host: %s\n", SDLNet_GetError());
-            }else{
-                if(SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, sizeof(name))){
-                    memcpy(&name, &packet, sizeof(name));
-                }
-            }
+            }//else{
+            //    if(SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, 200)){
+            //        memcpy(&name, &packet, sizeof(name));
+            //    }
+            //}
+        }
+        if(SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, 200)){
+            if(packet[0]== 'C')
+                printf("%s\n", packet);
+            else
+                memcpy(&name, &packet, sizeof(name));
         }
         textToScreen(playerfont, player1, lobby, name.names[5]);
         textToScreen(playerfont, player2, lobby, name.names[4]);
@@ -188,7 +194,7 @@ int LobbyWindow(StartInfo lobbyConnection){
 //a thread that updates time left in lobby.
  void TimeThread(SDL_Window* lobbyscreen){
     //få tid av server
-    int time = 12;
+    int time = 12, i;
     char time_in_text[3];
 
     SDL_Surface* window = SDL_GetWindowSurface(lobbyscreen);
@@ -202,7 +208,7 @@ int LobbyWindow(StartInfo lobbyConnection){
     TTF_Font *clockFont = TTF_OpenFont("../Images/menu/StencilStd.ttf", 30);
     SDL_Colour fontcolour={0,0,0};
 
-    for (int i = time; i > 0; --i)
+    for (i = time; i > 0; --i)
     {
         printf("entering loop in thread\n");
         sprintf(time_in_text, "%d", i);

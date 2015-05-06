@@ -129,7 +129,6 @@ int LobbyWindow(StartInfo lobbyConnection){
             }else{
                 if(SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, sizeof(name))){
                     memcpy(&name, &packet, sizeof(name));
-                    printf("names struct includes now: %s\n", name.names[5]);
                 }
             }
         }

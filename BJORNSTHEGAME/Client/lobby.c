@@ -134,8 +134,10 @@ int LobbyWindow(StartInfo lobbyConnection){
                 
         }
         if(SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, 200)){
-            if(packet[0]=='C')
+            if(packet[0]=='C'){
+                parseChat(packet,1,strlen(packet));
                 printf("%s\n",packet);
+            }
             else
                 memcpy(&name, &packet, sizeof(name));
         }
@@ -170,6 +172,14 @@ int LobbyWindow(StartInfo lobbyConnection){
     SDL_Quit(); //Quit SDL subsystems
     return 0;
 }
+
+void parseChat(char* inc, int hops, int len){
+    int i;
+    for(i=0;i<len;i++){
+        *(inc+i) = *(inc+i+hops);
+    }
+}
+
 
 
 

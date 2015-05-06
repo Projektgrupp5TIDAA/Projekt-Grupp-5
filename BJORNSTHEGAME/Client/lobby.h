@@ -5,3 +5,5 @@ typedef struct{
 
 int LobbyWindow(StartInfo lobbyConnection);
 
+void parseChat(char* inc, int hops, int len);
+

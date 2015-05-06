@@ -38,7 +38,7 @@ int textToScreen(TTF_Font *font, SDL_Rect place, SDL_Window* window, char* text)
 
 int readKeyboard(char* output, int len);
 
-int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window, SDL_Surface* bg);
+int readKeyboardToWindow(SDL_Rect pos, char* output, int len, SDL_Window* window, SDL_Surface* bg);
 
 int emptyString(char* incoming, int len);
 

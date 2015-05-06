@@ -28,7 +28,6 @@ int menu(StartInfo startup){
 
     /* Load colour, font and then render text-surfaces */
     SDL_Colour black={0,0,0};
-    SDL_Colour white={255,255,255};
     TTF_Font *font = TTF_OpenFont("../Images/menu/StencilStd.ttf", 120);
     TTF_Font *fontsmall = TTF_OpenFont("../Images/menu/coolvetica.ttf", 30);
     SDL_Surface *title = TTF_RenderText_Solid(font, "MENU", black);
@@ -50,8 +49,7 @@ int menu(StartInfo startup){
     SDL_Rect menutextpos = {230, 150, 0, 0};
     SDL_Rect yespos = {200, 400, 180, 64};
     SDL_Rect nopos = {420, 400, 180, 64};
-    SDL_Rect door = {(screen->w - 66), (screen ->h - 160), 60, 200};
-    SDL_Rect lamp1 = {(screen->w -66) , (screen->h -205),  100,100};
+    SDL_Rect lamp1 = {(screen->w-76) , (screen->h-136),  120,100};
 
     while(!quit){
         SDL_PumpEvents();
@@ -60,7 +58,7 @@ int menu(StartInfo startup){
         if(getMouseBounds(mouse, exitplacement)){
             if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                 Mix_PlayChannel(-1, uselt, 1);
-                SDL_BlitScaled(openDoor,NULL, screen, &exitplacement);
+                SDL_BlitScaled(openDoor, NULL, screen, &exitplacement);
                 SDL_Delay(500);
                 SDL_UpdateWindowSurface(window);
                 SDL_Delay(4000);
@@ -157,9 +155,9 @@ int menu(StartInfo startup){
         SDL_BlitScaled(playbutton, NULL, screen, &buttonplacement);
         SDL_BlitScaled(playbutton, NULL, screen, &button2placement);
         SDL_BlitScaled(playbutton, NULL, screen, &button3placement);
+        SDL_BlitScaled(lamp, NULL , screen , &lamp1);
         SDL_BlitScaled(exitbutton, NULL, screen, &exitplacement);
         SDL_BlitScaled(tapir, NULL, screen, &tapirplacement);
-        SDL_BlitScaled(lamp, NULL , screen , &lamp1);
 
         /* Update the window */
         SDL_UpdateWindowSurface(window);
@@ -183,7 +181,8 @@ int getName(char* name, int len, SDL_Window* window){
     SDL_Surface *namemenu = IMG_Load("../Images/menu/MenuNameScreen.png");
     SDL_BlitScaled(namemenu, NULL, screen, NULL);
     SDL_UpdateWindowSurface(window);
-    readKeyboardToMenuWindow(name, len, window, namemenu);
+    SDL_Rect pos = {230,142, 0,0};
+    readKeyboardToWindow(pos,name, len, window, namemenu);
     return 0;
 }
 
@@ -194,15 +193,16 @@ int getIP(IPaddress* targethost, SDL_Window* window){
     SDL_Surface *screen = SDL_GetWindowSurface(window);
     SDL_Surface *IPmenu = IMG_Load("../Images/menu/MenuIPScreen.png");
     SDL_Surface *portmenu = IMG_Load("../Images/menu/MenuPortScreen.png");
+    SDL_Rect menupos = {230,142, 0,0};
 
     SDL_BlitScaled(IPmenu, NULL, screen, NULL);
     SDL_UpdateWindowSurface(window);
     printf("Read name, time to read address!\n");
-    readKeyboardToMenuWindow(address, 15, window, IPmenu);
+    readKeyboardToWindow(menupos, address, 15, window, IPmenu);
     SDL_BlitScaled(portmenu, NULL, screen, NULL);
     SDL_UpdateWindowSurface(window);
     printf("Read address: %s, time to read port!\n", address);
-    readKeyboardToMenuWindow(port, 5, window, portmenu);
+    readKeyboardToWindow(menupos, port, 5, window, portmenu);
     printf("Read port: %s, time to resolve the host!\n", port);
 
     if (SDLNet_ResolveHost(targethost, address, atoi(port)) == -1){
@@ -249,10 +249,9 @@ int readKeyboard(char* output, int len){
 }
 
 /* Reads keyboard input while it post the input to the screen */
-int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window, SDL_Surface* bg){
+int readKeyboardToWindow(SDL_Rect pos, char* output, int len, SDL_Window* window, SDL_Surface* bg){
     TTF_Font *font = TTF_OpenFont("../Images/menu/coolvetica.ttf", 40);
     SDL_Surface* screen = SDL_GetWindowSurface(window);
-    SDL_Rect place = {230,142, 0,0};
     char temp[len];
     emptyString(temp, len);
     int initlen = len;
@@ -263,7 +262,7 @@ int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window, SDL_Surf
             if(event.type == SDL_TEXTINPUT){
                 temp[initlen-len] = *(event.text.text);
                 printf("LEN: %d, STRING: %s\n", len, temp);
-                textToScreen(font, place, window, temp); // write text on the screen
+                textToScreen(font, pos, window, temp); // write text on the screen
                 len--;
             }
             if(event.type == SDL_KEYDOWN){
@@ -277,7 +276,7 @@ int readKeyboardToMenuWindow(char* output, int len, SDL_Window* window, SDL_Surf
                         temp[initlen-len]=0;
                         SDL_BlitScaled(bg, NULL, screen, NULL);
                         SDL_UpdateWindowSurface(window);
-                        textToScreen(font, place, window, temp);
+                        textToScreen(font, pos, window, temp);
                         printf("Backspace: %s\n", temp);
                     }else printf("No text to delete.\n");
                 }

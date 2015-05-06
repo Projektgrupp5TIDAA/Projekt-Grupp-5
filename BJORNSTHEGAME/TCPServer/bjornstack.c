@@ -41,11 +41,11 @@ int isFullStack(ThreadStack stack){
 }
 
 /* Push the incoming string of a socket to the string-stack */
-void pushString(DataStack *stack, char *pushStr){
+void pushString(DataStack *stack, char pushStr[20]){
 	if(isFullStrStack(*stack)){
 		fprintf(stderr, "Error adding to the stack: Stack is full\n");
 	}else{
-		stack->item[stack->population] = *pushStr;
+		strcpy(stack->item[stack->population], pushStr);
 		(stack->population)++;
 	}
 }

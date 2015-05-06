@@ -166,7 +166,7 @@ int LobbyWindow(StartInfo lobbyConnection){
             {
                 printf("PLAYER %s IS READY!\n", lobbyConnection.playerName);
                 
-                endLobby = 1;
+                endLobby=1;
             }
         }
         

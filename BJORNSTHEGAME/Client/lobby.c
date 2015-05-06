@@ -99,12 +99,16 @@ int LobbyWindow(StartInfo lobbyConnection){
                 player6.h=400;
             }
         }
+<<<<<<< Updated upstream
     }
        /* timerfunc = SDL_CreateThread(TimeThread, "TimeThread", (void*)lobby);
+=======
+        timerfunc = SDL_CreateThread(TimeThread, "TimeThread", (void*)&lobby);
+>>>>>>> Stashed changes
             if(timerfunc==NULL)
             {
                 fprintf(stderr, "Cant create thread for clock, %s\n", SDL_GetError());
-            }*/
+            }
         
         // *(lobbyConnection.socket)=SDLNet_TCP_Open(lobbyConnection.targethost);
         if(*(lobbyConnection.socket)!= NULL){

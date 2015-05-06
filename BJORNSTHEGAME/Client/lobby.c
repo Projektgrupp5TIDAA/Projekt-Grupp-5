@@ -167,7 +167,7 @@ int LobbyWindow(StartInfo lobbyConnection){
 //a thread that updates time left in lobby.
  void TimeThread(SDL_Window* lobbyscreen){
     //få tid av server
-    int time = 12;
+    int time = 12, i;
     char time_in_text[3];
 
     SDL_Surface* window = SDL_GetWindowSurface(lobbyscreen);
@@ -181,7 +181,7 @@ int LobbyWindow(StartInfo lobbyConnection){
     TTF_Font *clockFont = TTF_OpenFont("../Images/menu/StencilStd.ttf", 30);
     SDL_Colour fontcolour={0,0,0};
 
-    for (int i = time; i > 0; --i)
+    for (i = time; i > 0; --i)
     {
         printf("entering loop in thread\n");
         sprintf(time_in_text, "%d", i);

@@ -1,3 +1,9 @@
+/*
+Functions acting on the stacks used by the server
+Created 2015-04-21 by Jonathan Kåhre
+Projekt Grupp 5
+*/
+
 #ifndef BJORN_STACK_H
 #define BJORN_STACK_H
 #include "bjornthreads.h"

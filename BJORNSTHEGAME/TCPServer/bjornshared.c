@@ -1,3 +1,9 @@
+/*
+Functions used for bit-manipulation on TCP-packages
+Created 2015-04-22 by Jonathan Kåhre
+Projekt Grupp 5
+*/
+
 #include "bjornshared.h"
 
 /* Check if the bit at place 'bit' is set in int comp */

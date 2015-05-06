@@ -1,3 +1,9 @@
+/*
+Main server executable
+Created 2015-04-16 by Jonathan Kåhre and Dani Daryaweesh
+Projekt Grupp 5
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

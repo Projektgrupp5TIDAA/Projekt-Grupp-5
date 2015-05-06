@@ -1,3 +1,10 @@
+/*
+Functions required by the server to execute threads
+Created 2015-04-16 by Jonathan Kåhre
+Edited by Dani Daryaweesh
+Projekt Grupp 5
+*/
+
 #ifndef _BJORN_THREAD_
 #define _BJORN_THREAD_
 #ifdef __APPLE__

@@ -1,3 +1,9 @@
+/*
+Functions used for bit-manipulation on TCP-packages
+Created 2015-04-22 by Jonathan Kåhre
+Projekt Grupp 5
+*/
+
 #ifndef BJORN_SHARED_H
 #define BJORN_SHARED_H
 #include <stdio.h>

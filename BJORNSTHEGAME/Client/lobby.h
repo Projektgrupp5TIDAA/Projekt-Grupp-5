@@ -11,6 +11,6 @@ typedef struct{
 }nrecv;
 
 int LobbyWindow(StartInfo lobbyConnection);
-void TimeThread(SDL_Window* screen);
+void TimeThread(SDL_Window* screen); 
 
 int Players_names(StartInfo players , SDL_Window* lobbyscreen, SDL_Surface* lobbySurface); 

@@ -119,7 +119,7 @@ int LobbyWindow(StartInfo lobbyConnection){
 }
 
 //a thread that updates time left in lobby.
- SDL_ThreadFunction* TimeThread(SDL_Window* lobbyscreen){
+ void TimeThread(SDL_Window* lobbyscreen){
     //få tid av server
     int time = 12;
     char time_in_text[3];

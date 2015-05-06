@@ -2,7 +2,7 @@
 #include "lobby.h"
 
 int menu(StartInfo startup){
-  int quit = 0, mouse[2] = {0};
+    int quit = 0, mouse[2] = {0};
     char packet[PACKETSIZE];
 
     /* Create window and get the surface */

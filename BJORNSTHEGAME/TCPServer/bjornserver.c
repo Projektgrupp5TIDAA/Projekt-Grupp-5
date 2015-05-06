@@ -11,7 +11,7 @@ int main(int argc, char **argv){
     DataStack cstack = {0, {0}}, dstack = {0, {0}};
     tinfo threadvariables[PLAYERCOUNT];
     pinfo players[PLAYERCOUNT] = {{HEALTH, {0}, {0}}};
-    int quit=0, j, i, threadactive[PLAYERCOUNT], maintimer=0, powerup=0;
+    int quit=0, i, threadactive[PLAYERCOUNT], maintimer=0, powerup=0;
     char cmess[40];
     PollInfo pollerinfo;
     TimerInfo timerinfo = {&maintimer, &powerup};
@@ -29,14 +29,14 @@ int main(int argc, char **argv){
         threadvariables[i].socket = &clientsockets[i];
         threadvariables[i].player = &players[i];
         threadvariables[i].active = &threadactive[i];
-        for(j=0;j<PLAYERCOUNT;j++){
+        for(int j=0;j<PLAYERCOUNT;j++){
             threadvariables[i].names[j] = players[j].playername;
         }
         pushStack(&stack, &threadvariables[i]);
     }
 
     /* Initialize SDL */
-    if(SDL_Init(SDL_INIT_AUDIO) != 0){
+    if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
         fprintf(stderr, "Error initializing SDL: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }

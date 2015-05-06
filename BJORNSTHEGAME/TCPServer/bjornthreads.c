@@ -7,6 +7,7 @@
 int Handler(void* thr){
     TCPsocket socket;
     char packet[PACKETSIZE];
+    int i;
     tinfo* clientvar;
     HandlerInfo* thread = (HandlerInfo *) thr;
     printf("Thread is active!\n");

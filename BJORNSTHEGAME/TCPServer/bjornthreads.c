@@ -87,6 +87,7 @@ int Handler(void* thr){
                         break;
                     /* player name request */
                     case 'N':
+                        printf("Begining to send the struct!\n");
                         for(i=0;i<PLAYERCOUNT;i++){
                             names.ID[i] = i;
                             strcpy(names.names[i], clientvar->names[i]);

@@ -10,18 +10,25 @@ int LobbyWindow(StartInfo lobbyConnection){
     // image for ready button
 	SDL_Surface* readyButton = IMG_Load("../Images/lobby/ready.png");
     SDL_Rect buttonPlacement;
-    SDL_Rect player1;
-
     SDL_Thread* timerfunc;
+    
+    nrecv name; // names struct
 
     // Struct for clock, see lobby.h
     clkInfo clockInfo;
     char packet[512];
-
+    int i;
     //the music for the lobby
     Mix_Music *lobbyMusic = Mix_LoadMUS("../Sounds/Music/VolatileReaction.mp3");
     Mix_PlayMusic(lobbyMusic, -1);
 
+    SDL_Rect player1;
+    SDL_Rect player2;
+    SDL_Rect player3;
+    SDL_Rect player4;
+    SDL_Rect player5;
+    SDL_Rect player6;
+    
     // mousePosition(X-axis,Y-axis)
     int mousePosition[2] = {0, 0};
     //gameloop
@@ -65,31 +72,61 @@ int LobbyWindow(StartInfo lobbyConnection){
                 player1.y=(lobbySurface->h/2)-50;
                 player1.w=450;
                 player1.h=400;
+                
+                player2.x=(lobbySurface->w/2)-370;
+                player2.y=(lobbySurface->h/2)+25;
+                player2.w=450;
+                player2.h=400;
+                
+                player3.x=(lobbySurface->w/2)-370;
+                player3.y=(lobbySurface->h/2)+125;
+                player3.w=450;
+                player3.h=400;
+                
+                player4.x=(lobbySurface->w/2)-90;
+                player4.y=(lobbySurface->h/2)-50;
+                player4.w=300;
+                player4.h=400;
+                
+                player5.x=(lobbySurface->w/2)-90;
+                player5.y=(lobbySurface->h/2)+25;
+                player5.w=300;
+                player5.h=400;
+                
+                player6.x=(lobbySurface->w/2)-90;
+                player6.y=(lobbySurface->h/2)+125;
+                player6.w=300;
+                player6.h=400;
             }
         }
+    }
        /* timerfunc = SDL_CreateThread(TimeThread, "TimeThread", (void*)lobby);
             if(timerfunc==NULL)
             {
                 fprintf(stderr, "Cant create thread for clock, %s\n", SDL_GetError());
             }*/
         
-        *(lobbyConnection.socket)=SDLNet_TCP_Open(lobbyConnection.targethost);
+        // *(lobbyConnection.socket)=SDLNet_TCP_Open(lobbyConnection.targethost);
         if(*(lobbyConnection.socket)!= NULL){
             if(!(SDLNet_TCP_Send(*(lobbyConnection.socket), "N", 1))){
                 printf("Could not connect to host: %s\n", SDLNet_GetError());
             }else{
-                while(1){
-                    printf("Got the name packet: %s", packet);
-                    break;
+                if(SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, 512)){
+                   memcpy(&name, &packet, sizeof(name));
+                   printf("names struct includes now: %s\n", name.names[5]);
                 }
             }
         }
-    }
     while(!endLobby){
         // Mouse events handling
         SDL_PumpEvents();
         SDL_GetMouseState(&mousePosition[0], &mousePosition[1]);
-        textToScreen(playerfont, player1, lobby, packet);
+        textToScreen(playerfont, player1, lobby, name.names[5]);
+        textToScreen(playerfont, player2, lobby, name.names[4]);
+        textToScreen(playerfont, player3, lobby, name.names[3]);
+        textToScreen(playerfont, player4, lobby, name.names[2]);
+        textToScreen(playerfont, player5, lobby, name.names[1]);
+        textToScreen(playerfont, player6, lobby, name.names[0]);
         SDL_Delay(500);
         // Players_names(lobbyConnection, lobby, lobbySurface);
         if( getMouseBounds(mousePosition, buttonPlacement))
@@ -108,9 +145,8 @@ int LobbyWindow(StartInfo lobbyConnection){
         SDL_UpdateWindowSurface(lobby);
     }
     printf("Shut down in progress\n");
-    SDL_DestroyWindow(lobby); //Destroy window
-
     SDL_FreeSurface(lobbySurface);
+    SDL_DestroyWindow(lobby); //Destroy window
     SDL_FreeSurface(lobbyBackground);
     SDL_FreeSurface(readyButton);
 

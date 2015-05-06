@@ -2,6 +2,7 @@
 #define _LOBBY_
 #include <stdio.h>
 #include <SDL2/SDL.h>
+#include <string.h>
 #ifdef __APPLE__
 #include <SDL2_ttf/SDL_ttf.h>
 #include <SDL2_image/SDL_image.h>
@@ -17,12 +18,18 @@
 #include <time.h>
 
 int LobbyWindow(StartInfo lobbyConnection);
+
 typedef struct clockInformation
 {
     int seconds_left;
     char sendingTime[3];
 
 }clkInfo;
+
+typedef struct{
+    char ID[6];
+    char names[20][6];
+}nrecv;
 
 void TimeThread(SDL_Window* screen);
 

@@ -6,8 +6,9 @@
 /* Thread execution function */
 int Handler(void* thr){
     TCPsocket socket;
-    char packet[PACKETSIZE];
+    char packet[PACKETSIZE], serialnames[sizeof(nsend)];
     int i;
+    nsend names;
     tinfo* clientvar;
     HandlerInfo* thread = (HandlerInfo *) thr;
     printf("Thread is active!\n");
@@ -86,15 +87,12 @@ int Handler(void* thr){
                         break;
                     /* player name request */
                     case 'N':
-                        printf("Name request recieved.\n");
-                        char names[21*PLAYERCOUNT+1] = {0};
-                        names[0] = 'N';
                         for(i=0;i<PLAYERCOUNT;i++){
-                            strcat(names, clientvar->names[PLAYERCOUNT-i-1]);
-                            strcat(names, "¤");
+                            names.ID[i] = i;
+                            strcpy(names.names[i], clientvar->names[i]);
                         }
-                        printf("Sending\n %s\n to client!\n", names);
-                        SDLNet_TCP_Send(socket, names, 20*PLAYERCOUNT);
+                        memcpy(&serialnames, &names, sizeof(names));
+                        SDLNet_TCP_Send(socket, serialnames, sizeof(serialnames));
                         break;
                 }
             }

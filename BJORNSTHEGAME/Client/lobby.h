@@ -5,4 +5,3 @@ typedef struct{
 
 int LobbyWindow(StartInfo lobbyConnection);
 
-int Players_names(StartInfo players , SDL_Window* lobbyscreen, SDL_Surface* lobbySurface); 

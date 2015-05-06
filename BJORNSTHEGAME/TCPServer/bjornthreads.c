@@ -69,16 +69,18 @@ int Handler(void* thr){
     /* The main thread-loop */
     while(1){
         /*
-            If anything is recieved from the socket it will be handled differently depending on what type of message it is, it can be 1 of 3:
+            If anything is recieved from the socket it will be handled differently depending on what type of message it is, it can be 1 of 5:
             1. A data-message with the message-prefix 'D' which is put on the data-stack and will be redistributed to the clients.
             2. A player-update-message with the message-prefix 'P' which is handled internally by the thread by directly updating the player-data.
             3. A chat-message with the message-prefix 'C' which is put on the chat-stack and will be redistributed to the clients.(With less priority than Data)
-            4. A name-request-message with the message-prefix 'N' which is immidiately responded to with all the active names on the server.
+            4. A name-request-message with the message-prefix 'N' which is immidiately responded to with all the active names on the server in the form of a serialized struct.
+            5. A EXITCONNECTION message, which quits the thread and closes the connection.
         */
         if(SDLNet_TCP_Recv(socket, packet, PACKETSIZE)){
             if((strstr(packet, "EXITCONNECTION"))){
                 printf("Exit command recieved, quitting thread %d!\n", clientvar->ID);
                 memset(clientvar->player->playername,0,strlen(clientvar->player->playername));
+                SDLNet_TCP_Close(socket);
                 pushStack(thread->stack, clientvar);
                 return 0;
             }else{
@@ -96,7 +98,6 @@ int Handler(void* thr){
                         //parseChat(packet, 1, strlen(packet));
                         pushString(thread->cstack, packet);
                         break;
-                    /* player name request */
                     case 'N':
                         printf("Name request recieved, sending!\n");
                         for(i=0;i<PLAYERCOUNT;i++){

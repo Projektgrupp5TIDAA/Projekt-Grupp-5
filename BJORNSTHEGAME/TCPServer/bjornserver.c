@@ -14,7 +14,7 @@ Projekt Grupp 5
 int main(int argc, char **argv){
     TCPsocket clientsockets[PLAYERCOUNT];
     ThreadStack stack = {0, 0, {0}};
-    DataStack cstack = {0, {0}}, dstack = {0, {0}};
+    DataStack cstack = {0, {{0}}}, dstack = {0, {{0}}};
     tinfo threadvariables[PLAYERCOUNT];
     pinfo players[PLAYERCOUNT] = {{HEALTH, {0}, {0}}};
     int quit=0, j, i, threadactive[PLAYERCOUNT], maintimer=0, powerup=0;
@@ -107,12 +107,12 @@ int main(int argc, char **argv){
             while(maintimer > 0 && !(isFullStack(stack))){
                 /*
                 if(!(isEmptyStrStack(dstack))){
-                    /*for(i=0;i<PLAYERCOUNT;i++){
+                    for(i=0;i<PLAYERCOUNT;i++){
                         SDLNet_TCP_Send(clientsockets[i], maintimer, sizeof(maintimer));
                     }
                     SDL_Delay(1000);
                 }else
-                /* If there is a message waiting to be handled it will be sent within the lobby
+                // If there is a message waiting to be handled it will be sent within the lobby
                 if(!(isEmptyStrStack(cstack))){
                     strcpy(popString(&cstack), cmess);
                     for(i=0;i<PLAYERCOUNT;i++){

@@ -16,34 +16,40 @@
 #define GAMELENGTH 300
 
 /* Struct with important information regarding the thread and player */
-typedef struct playerinfo{
+typedef struct{
   short health, position[2];
   char playername[20];
 }pinfo;
 
 /* Struct with all the information a thread will have to get when getting a slot from the stack */
-typedef struct ThreadInformation{
+typedef struct{
     int ID, *active;
     TCPsocket* socket;
     pinfo* player;
     char* names[PLAYERCOUNT];
 }tinfo;
 
+/* Struct to send names */
+typedef struct{
+    char ID[PLAYERCOUNT];
+    char names[20][PLAYERCOUNT];
+}nsend;
+
 /* The stack containing pointers to all of the information regarding the slots on the server */
-typedef struct Threadstack{
+typedef struct{
 	int population;
 	TCPsocket* socket;
 	tinfo* thread[PLAYERCOUNT];
 }ThreadStack;
 
 /* The struct for adding to stack from incoming data */
-typedef struct Datastack{
+typedef struct{
     int population;
     char item[PLAYERCOUNT];
 }DataStack;
 
 /* Struct with pointers required for the Poller to work */
-typedef struct PollerInformation{
+typedef struct{
     int* quit;
     ThreadStack* stack;
     DataStack* cstack;
@@ -51,12 +57,12 @@ typedef struct PollerInformation{
 }PollInfo;
 
 /* Struct for counting down all the timers */
-typedef struct TimerInformation{
+typedef struct{
     int *main, *powerup;
 }TimerInfo;
 
 /* Struct with pointers required for the Clienthandlers to work */
-typedef struct HandlerInformation{
+typedef struct{
     int* quit;
     TCPsocket* socket;
     ThreadStack* stack;

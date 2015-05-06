@@ -32,7 +32,7 @@ typedef struct{
 /* Struct to send names */
 typedef struct{
     char ID[PLAYERCOUNT];
-    char names[20][PLAYERCOUNT];
+    char names[PLAYERCOUNT][20];
 }nsend;
 
 /* The stack containing pointers to all of the information regarding the slots on the server */

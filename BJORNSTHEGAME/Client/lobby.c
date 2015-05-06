@@ -2,6 +2,7 @@
 
 int LobbyWindow(StartInfo lobbyConnection){
     //********************** INIT *************************
+    TTF_Font* playerfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 30);
     SDL_Window* lobby;
 	SDL_Surface* lobbySurface;
     //background pic for lobby
@@ -9,15 +10,13 @@ int LobbyWindow(StartInfo lobbyConnection){
     // image for ready button
 	SDL_Surface* readyButton = IMG_Load("../Images/lobby/ready.png");
     SDL_Rect buttonPlacement;
+    SDL_Rect player1;
 
-
-    TTF_Font *playerFont = TTF_OpenFont("../Images/menu/StencilStd.ttf", 30);
-    TTF_Font* playerfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 30);
     SDL_Thread* timerfunc;
 
     // Struct for clock, see lobby.h
     clkInfo clockInfo;
-    
+    char packet[512];
 
     //the music for the lobby
     Mix_Music *lobbyMusic = Mix_LoadMUS("../Sounds/Music/VolatileReaction.mp3");
@@ -61,23 +60,38 @@ int LobbyWindow(StartInfo lobbyConnection){
                 buttonPlacement.y = (lobbySurface->h/2)+200;
                 buttonPlacement.w =  400;
                 buttonPlacement.h =  80;
+                
+                player1.x=(lobbySurface->w/2)-370;
+                player1.y=(lobbySurface->h/2)-50;
+                player1.w=450;
+                player1.h=400;
             }
         }
        /* timerfunc = SDL_CreateThread(TimeThread, "TimeThread", (void*)lobby);
             if(timerfunc==NULL)
             {
                 fprintf(stderr, "Cant create thread for clock, %s\n", SDL_GetError());
-            }*/ 
-
+            }*/
+        
+        *(lobbyConnection.socket)=SDLNet_TCP_Open(lobbyConnection.targethost);
+        if(*(lobbyConnection.socket)!= NULL){
+            if(!(SDLNet_TCP_Send(*(lobbyConnection.socket), "N", 1))){
+                printf("Could not connect to host: %s\n", SDLNet_GetError());
+            }else{
+                while(1){
+                    printf("Got the name packet: %s", packet);
+                    break;
+                }
+            }
+        }
     }
-
     while(!endLobby){
         // Mouse events handling
         SDL_PumpEvents();
         SDL_GetMouseState(&mousePosition[0], &mousePosition[1]);
-        
-        /* calls the function that determines playernames position */
-        Players_names(lobbyConnection, lobby, lobbySurface);
+        textToScreen(playerfont, player1, lobby, packet);
+        SDL_Delay(500);
+        // Players_names(lobbyConnection, lobby, lobbySurface);
         if( getMouseBounds(mousePosition, buttonPlacement))
         {
             if(SDL_GetMouseState(NULL, NULL) && SDL_BUTTON(SDL_BUTTON_LEFT)) //leftclick
@@ -150,8 +164,6 @@ int LobbyWindow(StartInfo lobbyConnection){
 }
 
 int Players_names(StartInfo players , SDL_Window* lobbyscreen, SDL_Surface* lobbySurface){
-        char packet[512];
-        TTF_Font* playerfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 30);
     
         SDL_Rect player1;
         SDL_Rect player2;
@@ -159,7 +171,7 @@ int Players_names(StartInfo players , SDL_Window* lobbyscreen, SDL_Surface* lobb
         SDL_Rect player4;
         SDL_Rect player5;
         SDL_Rect player6;
-    
+        char packet[512];
         player1.x=(lobbySurface->w/2)-370;
         player1.y=(lobbySurface->h/2)-50;
         player1.w=450;
@@ -190,13 +202,15 @@ int Players_names(StartInfo players , SDL_Window* lobbyscreen, SDL_Surface* lobb
         player6.w=300;
         player6.h=400;
     
+        TTF_Font* playerfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 30);
+    
         *(players.socket)=SDLNet_TCP_Open(players.targethost);
         if(*(players.socket)!= NULL){
             if(!(SDLNet_TCP_Send(*(players.socket), "N", 1))){
                 printf("Could not connect to host: %s\n", SDLNet_GetError());
             }else{
                 while(1){
-                    printf("Got the info %s", packet);
+                    printf("Got the info %s\n", packet);
                     textToScreen(playerfont, player1, lobbyscreen, packet);
                     SDL_Delay(500);
                     break;

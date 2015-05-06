@@ -25,13 +25,15 @@ int LobbyWindow(StartInfo lobbyConnection){
     //********************** INIT *************************
     TTF_Font* playerfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 30);
     SDL_Window* lobby;
+
+    //surface for window
 	SDL_Surface* lobbySurface;
     //background pic for lobby
 	SDL_Surface* lobbyBackground = IMG_Load("../Images/lobby/lobby.png");
     // image for ready button
 	SDL_Surface* readyButton = IMG_Load("../Images/lobby/ready.png");
+    
     SDL_Rect buttonPlacement;
-    SDL_Thread* timerfunc;
     
     nrecv name; // names struct
 
@@ -121,25 +123,6 @@ int LobbyWindow(StartInfo lobbyConnection){
             }
         }
     }
-       /* timerfunc = SDL_CreateThread(TimeThread, "TimeThread", (void*)&lobby);
-            if(timerfunc==NULL)
-            {
-                fprintf(stderr, "Cant create thread for clock, %s\n", SDL_GetError());
-
-            }*/
-    
-
-
-       /* if(*(lobbyConnection.socket)!= NULL){
-            if(!(SDLNet_TCP_Send(*(lobbyConnection.socket), "N", 1))){
-                printf("Could not connect to host: %s\n", SDLNet_GetError());
-            }else{
-                if(SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, 512)){
-                   memcpy(&name, &packet, sizeof(name));
-                   printf("names struct includes now: %s\n", name.names[5]);
-                }
-            }
-        }*/
     while(!endLobby){
         // Mouse events handling
         SDL_PumpEvents();
@@ -190,48 +173,7 @@ int LobbyWindow(StartInfo lobbyConnection){
     return 0;
 }
 
-//a thread that updates time left in lobby.
- void TimeThread(SDL_Window* lobbyscreen){
-    //få tid av server
-    int time = 12;
-    char time_in_text[3];
 
-    SDL_Surface* window = SDL_GetWindowSurface(lobbyscreen);
-    SDL_Rect clockPlace;
-    SDL_Surface *textsurface;
-            //rectangle for clock
-            clockPlace.x = (window->w/3)+240;
-            clockPlace.y = (window->h/2)-200;
-            clockPlace.w =  400;
-            clockPlace.h =  80;
-    TTF_Font *clockFont = TTF_OpenFont("../Images/menu/StencilStd.ttf", 30);
-    SDL_Colour fontcolour={0,0,0};
-
-    for (int i = time; i > 0; --i)
-    {
-        printf("entering loop in thread\n");
-        sprintf(time_in_text, "%d", i);
-        printf("sprintf time_in_text\n");
-        SDL_Delay(500);
-        printf("delay is working in thread\n");
-        textsurface = TTF_RenderText_Solid(clockFont, time_in_text, fontcolour);
-        SDL_BlitSurface(textsurface, NULL, window, &clockPlace);
-        SDL_Delay(500);
-        printf("threadloop is working\n");
-    }
-    printf("GAME HAS STARTED\n");
-
-   /*  clkInfo* changeclk = (clkInfo*) clockInfo;
-
-    changeclk->seconds_left = 120;
-
-    while(changeclk->seconds_left > 0)
-    {
-        changeclk->seconds_left = (changeclk->seconds_left) -1;
-        SDL_Delay(995);
-        sprintf((changeclk->sendingTime), "%d", (changeclk->seconds_left));
-    }*/ 
- }
 
 
 

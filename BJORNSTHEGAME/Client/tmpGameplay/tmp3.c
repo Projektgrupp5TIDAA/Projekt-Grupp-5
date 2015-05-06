@@ -127,8 +127,8 @@ void loadMedia(){
     /*gameSurface = SDL_GetWindowSurface(gameplay);
     SDL_BlitScaled(gameBackground,NULL,gameSurface,NULL);
     SDL_UpdateWindowSurface(gameplay);*/
-    SDL_Surface* gSpacemanSurface = IMG_Load("spriteBlue.PNG");
-    player = SDL_CreateTextureFromSurface(gRenderer, gSpacemanSurface);
+    SDL_Surface* playerSurface = IMG_Load("spriteBlue.PNG");
+    player = SDL_CreateTextureFromSurface(gRenderer, playerSurface);
 
 
     spriteClips[0].x = 0;

@@ -100,13 +100,16 @@ int LobbyWindow(StartInfo lobbyConnection){
             }
         }
     }
-        timerfunc = SDL_CreateThread(TimeThread, "TimeThread", (void*)&lobby);
+       /* timerfunc = SDL_CreateThread(TimeThread, "TimeThread", (void*)&lobby);
             if(timerfunc==NULL)
             {
                 fprintf(stderr, "Cant create thread for clock, %s\n", SDL_GetError());
-            }
 
-        if(*(lobbyConnection.socket)!= NULL){
+            }*/
+    
+
+
+       /* if(*(lobbyConnection.socket)!= NULL){
             if(!(SDLNet_TCP_Send(*(lobbyConnection.socket), "N", 1))){
                 printf("Could not connect to host: %s\n", SDLNet_GetError());
             }else{
@@ -115,11 +118,21 @@ int LobbyWindow(StartInfo lobbyConnection){
                    printf("names struct includes now: %s\n", name.names[5]);
                 }
             }
-        }
+        }*/
     while(!endLobby){
         // Mouse events handling
         SDL_PumpEvents();
         SDL_GetMouseState(&mousePosition[0], &mousePosition[1]);
+        if(*(lobbyConnection.socket)!= NULL){
+            if(!(SDLNet_TCP_Send(*(lobbyConnection.socket), "N", 1))){
+                printf("Could not connect to host: %s\n", SDLNet_GetError());
+            }else{
+                if(SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, sizeof(name))){
+                    memcpy(&name, &packet, sizeof(name));
+                    printf("names struct includes now: %s\n", name.names[5]);
+                }
+            }
+        }
         textToScreen(playerfont, player1, lobby, name.names[5]);
         textToScreen(playerfont, player2, lobby, name.names[4]);
         textToScreen(playerfont, player3, lobby, name.names[3]);
@@ -127,7 +140,6 @@ int LobbyWindow(StartInfo lobbyConnection){
         textToScreen(playerfont, player5, lobby, name.names[1]);
         textToScreen(playerfont, player6, lobby, name.names[0]);
         SDL_Delay(500);
-        // Players_names(lobbyConnection, lobby, lobbySurface);
         if( getMouseBounds(mousePosition, buttonPlacement))
         {
             if(SDL_GetMouseState(NULL, NULL) && SDL_BUTTON(SDL_BUTTON_LEFT)) //leftclick
@@ -194,9 +206,7 @@ int LobbyWindow(StartInfo lobbyConnection){
         SDL_Delay(995);
         sprintf((changeclk->sendingTime), "%d", (changeclk->seconds_left));
     }*/ 
-
-
-}
+ }
 
 
 

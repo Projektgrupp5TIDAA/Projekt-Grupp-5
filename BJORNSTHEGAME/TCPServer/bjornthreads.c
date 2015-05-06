@@ -41,19 +41,6 @@ int Handler(void* thr){
                 *(clientvar->socket) = socket;
             }
             break;
-        /* player name request */
-        case 'N':
-            printf("Player name request recieved\n");
-            if(isEmptyStack(*thread->stack))
-                SDLNet_TCP_Send(socket,"F", 1);
-            else{
-                // sprintf(packet, "%s ", clientvar->player->playername);
-                //strcpy(packet, clientvar->player->playername);
-                SDLNet_TCP_Send(socket, clientvar->player->playername, PACKETSIZE);
-                SDLNet_TCP_Close(socket);
-                printf("Player name: %s  sent!\n", clientvar->player->playername);
-            }
-            break;
         default:
             /* If the request is not recognized the server will return error */
             SDLNet_TCP_Send(socket, "ERROR: Bad request.", 40);
@@ -76,6 +63,7 @@ int Handler(void* thr){
             1. A data-message with the message-prefix 'D' which is put on the data-stack and will be redistributed to the clients.
             2. A player-update-message with the message-prefix 'P' which is handled internally by the thread by directly updating the player-data.
             3. A chat-message with the message-prefix 'C' which is put on the chat-stack and will be redistributed to the clients.(With less priority than Data)
+            4. A name-request-message with the message-prefix 'N' which is immidiately responded to with all the active names on the server.
         */
         if(SDLNet_TCP_Recv(socket, packet, PACKETSIZE)){
             if((strstr("EXITCONNECTION", packet))){
@@ -93,6 +81,17 @@ int Handler(void* thr){
                     case 'C':
                         parseChat(packet, 1, strlen(packet));
                         pushString(thread->cstack, packet);
+                        break;
+                    /* player name request */
+                    case 'N':
+                        printf("Name request recieved.\n");
+                        char names[20*PLAYERCOUNT] = {0};
+                        names[0] = 'N';
+                        for(i=0;i<PLAYERCOUNT;i++){
+                            strcat(names, clientvar->names[i]);
+                        }
+                        printf("Sending\n %s\n to client!\n", names);
+                        SDLNet_TCP_Send(socket, names, 20*PLAYERCOUNT);
                         break;
                 }
             }

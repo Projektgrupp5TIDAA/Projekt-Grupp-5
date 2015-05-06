@@ -68,6 +68,7 @@ int Handler(void* thr){
         if(SDLNet_TCP_Recv(socket, packet, PACKETSIZE)){
             if((strstr("EXITCONNECTION", packet))){
                 printf("Exit command recieved, quitting thread %d!\n", clientvar->ID);
+                memset(clientvar->player->playername,0,strlen(clientvar->player->playername));
                 pushStack(thread->stack, clientvar);
                 return 0;
             }else{

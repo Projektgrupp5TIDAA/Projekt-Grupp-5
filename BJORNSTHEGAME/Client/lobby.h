@@ -28,7 +28,7 @@ typedef struct clockInformation
 
 typedef struct{
     char ID[6];
-    char names[20][6];
+    char names[6][20];
 }nrecv;
 
 void TimeThread(SDL_Window* screen);

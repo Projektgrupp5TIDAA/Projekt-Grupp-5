@@ -37,10 +37,8 @@ int LobbyWindow(StartInfo lobbyConnection){
     
     nrecv name; // names struct
 
-    // Struct for clock, see lobby.h
-    clkInfo clockInfo;
     char packet[512];
-    int i;
+
     //the music for the lobby
     Mix_Music *lobbyMusic = Mix_LoadMUS("../Sounds/Music/VolatileReaction.mp3");
     Mix_PlayMusic(lobbyMusic, -1);

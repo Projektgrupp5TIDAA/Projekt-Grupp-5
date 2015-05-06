@@ -67,7 +67,7 @@ int Handler(void* thr){
             4. A name-request-message with the message-prefix 'N' which is immidiately responded to with all the active names on the server.
         */
         if(SDLNet_TCP_Recv(socket, packet, PACKETSIZE)){
-            if((strstr("EXITCONNECTION", packet))){
+            if((strstr(packet, "EXITCONNECTION"))){
                 printf("Exit command recieved, quitting thread %d!\n", clientvar->ID);
                 memset(clientvar->player->playername,0,strlen(clientvar->player->playername));
                 pushStack(thread->stack, clientvar);
@@ -87,10 +87,11 @@ int Handler(void* thr){
                     /* player name request */
                     case 'N':
                         printf("Name request recieved.\n");
-                        char names[20*PLAYERCOUNT] = {0};
+                        char names[21*PLAYERCOUNT+1] = {0};
                         names[0] = 'N';
                         for(i=0;i<PLAYERCOUNT;i++){
-                            strcat(names, clientvar->names[i]);
+                            strcat(names, clientvar->names[PLAYERCOUNT-i-1]);
+                            strcat(names, "¤");
                         }
                         printf("Sending\n %s\n to client!\n", names);
                         SDLNet_TCP_Send(socket, names, 20*PLAYERCOUNT);

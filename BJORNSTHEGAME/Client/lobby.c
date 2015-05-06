@@ -147,11 +147,16 @@ int LobbyWindow(StartInfo lobbyConnection){
         if(*(lobbyConnection.socket)!= NULL){
             if(!(SDLNet_TCP_Send(*(lobbyConnection.socket), "N", 1))){
                 printf("Could not connect to host: %s\n", SDLNet_GetError());
-            }else{
-                if(SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, sizeof(name))){
-                    memcpy(&name, &packet, sizeof(name));
-                }
-            }
+            }//else{
+            
+            // }
+                
+        }
+        if(SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, 200)){
+            if(packet[0]=='C')
+                printf("%s\n",packet);
+            else
+                memcpy(&name, &packet, sizeof(name));
         }
         textToScreen(playerfont, player1, lobby, name.names[5]);
         textToScreen(playerfont, player2, lobby, name.names[4]);

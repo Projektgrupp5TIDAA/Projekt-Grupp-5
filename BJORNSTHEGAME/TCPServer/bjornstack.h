@@ -24,7 +24,7 @@ int isFullStack(ThreadStack stack);
 void pushString(DataStack *stack, char *pushStr);
 
 /* Grab the ID of the socket at the top of the stack */
-char* popString(DataStack *stack);
+void popString(DataStack *stack, char* string);
 
 /* Check if the stack is empty */
 int isEmptyStrStack(DataStack stack);

@@ -90,7 +90,8 @@ int main(int argc, char **argv){
                 }
                 /* If there is a message waiting to be handled it will be sent within the lobby */
                 if(!(isEmptyStrStack(cstack))){
-                    char* test = popString(&cstack);
+                    char test[sizeof(cmess)];
+                    popString(&cstack, test);
                     printf("STRING IS: %s\n", test);
                     strcpy(cmess, test);
                     for(i=0;i<PLAYERCOUNT;i++){

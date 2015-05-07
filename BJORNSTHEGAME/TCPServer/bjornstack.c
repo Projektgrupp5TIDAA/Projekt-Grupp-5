@@ -57,13 +57,12 @@ void pushString(DataStack *stack, char pushStr[20]){
 }
 
 /* Grab the ID of the socket at the top of the stack */
-char* popString(DataStack *stack){
+void popString(DataStack *stack, char* string){
 	if(isEmptyStrStack(*stack)){
 		fprintf(stderr, "Error taking from stack: Stack is Empty\n");
-		return NULL;
 	}else{
 		(stack->population)--;
-		return (stack->item);
+		strcpy(string, *(stack->item));
 	}
 }
 

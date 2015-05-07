@@ -17,8 +17,9 @@ int main(int argc, char **argv){
     DataStack cstack = {0, {{0}}}, dstack = {0, {{0}}};
     tinfo threadvariables[PLAYERCOUNT];
     pinfo players[PLAYERCOUNT] = {{HEALTH, {0}, {0}}};
-    int quit=0, j, i, threadactive[PLAYERCOUNT], maintimer=0, powerup=0;
-    char cmess[40];
+    int quit=0, j, i, threadactive[PLAYERCOUNT], maintimer=0, powerup=0, lastpop=0;
+    char cmess[40], serializednames[sizeof(nsend)+2];
+    nsend namestruct;
     PollInfo pollerinfo;
     TimerInfo timerinfo = {&maintimer, &powerup};
     SDL_Thread* connectionpoller, *timerthr;
@@ -96,6 +97,21 @@ int main(int argc, char **argv){
                         SDLNet_TCP_Send(clientsockets[i], cmess, 200);
                     }
                 }else SDL_Delay(200);
+                if(stack.population != lastpop){
+                    SDL_Delay(100);
+                    printf("New player!\n");
+                    for(i=0;i<PLAYERCOUNT;i++){
+                        namestruct.ID[i] = i;
+                        strcpy(namestruct.names[i], players[i].playername);
+                    }
+                    memcpy(&serializednames, &namestruct, sizeof(namestruct));
+                    parseChat(serializednames, -1, strlen(serializednames));
+                    serializednames[0] = 'N';
+                    for(i=0;i<PLAYERCOUNT;i++){
+                        SDLNet_TCP_Send(clientsockets[i], serializednames, sizeof(serializednames));
+                    }
+                    lastpop = stack.population;
+                }
             }
             SDL_Delay(1000);
 

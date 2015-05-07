@@ -18,8 +18,14 @@ void set_bit(int *num, int bit){
 
 /* Parses the string 'hops' hops forward */
 void parseChat(char* inc, int hops, int len){
-	int i;
-	for(i=0;i<len;i++){
-		*(inc+i) = *(inc+i+hops);
-	}
+    int i;
+    if(hops>0){
+        for(i=0;i<len;i++){
+            *(inc+i) = *(inc+i+hops);
+        }
+    }else if(hops<0){
+        for(i=len;i>0;i++){
+            *(inc+i) = *(inc+i-hops);
+        }
+    }
 }

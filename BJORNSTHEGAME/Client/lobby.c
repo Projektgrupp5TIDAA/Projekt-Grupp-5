@@ -16,7 +16,7 @@
 #include <SDL2/SDL_net.h>
 #endif
 #include "bjornstartup.h"
-#include <time.h> 
+#include <time.h>
 #include "lobby.h"
 #endif
 
@@ -32,24 +32,24 @@ int LobbyWindow(StartInfo lobbyConnection){
 	SDL_Surface* lobbyBackground = IMG_Load("../Images/lobby/lobby.png");
     // image for ready button
 	SDL_Surface* readyButton = IMG_Load("../Images/lobby/ready.png");
-    
-    SDL_Rect buttonPlacement;
-    
-    nrecv name; // names struct
 
-    char packet[512];
+    SDL_Rect buttonPlacement;
+
+    nrecv name = {{0}, {{0}}}; // names struct
+
+    SDLNet_SocketSet csock = SDLNet_AllocSocketSet(1);
+    SDLNet_AddSocket(csock, *(lobbyConnection.socket));
+
+    char packet[512] = {0};
+
+    int i;
 
     //the music for the lobby
     Mix_Music *lobbyMusic = Mix_LoadMUS("../Sounds/Music/VolatileReaction.mp3");
     Mix_PlayMusic(lobbyMusic, -1);
 
-    SDL_Rect player1;
-    SDL_Rect player2;
-    SDL_Rect player3;
-    SDL_Rect player4;
-    SDL_Rect player5;
-    SDL_Rect player6;
-    
+    SDL_Rect player[6];
+
     // mousePosition(X-axis,Y-axis)
     int mousePosition[2] = {0, 0};
     //gameloop
@@ -71,7 +71,7 @@ int LobbyWindow(StartInfo lobbyConnection){
                                     SDL_WINDOWPOS_UNDEFINED,
                                     1280,
                                     800,
-                                 SDL_WINDOW_FULLSCREEN);
+                                    0);
         if( lobby == NULL )
         {
             printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
@@ -82,82 +82,86 @@ int LobbyWindow(StartInfo lobbyConnection){
 
             {
                 lobbySurface = SDL_GetWindowSurface( lobby );
-                
+
             //rectangle for button
                 buttonPlacement.x = (lobbySurface->w/3)-240;
                 buttonPlacement.y = (lobbySurface->h/2)+200;
                 buttonPlacement.w =  400;
                 buttonPlacement.h =  80;
-                
-                player1.x=(lobbySurface->w/2)-370;
-                player1.y=(lobbySurface->h/2)-50;
-                player1.w=450;
-                player1.h=400;
-                
-                player2.x=(lobbySurface->w/2)-370;
-                player2.y=(lobbySurface->h/2)+25;
-                player2.w=450;
-                player2.h=400;
-                
-                player3.x=(lobbySurface->w/2)-370;
-                player3.y=(lobbySurface->h/2)+125;
-                player3.w=450;
-                player3.h=400;
-                
-                player4.x=(lobbySurface->w/2)-90;
-                player4.y=(lobbySurface->h/2)-50;
-                player4.w=300;
-                player4.h=400;
-                
-                player5.x=(lobbySurface->w/2)-90;
-                player5.y=(lobbySurface->h/2)+25;
-                player5.w=300;
-                player5.h=400;
-                
-                player6.x=(lobbySurface->w/2)-90;
-                player6.y=(lobbySurface->h/2)+125;
-                player6.w=300;
-                player6.h=400;
+
+                player[0].x=(lobbySurface->w/2)-370;
+                player[0].y=(lobbySurface->h/2)-50;
+                player[0].w=450;
+                player[0].h=400;
+
+                player[1].x=(lobbySurface->w/2)-370;
+                player[1].y=(lobbySurface->h/2)+25;
+                player[1].w=450;
+                player[1].h=400;
+
+                player[2].x=(lobbySurface->w/2)-370;
+                player[2].y=(lobbySurface->h/2)+125;
+                player[2].w=450;
+                player[2].h=400;
+
+                player[3].x=(lobbySurface->w/2)-90;
+                player[3].y=(lobbySurface->h/2)-50;
+                player[3].w=300;
+                player[3].h=400;
+
+                player[4].x=(lobbySurface->w/2)-90;
+                player[4].y=(lobbySurface->h/2)+25;
+                player[4].w=300;
+                player[4].h=400;
+
+                player[5].x=(lobbySurface->w/2)-90;
+                player[5].y=(lobbySurface->h/2)+125;
+                player[5].w=300;
+                player[5].h=400;
             }
         }
     }
     while(!endLobby){
         // Mouse events handling
         SDL_PumpEvents();
+        SDLNet_CheckSockets(csock, 0);
         SDL_GetMouseState(&mousePosition[0], &mousePosition[1]);
-        if(*(lobbyConnection.socket)!= NULL){
-            if(!(SDLNet_TCP_Send(*(lobbyConnection.socket), "N", 1))){
-                printf("Could not connect to host: %s\n", SDLNet_GetError());
-            }//else{
-            
-            // }
-                
-        }
-        if(SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, 200)){
-            if(packet[0]=='C'){
-                parseChat(packet,1,strlen(packet));
-                printf("%s\n",packet);
+        if(SDLNet_SocketReady(*(lobbyConnection.socket))){
+            printf("NY SKIT I RÖRET!\n");
+            SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, 200);
+            switch(packet[0]){
+                case 'C':
+                    parseChat(packet,1,strlen(packet));
+                    printf("%s\n",packet);
+                    break;
+                case 'N':
+                    parseChat(packet, 1, strlen(packet));
+                    printf("Hej\n");
+                    memcpy(&name, &packet, sizeof(name));
+                    printf("Hej2\n");
+                    break;
+                default:
+                    printf("Invalid package recieved!\n");
+                    break;
             }
-            else
-                memcpy(&name, &packet, sizeof(name));
         }
-        textToScreen(playerfont, player1, lobby, name.names[5]);
-        textToScreen(playerfont, player2, lobby, name.names[4]);
-        textToScreen(playerfont, player3, lobby, name.names[3]);
-        textToScreen(playerfont, player4, lobby, name.names[2]);
-        textToScreen(playerfont, player5, lobby, name.names[1]);
-        textToScreen(playerfont, player6, lobby, name.names[0]);
-        SDL_Delay(500);
+
+        for(i=0;i<PLAYERCOUNT;i++){
+            textToScreen(playerfont, player[i], lobby, name.names[5-i]);
+        }
+
+        //SDL_Delay(500);
+
         if( getMouseBounds(mousePosition, buttonPlacement))
         {
             if(SDL_GetMouseState(NULL, NULL) && SDL_BUTTON(SDL_BUTTON_LEFT)) //leftclick
             {
                 printf("PLAYER %s IS READY!\n", lobbyConnection.playerName);
-                
+
                 endLobby=1;
             }
         }
-        
+
         SDL_BlitScaled(lobbyBackground, NULL, lobbySurface, NULL);
         SDL_BlitScaled(readyButton, NULL, lobbySurface, &buttonPlacement);
          //Update the surface
@@ -175,8 +179,14 @@ int LobbyWindow(StartInfo lobbyConnection){
 
 void parseChat(char* inc, int hops, int len){
     int i;
-    for(i=0;i<len;i++){
-        *(inc+i) = *(inc+i+hops);
+    if(hops>0){
+        for(i=0;i<len;i++){
+            *(inc+i) = *(inc+i+hops);
+        }
+    }else if(hops<0){
+        for(i=len-1;i>0;i++){
+            *(inc+i) = *(inc+i-hops);
+        }
     }
 }
 

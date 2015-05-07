@@ -12,7 +12,7 @@ Projekt Grupp 5
 #include "bjornshared.h"
 
 int main(int argc, char **argv){
-    TCPsocket clientsockets[PLAYERCOUNT];
+    TCPsocket clientsockets[PLAYERCOUNT]={NULL};
     ThreadStack stack = {0, 0, {0}};
     DataStack cstack = {0, {{0}}}, dstack = {0, {{0}}};
     tinfo threadvariables[PLAYERCOUNT];
@@ -95,11 +95,12 @@ int main(int argc, char **argv){
                     printf("STRING IS: %s\n", test);
                     strcpy(cmess, test);
                     for(i=0;i<PLAYERCOUNT;i++){
-                        SDLNet_TCP_Send(clientsockets[i], cmess, 200);
+                        if(clientsockets[i] !=NULL)
+                            SDLNet_TCP_Send(clientsockets[i], cmess, 200);
                     }
                 }else SDL_Delay(200);
                 if(stack.population != lastpop){
-                    SDL_Delay(100);
+                    SDL_Delay(400);
                     printf("New player!\n");
                     for(i=0;i<PLAYERCOUNT;i++){
                         namestruct.ID[i] = i;
@@ -109,9 +110,12 @@ int main(int argc, char **argv){
                     parseChat(serializednames, -1, strlen(serializednames));
                     serializednames[0] = 'N';
                     for(i=0;i<PLAYERCOUNT;i++){
-                        SDLNet_TCP_Send(clientsockets[i], serializednames, sizeof(serializednames));
+                        if(clientsockets[i] != NULL)
+                            SDLNet_TCP_Send(clientsockets[i], serializednames, sizeof(serializednames));
                     }
+                    printf("SDLNET counldnt send!\n");
                     lastpop = stack.population;
+                    printf("LAST POOP!\n");
                 }
             }
             SDL_Delay(1000);

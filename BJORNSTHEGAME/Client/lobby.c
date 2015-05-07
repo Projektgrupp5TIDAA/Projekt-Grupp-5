@@ -18,6 +18,7 @@
 #include "bjornstartup.h"
 #include <time.h>
 #include "lobby.h"
+#define PLAYERCOUNT 6
 #endif
 
 
@@ -34,6 +35,7 @@ int LobbyWindow(StartInfo lobbyConnection){
 	SDL_Surface* readyButton = IMG_Load("../Images/lobby/ready.png");
 
     SDL_Rect buttonPlacement;
+    SDL_Rect chat;
 
     nrecv name = {{0}, {{0}}}; // names struct
 
@@ -41,6 +43,7 @@ int LobbyWindow(StartInfo lobbyConnection){
     SDLNet_AddSocket(csock, *(lobbyConnection.socket));
 
     char packet[512] = {0};
+    char tmp[512]={0};
 
     int i;
 
@@ -118,6 +121,12 @@ int LobbyWindow(StartInfo lobbyConnection){
                 player[5].y=(lobbySurface->h/2)+125;
                 player[5].w=300;
                 player[5].h=400;
+                
+                
+                chat.x=(lobbySurface->w/2)-370;
+                chat.y=(lobbySurface->h/2)+125;
+                chat.w=450;
+                chat.h=400;
             }
         }
     }
@@ -127,18 +136,16 @@ int LobbyWindow(StartInfo lobbyConnection){
         SDLNet_CheckSockets(csock, 0);
         SDL_GetMouseState(&mousePosition[0], &mousePosition[1]);
         if(SDLNet_SocketReady(*(lobbyConnection.socket))){
-            printf("NY SKIT I RÖRET!\n");
             SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, 200);
             switch(packet[0]){
                 case 'C':
                     parseChat(packet,1,strlen(packet));
                     printf("%s\n",packet);
+                    strcpy(tmp, packet);
                     break;
                 case 'N':
                     parseChat(packet, 1, strlen(packet));
-                    printf("Hej\n");
                     memcpy(&name, &packet, sizeof(name));
-                    printf("Hej2\n");
                     break;
                 default:
                     printf("Invalid package recieved!\n");
@@ -164,6 +171,7 @@ int LobbyWindow(StartInfo lobbyConnection){
 
         SDL_BlitScaled(lobbyBackground, NULL, lobbySurface, NULL);
         SDL_BlitScaled(readyButton, NULL, lobbySurface, &buttonPlacement);
+        textToScreen(playerfont, chat, lobby, tmp);
          //Update the surface
         SDL_UpdateWindowSurface(lobby);
     }

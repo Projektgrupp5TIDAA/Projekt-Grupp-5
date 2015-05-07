@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "SDL2/SDL_net.h"
+#include "SDL2_net/SDL_net.h"
 
 int main(int argc, char **argv)
 {
@@ -11,12 +11,11 @@ int main(int argc, char **argv)
 	int quit;
 	char outgoing[512] = {0};
 
-	/* Check for parameters
 	if (argc < 3)
 	{
 		fprintf(stderr, "Usage: %s host port\n", argv[0]);
 		exit(EXIT_FAILURE);
-	}*/
+	}
 
 	/* Initialize SDL_net */
 	if (SDLNet_Init() < 0)
@@ -26,7 +25,7 @@ int main(int argc, char **argv)
 	}
 
 	/* Resolve server name  */
-	if (SDLNet_ResolveHost(&srvadd, "127.0.0.1"/*argv[1]*/, 4000 /*atoi(argv[2])*/) == -1)
+	if (SDLNet_ResolveHost(&srvadd, argv[1], atoi(argv[2])) == -1)
 	{
 		fprintf(stderr, "SDLNet_ResolveHost(%s %d): %s\n", argv[1], atoi(argv[2]), SDLNet_GetError());
 		exit(EXIT_FAILURE);

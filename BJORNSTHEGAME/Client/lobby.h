@@ -11,8 +11,6 @@ void parseString(char* inc, int hops, int len);
 
 #endif // _LOBBY_H_
 
-int readKeyboardToServer( StartInfo keyboard,SDL_Rect pos, char* output, int len, SDL_Window* window, SDL_Surface* bg);
-
 /* time information in the lobby */ 
 typedef struct{
     int *lobby_time;

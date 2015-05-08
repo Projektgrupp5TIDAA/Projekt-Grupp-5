@@ -81,6 +81,7 @@ int Handler(void* thr){
                 printf("Exit command recieved, quitting thread %d!\n", clientvar->ID);
                 memset(clientvar->player->playername,0,strlen(clientvar->player->playername));
                 SDLNet_TCP_Close(socket);
+                clientvar->socket = NULL;
                 pushStack(thread->stack, clientvar);
                 return 0;
             }else{

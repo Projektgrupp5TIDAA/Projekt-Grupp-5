@@ -18,7 +18,7 @@ int main(int argc, char **argv){
     tinfo threadvariables[PLAYERCOUNT];
     pinfo players[PLAYERCOUNT] = {{HEALTH, {0}, {0}}};
     int quit=0, j, i, threadactive[PLAYERCOUNT], maintimer=0, powerup=0, lastpop=0;
-    char cmess[40], sendpackage[200];
+    char sendpackage[200];
     nsend namestruct;
     PollInfo pollerinfo;
     TimerInfo timerinfo = {&maintimer, &powerup};
@@ -83,23 +83,26 @@ int main(int argc, char **argv){
             while(maintimer > 0 && !(isFullStack(stack))){
                 /* Every time the timer hits a number dividable by 10 the server will send a time-syncronization */
                 if(!(maintimer%10)){
+                    printf("Timer sync.");
                     sprintf(sendpackage, "T%d", maintimer);
                     for(i=0;i<PLAYERCOUNT;i++){
                         SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
                     }
-                    SDL_Delay(1000);
+                    SDL_Delay(200);
                 }
                 /* If there is a message waiting to be handled it will be sent within the lobby */
                 if(!(isEmptyStrStack(cstack))){
-                    char test[sizeof(cmess)];
-                    popString(&cstack, test);
-                    printf("STRING IS: %s\n", test);
-                    strcpy(cmess, test);
+                    popString(&cstack, sendpackage);
+                    printf("STRING IS: %s\n", sendpackage);
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(clientsockets[i] !=NULL)
-                            SDLNet_TCP_Send(clientsockets[i], cmess, 200);
+                            SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
                     }
+                    SDL_Delay(200);
                 }else SDL_Delay(200);
+
+                /* If the current stack population differs from the previous state
+                 the server will send a name update to connected players */
                 if(stack.population != lastpop){
                     SDL_Delay(400);
                     printf("New player!\n");
@@ -117,20 +120,30 @@ int main(int argc, char **argv){
                     lastpop = stack.population;
                 }
             }
-            SDL_Delay(1000);
 
             /* Goes over to the game-loop */
-            printf("Game starting.\n");
+            printf("Game starting in 2 sec.\n");
+            SDL_Delay(2000);
             maintimer = GAMELENGTH;
+
+            printf("Sending time sync message.\n");
+            sprintf(sendpackage, "T%d", maintimer);
+            for(i=0;i<PLAYERCOUNT;i++){
+                SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+            }
+            SDL_Delay(200);
 
             /* Keeps the game active as long as there is players connected to the server */
             while(maintimer > 0 && !(isFullStack(stack))){
                 /*
                 if(!(isEmptyStrStack(dstack))){
+                    popString(&dstack, sendpackage);
+                    printf("STRING IS: %s\n", sendpackage);
                     for(i=0;i<PLAYERCOUNT;i++){
-                        SDLNet_TCP_Send(clientsockets[i], maintimer, sizeof(maintimer));
+                        if(clientsockets[i] !=NULL)
+                            SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
                     }
-                    SDL_Delay(1000);
+                    SDL_Delay(200);
                 }else
                 // If there is a message waiting to be handled it will be sent within the lobby
                 if(!(isEmptyStrStack(cstack))){

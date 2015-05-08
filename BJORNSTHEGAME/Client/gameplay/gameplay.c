@@ -171,7 +171,7 @@ void gameplayWindow()
 
 
 
-            platforms[0].x = screen->w/5 -300;
+           platforms[0].x = screen->w/5 -300;
             platforms[0].y =screen ->h -65;
             platforms[0].w = 1920;
             platforms[0].h =70;
@@ -240,6 +240,7 @@ void gameplayWindow()
             platforms[13].y = screen -> h/2 +30;
             platforms[13].w = 170;
             platforms[13].h = 30;
+
 
             capsRect[0].x = screen ->w/2 +600;
             capsRect[0].y = screen ->h - 740;
@@ -483,7 +484,4 @@ void gameplayWindow()
     TTF_Quit();
 
 }
-
-
-
 

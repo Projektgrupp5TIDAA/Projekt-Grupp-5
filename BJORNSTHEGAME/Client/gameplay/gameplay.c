@@ -77,7 +77,7 @@ void gameplayWindow()
 
             gRenderer =SDL_CreateRenderer(gameplay, -1, SDL_RENDERER_ACCELERATED);
             bakgroundTexture= SDL_CreateTextureFromSurface(gRenderer,gameBackground);
-            SDL_FreeSurface(gameBackground);
+
 
             /*text*/
             SDL_Color colorT= {170,60,255};
@@ -93,74 +93,33 @@ void gameplayWindow()
 
 
             player = SDL_CreateTextureFromSurface(gRenderer, playerSurface);
-           // SDL_FreeSurface(playerSurface);
 
             picture[0]= SDL_CreateTextureFromSurface(gRenderer,ground );
-            //SDL_FreeSurface(ground);
-
             picture[1]= SDL_CreateTextureFromSurface(gRenderer,band);
-           // SDL_FreeSurface(band);
-
             picture[2]= SDL_CreateTextureFromSurface(gRenderer,platform1[0]);
-            //SDL_FreeSurface(platform1[0]);
-
             picture[3]= SDL_CreateTextureFromSurface(gRenderer,platform2);
-          //  SDL_FreeSurface(platform2);
-
-
             picture[4]= SDL_CreateTextureFromSurface(gRenderer,platform1[1]);
-           // SDL_FreeSurface(platform1[1]);
-
             picture[5]= SDL_CreateTextureFromSurface(gRenderer,platform1[2]);
-           // SDL_FreeSurface(platform1[2]);
-
             picture[6]= SDL_CreateTextureFromSurface(gRenderer,platform1[3]);
-          //  SDL_FreeSurface(platform1[3]);
-
             picture[7]= SDL_CreateTextureFromSurface(gRenderer,platform1[4]);
-            //SDL_FreeSurface(platform1[4]);
-
             picture[8]= SDL_CreateTextureFromSurface(gRenderer,platform1[5]);
-           // SDL_FreeSurface(platform1[5]);
-
             picture[9]= SDL_CreateTextureFromSurface(gRenderer,platform1[6]);
-           // SDL_FreeSurface(platform1[6]);
-
             picture[10]= SDL_CreateTextureFromSurface(gRenderer,platform1[7]);
-          //  SDL_FreeSurface(platform1[7]);
-
             picture[11]= SDL_CreateTextureFromSurface(gRenderer,platform1[8]);
-          //  SDL_FreeSurface(platform1[8]);
-
             picture[12]= SDL_CreateTextureFromSurface(gRenderer,platform1[9]);
-            //SDL_FreeSurface(platform1[9]);
-
             picture[13]= SDL_CreateTextureFromSurface(gRenderer,platform1[10]);
-           // SDL_FreeSurface(platform1[10]);
 
             caps[0]= SDL_CreateTextureFromSurface(gRenderer,ammo[0]);
-           // SDL_FreeSurface(ammo[0]);
-
             caps[1]= SDL_CreateTextureFromSurface(gRenderer,ammo[1]);
-           // SDL_FreeSurface(ammo[1]);
-
             caps[2]= SDL_CreateTextureFromSurface(gRenderer,ammo[2]);
-            //SDL_FreeSurface(ammo[2]);
 
             bjornDrapare[0]=SDL_CreateTextureFromSurface(gRenderer,bjorns[0]);
-           // SDL_FreeSurface(bjorns[0]);
-
             bjornDrapare[1]=SDL_CreateTextureFromSurface(gRenderer,bjorns[1]);
-           // SDL_FreeSurface(bjorns[1]);
 
             myText[0]=SDL_CreateTextureFromSurface(gRenderer,textSurface[0]);
-          //  SDL_FreeSurface(textSurface[0]);
-
             myText[1]=SDL_CreateTextureFromSurface(gRenderer,textSurface[1]);
-          //  SDL_FreeSurface(textSurface[1]);
-
             myText[2]=SDL_CreateTextureFromSurface(gRenderer,textSurface[2]);
-          //  SDL_FreeSurface(textSurface[2]);
+
 
 
 
@@ -476,7 +435,6 @@ void gameplayWindow()
 
 
     SDL_DestroyTexture(player);
-    //  SDL_DestroyWindow(bakgroundTexture);
     SDL_DestroyRenderer(gRenderer);
 
 

@@ -8,7 +8,7 @@ Projekt Grupp 5
 #include <string.h>
 #include "bjornstack.h"
 
-/* Push the ID of a socket to the cServ stack top */
+/* Push the struct to the top of the stack */
 void pushStack(ThreadStack *stack, tinfo *pushThread){
 	if(isFullStack(*stack)){
 		fprintf(stderr, "Error adding to the stack: Stack is full\n");
@@ -18,7 +18,7 @@ void pushStack(ThreadStack *stack, tinfo *pushThread){
 	}
 }
 
-/* Grab the ID of the socket at the top of the stack */
+/* Grab the struct at the top of the stack */
 tinfo* popStack(ThreadStack *stack){
 	if(isEmptyStack(*stack)){
 		fprintf(stderr, "Error taking from stack: Stack is Empty\n");
@@ -46,7 +46,7 @@ int isFullStack(ThreadStack stack){
 	}
 }
 
-/* Push the incoming string of a socket to the string-stack */
+/* Push the incoming string onto the stack */
 void pushString(DataStack *stack, char pushStr[20]){
 	if(isFullStrStack(*stack)){
 		fprintf(stderr, "Error adding to the stack: Stack is full\n");
@@ -56,7 +56,7 @@ void pushString(DataStack *stack, char pushStr[20]){
 	}
 }
 
-/* Grab the ID of the socket at the top of the stack */
+/* Grab the string at the top of the stack */
 void popString(DataStack *stack, char* string){
 	if(isEmptyStrStack(*stack)){
 		fprintf(stderr, "Error taking from stack: Stack is Empty\n");

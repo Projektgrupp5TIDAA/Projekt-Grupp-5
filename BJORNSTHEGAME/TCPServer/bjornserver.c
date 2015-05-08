@@ -7,6 +7,12 @@ Projekt Grupp 5
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef __APPLE__
+#include <SDL2_net/SDL_net.h>
+#else
+#include <SDL2/SDL_net.h>
+#endif
+#include <SDL2/SDL_thread.h>
 #include "bjornthreads.h"
 #include "bjornstack.h"
 #include "bjornshared.h"
@@ -69,11 +75,12 @@ int main(int argc, char **argv){
         fprintf(stderr, "Error creating the timer-thread: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
-
     SDL_Delay(300);
+
     /* Main broadcasting loop */
     while(!quit){
         maintimer = 0;
+
         /* Starts the lobby-timer if a player is connected to the server */
         if(!(isFullStack(stack))){
             printf("Lobby started.\n");
@@ -81,6 +88,7 @@ int main(int argc, char **argv){
 
             /* Keeps the lobby active as long as there is players connected to the server */
             while(maintimer > 0 && !(isFullStack(stack))){
+
                 /* Every time the timer hits a number dividable by 10 the server will send a time-syncronization */
                 if(!(maintimer%10)){
                     printf("Timer sync.");
@@ -90,6 +98,7 @@ int main(int argc, char **argv){
                     }
                     SDL_Delay(200);
                 }
+
                 /* If there is a message waiting to be handled it will be sent within the lobby */
                 if(!(isEmptyStrStack(cstack))){
                     popString(&cstack, sendpackage);

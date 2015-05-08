@@ -5,9 +5,14 @@ Edited by Dani Daryaweesh
 Projekt Grupp 5
 */
 
-
 #include <stdio.h>
 #include <string.h>
+#ifdef __APPLE__
+#include <SDL2_net/SDL_net.h>
+#else
+#include <SDL2/SDL_net.h>
+#endif
+#include <SDL2/SDL_thread.h>
 #include "bjornthreads.h"
 #include "bjornshared.h"
 
@@ -53,7 +58,9 @@ int Handler(void* thr){
             break;
         default:
             /* If the request is not recognized the server will return error */
+            printf("ERROR: Bad request recieved.\n");
             SDLNet_TCP_Send(socket, "ERROR: Bad request.", 40);
+            SDLNet_TCP_Close(socket);
             return 1;
     }
 
@@ -78,7 +85,7 @@ int Handler(void* thr){
         */
         if(SDLNet_TCP_Recv(socket, packet, PACKETSIZE)){
             if((strstr(packet, "EXITCONNECTION"))){
-                printf("Exit command recieved, quitting thread %d!\n", clientvar->ID);
+                printf("Exit command recieved, quitting thread #%d!\n", clientvar->ID);
                 memset(clientvar->player->playername,0,strlen(clientvar->player->playername));
                 SDLNet_TCP_Close(socket);
                 clientvar->socket = NULL;
@@ -96,7 +103,6 @@ int Handler(void* thr){
                         break;
                     case 'C':
                         printf("Chat message recieved, pushing to stack!\n");
-                        //parseChat(packet, 1, strlen(packet));
                         pushString(thread->cstack, packet);
                         break;
                     case 'N':
@@ -146,7 +152,7 @@ int poller(void* information){
                 SDL_DetachThread(SDL_CreateThread(Handler, "Thread", (void*)&connectionhandler));
                 SDL_Delay(100);
                 break;
-            }
+            }else SDL_Delay(200);
         }
     }
     return 0;
@@ -163,6 +169,8 @@ int timer(void* information){
     while(1){
         /* Thread will only ever do anything if the main-timer is > 0 */
         if(*(info->main) > 0){
+            /* The powerup-timer, checks all the powerups to see if they are active or not, if they are inactive
+               they will be assigned a time on the game-timer that will trigger them once the timer hits that value */
             printf("Ticking. Timer: %d, Powerups: %d\n", *(info->main), *(info->powerup));
             for(i=0;i<10;i++){
                 if(!(is_set((*(info->powerup)), i+1))){
@@ -177,17 +185,11 @@ int timer(void* information){
                     }
                 }
             }
+
+            /* And then the game-timer ticks down */
             (*(info->main))--;
-        }//else
-        //printf("Timer is 0, no tick.\n");
+        }
         SDL_Delay(1000);
     }
     return 0;
-}
-
-/* Initiation of the player struct */
-void initiatePlayer(pinfo* ply){
-    ply->health = HEALTH;
-    ply->position[0] = 5;
-    ply->position[1] = 5;
 }

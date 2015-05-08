@@ -6,17 +6,17 @@ Projekt Grupp 5
 
 #include "bjornshared.h"
 
-/* Check if the bit at place 'bit' is set in int comp */
+/* Check if the bit at place 'bit' is set in int 'comp' */
 int is_set(int comp, int bit){
 	return (comp & 1<<bit);
 }
 
-/* Set the bit at place 'bit' of num to 1 */
+/* Set the bit at place 'bit' of 'num' to 1 */
 void set_bit(int *num, int bit){
 	*num = *num | 1<<bit;
 }
 
-/* Parses the string 'hops' hops forward */
+/* Parses the string 'hops' places forward */
 void parseChat(char* inc, int hops, int len){
     int i;
     if(hops>0){

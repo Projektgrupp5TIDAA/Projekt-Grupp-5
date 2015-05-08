@@ -12,7 +12,6 @@ Projekt Grupp 5
 #else
 #include <SDL2/SDL_net.h>
 #endif
-#include <SDL2/SDL_thread.h>
 #define PORT 4000
 #define HEALTH 5
 #define PLAYERCOUNT 6

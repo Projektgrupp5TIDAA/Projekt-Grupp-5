@@ -45,7 +45,7 @@ int LobbyWindow(StartInfo lobbyConnection){
     char packet[512] = {0};
     char tmp[512]={0};
 
-    int i;
+    int i, timer=0;
 
     //the music for the lobby
     Mix_Music *lobbyMusic = Mix_LoadMUS("../Sounds/Music/VolatileReaction.mp3");
@@ -121,8 +121,8 @@ int LobbyWindow(StartInfo lobbyConnection){
                 player[5].y=(lobbySurface->h/2)+125;
                 player[5].w=300;
                 player[5].h=400;
-                
-                
+
+
                 chat.x=(lobbySurface->w/2)-370;
                 chat.y=(lobbySurface->h/2)+125;
                 chat.w=450;
@@ -135,6 +135,8 @@ int LobbyWindow(StartInfo lobbyConnection){
         SDL_PumpEvents();
         SDLNet_CheckSockets(csock, 0);
         SDL_GetMouseState(&mousePosition[0], &mousePosition[1]);
+        emptyString(packet, strlen(packet));
+        printf("%d", timer);
         if(SDLNet_SocketReady(*(lobbyConnection.socket))){
             SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, 200);
             switch(packet[0]){
@@ -146,6 +148,10 @@ int LobbyWindow(StartInfo lobbyConnection){
                 case 'N':
                     parseChat(packet, 1, strlen(packet));
                     memcpy(&name, &packet, sizeof(name));
+                    break;
+                case 'T':
+                    parseChat(packet, 1, strlen(packet));
+                    timer = atoi(packet);
                     break;
                 default:
                     printf("Invalid package recieved!\n");

@@ -29,3 +29,12 @@ void parseChat(char* inc, int hops, int len){
         }
     }
 }
+
+/* This function empties a string from a pointer with the length 'len' */
+int emptyString(char* incoming, int len){
+    int i;
+    for(i=0; i<len; i++){
+        *(incoming+i) = 0;
+    }
+    return 0;
+}

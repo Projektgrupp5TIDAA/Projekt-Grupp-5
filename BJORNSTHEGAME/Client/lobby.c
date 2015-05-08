@@ -26,6 +26,7 @@ int LobbyWindow(StartInfo lobbyConnection){
     //********************** INIT *************************
     TTF_Font* playerfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 30);
     SDL_Window* lobby;
+    const Uint8* keys;
 
     //surface for window
 	SDL_Surface* lobbySurface;
@@ -36,6 +37,7 @@ int LobbyWindow(StartInfo lobbyConnection){
 
     SDL_Rect buttonPlacement;
     SDL_Rect chat;
+    SDL_Rect typing;
 
     nrecv name = {{0}, {{0}}}; // names struct
 
@@ -74,7 +76,7 @@ int LobbyWindow(StartInfo lobbyConnection){
                                     SDL_WINDOWPOS_UNDEFINED,
                                     1280,
                                     800,
-                                    0);
+                                    SDL_WINDOW_FULLSCREEN);
         if( lobby == NULL )
         {
             printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
@@ -122,21 +124,26 @@ int LobbyWindow(StartInfo lobbyConnection){
                 player[5].w=300;
                 player[5].h=400;
 
-
-                chat.x=(lobbySurface->w/2)-370;
-                chat.y=(lobbySurface->h/2)+125;
+                chat.x=(lobbySurface->w)-350;
+                chat.y=(lobbySurface->h)-300;
                 chat.w=450;
                 chat.h=400;
+
+                typing.x=(lobbySurface->w)-350;
+                typing.y=(lobbySurface->h)-200;
+                typing.w=450;
+                typing.h=400;
             }
         }
     }
     while(!endLobby){
         // Mouse events handling
         SDL_PumpEvents();
+        keys = SDL_GetKeyboardState(NULL);
         SDLNet_CheckSockets(csock, 0);
         SDL_GetMouseState(&mousePosition[0], &mousePosition[1]);
         emptyString(packet, strlen(packet));
-        printf("%d", timer);
+        //printf("Time: %d\n", timer);
         if(SDLNet_SocketReady(*(lobbyConnection.socket))){
             SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, 200);
             switch(packet[0]){
@@ -174,6 +181,15 @@ int LobbyWindow(StartInfo lobbyConnection){
                 endLobby=1;
             }
         }
+        if(keys[SDL_SCANCODE_T]){
+            char temp[sizeof(packet)];
+            emptyString(packet, sizeof(packet));
+            readKeyboardToWindow(typing, temp, sizeof(temp), lobby, lobbyBackground);
+            printf("String: %s\n", temp);
+            sprintf(packet, "C%s", temp);
+            printf("String after parse: %s\n", packet);
+            SDLNet_TCP_Send(*(lobbyConnection.socket), packet, strlen(packet));
+        }
 
         SDL_BlitScaled(lobbyBackground, NULL, lobbySurface, NULL);
         SDL_BlitScaled(readyButton, NULL, lobbySurface, &buttonPlacement);
@@ -198,7 +214,7 @@ void parseString(char* inc, int hops, int len){
             *(inc+i) = *(inc+i+hops);
         }
     }else if(hops<0){
-        for(i=len-1;i>0;i++){
+        for(i=len;i>0;i++){
             *(inc+i) = *(inc+i-hops);
         }
     }

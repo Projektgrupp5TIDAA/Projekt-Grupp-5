@@ -94,7 +94,8 @@ int main(int argc, char **argv){
                     printf("Timer sync.");
                     sprintf(sendpackage, "T%d", maintimer);
                     for(i=0;i<PLAYERCOUNT;i++){
-                        SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+                        if(clientsockets[i] != NULL)
+                            SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
                     }
                     SDL_Delay(200);
                 }

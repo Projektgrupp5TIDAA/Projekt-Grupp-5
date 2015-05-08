@@ -83,6 +83,7 @@ int Handler(void* thr){
             4. A name-request-message with the message-prefix 'N' which is immidiately responded to with all the active names on the server in the form of a serialized struct.
             5. A EXITCONNECTION message, which quits the thread and closes the connection.
         */
+        emptyString(packet, sizeof(packet));
         if(SDLNet_TCP_Recv(socket, packet, PACKETSIZE)){
             if((strstr(packet, "EXITCONNECTION"))){
                 printf("Exit command recieved, quitting thread #%d!\n", clientvar->ID);
@@ -103,6 +104,7 @@ int Handler(void* thr){
                         break;
                     case 'C':
                         printf("Chat message recieved, pushing to stack!\n");
+                        printf("Chat message recieved is: %s\n", packet);
                         pushString(thread->cstack, packet);
                         break;
                     case 'N':

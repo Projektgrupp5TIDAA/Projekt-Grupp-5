@@ -14,4 +14,6 @@ void set_bit(int *num, int bit);
 
 void parseChat(char* inc, int hops, int len);
 
+int emptyString(char* incoming, int len);
+
 #endif

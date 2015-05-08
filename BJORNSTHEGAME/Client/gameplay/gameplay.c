@@ -85,12 +85,9 @@ void gameplayWindow()
             if(font == NULL)
                 {printf("FONT E NULL\n");}
 
-                textSurface[0]= TTF_RenderText_Solid(font, "Ammo:", colorT);
-                textSurface[1]= TTF_RenderText_Solid(font, "HP:", colorT);
-                textSurface[2]= TTF_RenderText_Solid(font, "Drunk level:", colorT);
-
-
-
+            textSurface[0]= TTF_RenderText_Solid(font, "Ammo:", colorT);
+            textSurface[1]= TTF_RenderText_Solid(font, "HP:", colorT);
+            textSurface[2]= TTF_RenderText_Solid(font, "Drunk level:", colorT);
 
             player = SDL_CreateTextureFromSurface(gRenderer, playerSurface);
 
@@ -124,13 +121,7 @@ void gameplayWindow()
 
 
 
-
-
-
-
-
-
-           platforms[0].x = screen->w/5 -300;
+            platforms[0].x = screen->w/5 -300;
             platforms[0].y =screen ->h -65;
             platforms[0].w = 1920;
             platforms[0].h =70;
@@ -435,6 +426,7 @@ void gameplayWindow()
 
 
     SDL_DestroyTexture(player);
+    //  SDL_DestroyWindow(bakgroundTexture);
     SDL_DestroyRenderer(gRenderer);
 
 

@@ -28,6 +28,8 @@ int LobbyWindow(StartInfo lobbyConnection){
     SDL_Window* lobby;
     const Uint8* keys;
 
+    int lobby_time=0;
+
     //surface for window
 	SDL_Surface* lobbySurface;
     //background pic for lobby
@@ -39,6 +41,10 @@ int LobbyWindow(StartInfo lobbyConnection){
     SDL_Rect chat[5];
     SDL_Rect typing;
 
+    SDL_Rect chat_test;
+    SDL_Thread * timethr;
+    
+    timeinfo timethr_info={&lobby_time};
     nrecv name = {{0}, {{0}}}; // names struct
 
     SDLNet_SocketSet csock = SDLNet_AllocSocketSet(1);
@@ -48,7 +54,7 @@ int LobbyWindow(StartInfo lobbyConnection){
     char tmp[5][512]={{0}};
 
     int i, timer=0;
-
+    
     //the music for the lobby
     Mix_Music *lobbyMusic = Mix_LoadMUS("../Sounds/Music/VolatileReaction.mp3");
     Mix_PlayMusic(lobbyMusic, -1);
@@ -119,9 +125,20 @@ int LobbyWindow(StartInfo lobbyConnection){
 
                 typing.x=(lobbySurface->w)/3 * 2 + 5;
                 typing.y=(lobbySurface->h)/5 * 4;
+
+                player[5].w=300;
+                player[5].h=400;
+
+
+                typing.x=(lobbySurface->w)-350;
+                typing.y=(lobbySurface->h)-200;
+                typing.w=450;
+                typing.h=400;
+            
             }
         }
-    }
+    
+        }
     while(!endLobby){
         // Mouse events handling
         SDL_PumpEvents();
@@ -129,7 +146,10 @@ int LobbyWindow(StartInfo lobbyConnection){
         SDLNet_CheckSockets(csock, 0);
         SDL_GetMouseState(&mousePosition[0], &mousePosition[1]);
         emptyString(packet, strlen(packet));
+
         //printf("Time: %d\n", timer);
+        printf("%d", timer);
+
         if(SDLNet_SocketReady(*(lobbyConnection.socket))){
             SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, 200);
             switch(packet[0]){
@@ -147,7 +167,9 @@ int LobbyWindow(StartInfo lobbyConnection){
                     break;
                 case 'T':
                     parseString(packet, 1, strlen(packet));
-                    timer = atoi(packet);
+                    // (*timethr_info.lobby_time) = atoi(packet);
+                    timer=atoi(packet);
+                    printf("the time is %d\n", timer);//(*timethr_info.lobby_time));
                     break;
                 default:
                     printf("Invalid package recieved!\n");
@@ -158,7 +180,6 @@ int LobbyWindow(StartInfo lobbyConnection){
         for(i=0;i<PLAYERCOUNT;i++){
             textToScreen(playerfont, player[i], lobby, name.names[5-i]);
         }
-
         //SDL_Delay(500);
 
         if( getMouseBounds(mousePosition, buttonPlacement))
@@ -166,10 +187,10 @@ int LobbyWindow(StartInfo lobbyConnection){
             if(SDL_GetMouseState(NULL, NULL) && SDL_BUTTON(SDL_BUTTON_LEFT)) //leftclick
             {
                 printf("PLAYER %s IS READY!\n", lobbyConnection.playerName);
-
                 endLobby=1;
             }
         }
+
         if(keys[SDL_SCANCODE_T]){
             char temp[sizeof(packet)];
             emptyString(packet, sizeof(packet));
@@ -180,6 +201,14 @@ int LobbyWindow(StartInfo lobbyConnection){
             SDLNet_TCP_Send(*(lobbyConnection.socket), packet, strlen(packet));
         }
 
+
+        
+        // time thread - not working yet 
+        /*timethr= SDL_CreateThread(timethr,"time", (void*)&timethr_info);
+        if(timethr == NULL){
+            fprintf(stderr, "cannot create the thread", SDLNet_GetError());
+            return 1;
+        }*/
         SDL_BlitScaled(lobbyBackground, NULL, lobbySurface, NULL);
         SDL_BlitScaled(readyButton, NULL, lobbySurface, &buttonPlacement);
         for(i=0;i<5;i++){
@@ -211,9 +240,21 @@ void parseString(char* inc, int hops, int len){
     }
 }
 
-
-
-
+// time thread - not working yet
+int timepoll(void* timethr_info){
+    timeinfo* timethread= (timeinfo*) timethr_info;
+    printf("in the thread!\n");
+    int time_dec=0;
+    while(1){
+        (*(timethread->lobby_time)) = time_dec;
+        printf("in the loop thread working!\n");
+        time_dec--;
+        printf("decreasin time!\n");
+        SDL_Delay(995);
+        printf("the thread works!\n");
+    }
+    return 0;
+}
 
 
 

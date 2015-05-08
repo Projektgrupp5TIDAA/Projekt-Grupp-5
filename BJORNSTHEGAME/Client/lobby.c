@@ -141,16 +141,16 @@ int LobbyWindow(StartInfo lobbyConnection){
             SDLNet_TCP_Recv(*(lobbyConnection.socket), packet, 200);
             switch(packet[0]){
                 case 'C':
-                    parseChat(packet,1,strlen(packet));
+                    parseString(packet,1,strlen(packet));
                     printf("%s\n",packet);
                     strcpy(tmp, packet);
                     break;
                 case 'N':
-                    parseChat(packet, 1, strlen(packet));
+                    parseString(packet, 1, strlen(packet));
                     memcpy(&name, &packet, sizeof(name));
                     break;
                 case 'T':
-                    parseChat(packet, 1, strlen(packet));
+                    parseString(packet, 1, strlen(packet));
                     timer = atoi(packet);
                     break;
                 default:
@@ -191,7 +191,7 @@ int LobbyWindow(StartInfo lobbyConnection){
     return 0;
 }
 
-void parseChat(char* inc, int hops, int len){
+void parseString(char* inc, int hops, int len){
     int i;
     if(hops>0){
         for(i=0;i<len;i++){

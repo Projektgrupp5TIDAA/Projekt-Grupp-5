@@ -1,6 +1,6 @@
 /*
 Main server executable
-Created 2015-04-16 by Jonathan Kåhre and Dani Daryaweesh
+Created 2015-04-16 by Jonathan Kï¿½hre and Dani Daryaweesh
 Projekt Grupp 5
 */
 
@@ -18,7 +18,7 @@ int main(int argc, char **argv){
     tinfo threadvariables[PLAYERCOUNT];
     pinfo players[PLAYERCOUNT] = {{HEALTH, {0}, {0}}};
     int quit=0, j, i, threadactive[PLAYERCOUNT], maintimer=0, powerup=0, lastpop=0;
-    char cmess[40], serializednames[sizeof(nsend)+2];
+    char cmess[40], sendpackage[200];
     nsend namestruct;
     PollInfo pollerinfo;
     TimerInfo timerinfo = {&maintimer, &powerup};
@@ -83,9 +83,10 @@ int main(int argc, char **argv){
             while(maintimer > 0 && !(isFullStack(stack))){
                 /* Every time the timer hits a number dividable by 10 the server will send a time-syncronization */
                 if(!(maintimer%10)){
-                    /*for(i=0;i<PLAYERCOUNT;i++){
-                        SDLNet_TCP_Send(clientsockets[i], maintimer, sizeof(maintimer));
-                    }*/
+                    sprintf(sendpackage, "T%d", maintimer);
+                    for(i=0;i<PLAYERCOUNT;i++){
+                        SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+                    }
                     SDL_Delay(1000);
                 }
                 /* If there is a message waiting to be handled it will be sent within the lobby */
@@ -106,16 +107,14 @@ int main(int argc, char **argv){
                         namestruct.ID[i] = i;
                         strcpy(namestruct.names[i], players[i].playername);
                     }
-                    memcpy(&serializednames, &namestruct, sizeof(namestruct));
-                    parseChat(serializednames, -1, strlen(serializednames));
-                    serializednames[0] = 'N';
+                    memcpy(&sendpackage, &namestruct, sizeof(namestruct));
+                    parseChat(sendpackage, -1, strlen(sendpackage));
+                    sendpackage[0] = 'N';
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(clientsockets[i] != NULL)
-                            SDLNet_TCP_Send(clientsockets[i], serializednames, sizeof(serializednames));
+                            SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
                     }
-                    printf("SDLNET counldnt send!\n");
                     lastpop = stack.population;
-                    printf("LAST POOP!\n");
                 }
             }
             SDL_Delay(1000);

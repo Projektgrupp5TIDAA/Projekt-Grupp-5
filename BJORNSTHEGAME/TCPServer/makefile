@@ -1,13 +1,15 @@
 SDL2_DIR = /Library/Frameworks/SDL2.framework/Headers
 SDL2NET_DIR = /Library/Frameworks/SDL2.framework/Headers
 FRAMEWORKS=/Library/Frameworks
-WSDL2_INC = C:\MinGW-libs\include
-WSDL2_LIB = C:\MinGW-libs\lib
+WSDL_BIN = C:\MinGW-libs\bin
+WGCC_BIN = C:\MinGW\bin
+WSDL_LIB = C:\MinGW-libs\lib
+WGCC_LIB = C:\MinGW\lib
 
 CC = gcc
 
 ifeq ($(OS),Windows_NT)
-	CFLAGS=-I$(WSDL2_INC) -L$(WSDL2_LIB) -lmingw32 -lSDL2main -lSDL2 -lSDL2_net
+	CFLAGS=-I$(WSDL_BIN) -I$(WGCC_BIN) -L$(WSDL_LIB) -L(WGCC_LIB) -Wall -lmingw32 -lSDL2main -lSDL2 -lSDL2_net
 	objectlist = bjornserver.o bjornthreads.o bjornstack.o bjornshared.o
 else
 	UNAME_TARGET := $(shell uname -s)

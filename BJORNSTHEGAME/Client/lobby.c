@@ -36,7 +36,7 @@ int LobbyWindow(StartInfo lobbyConnection){
 	SDL_Surface* readyButton = IMG_Load("../Images/lobby/ready.png");
 
     SDL_Rect buttonPlacement;
-    SDL_Rect chat;
+    SDL_Rect chat[5];
     SDL_Rect typing;
 
     nrecv name = {{0}, {{0}}}; // names struct
@@ -45,7 +45,7 @@ int LobbyWindow(StartInfo lobbyConnection){
     SDLNet_AddSocket(csock, *(lobbyConnection.socket));
 
     char packet[512] = {0};
-    char tmp[512]={0};
+    char tmp[5][512]={{0}};
 
     int i, timer=0;
 
@@ -96,43 +96,29 @@ int LobbyWindow(StartInfo lobbyConnection){
 
                 player[0].x=(lobbySurface->w/2)-370;
                 player[0].y=(lobbySurface->h/2)-50;
-                player[0].w=450;
-                player[0].h=400;
 
                 player[1].x=(lobbySurface->w/2)-370;
                 player[1].y=(lobbySurface->h/2)+25;
-                player[1].w=450;
-                player[1].h=400;
 
                 player[2].x=(lobbySurface->w/2)-370;
                 player[2].y=(lobbySurface->h/2)+125;
-                player[2].w=450;
-                player[2].h=400;
 
                 player[3].x=(lobbySurface->w/2)-90;
                 player[3].y=(lobbySurface->h/2)-50;
-                player[3].w=300;
-                player[3].h=400;
 
                 player[4].x=(lobbySurface->w/2)-90;
                 player[4].y=(lobbySurface->h/2)+25;
-                player[4].w=300;
-                player[4].h=400;
 
                 player[5].x=(lobbySurface->w/2)-90;
                 player[5].y=(lobbySurface->h/2)+125;
-                player[5].w=300;
-                player[5].h=400;
 
-                chat.x=(lobbySurface->w)-350;
-                chat.y=(lobbySurface->h)-300;
-                chat.w=450;
-                chat.h=400;
+                for(i=0;i<5;i++){
+                    chat[i].x=(lobbySurface->w)/3 * 2 + 5;
+                    chat[i].y=(lobbySurface->h)/5 * 4 - (50*(i+1));
+                }
 
-                typing.x=(lobbySurface->w)-350;
-                typing.y=(lobbySurface->h)-200;
-                typing.w=450;
-                typing.h=400;
+                typing.x=(lobbySurface->w)/3 * 2 + 5;
+                typing.y=(lobbySurface->h)/5 * 4;
             }
         }
     }
@@ -150,7 +136,10 @@ int LobbyWindow(StartInfo lobbyConnection){
                 case 'C':
                     parseString(packet,1,strlen(packet));
                     printf("%s\n",packet);
-                    strcpy(tmp, packet);
+                    for(i=0;i<5;i++){
+                        strcpy(tmp[i], tmp[i+1]);
+                    }
+                    strcpy(tmp[0], packet);
                     break;
                 case 'N':
                     parseString(packet, 1, strlen(packet));
@@ -193,7 +182,9 @@ int LobbyWindow(StartInfo lobbyConnection){
 
         SDL_BlitScaled(lobbyBackground, NULL, lobbySurface, NULL);
         SDL_BlitScaled(readyButton, NULL, lobbySurface, &buttonPlacement);
-        textToScreen(playerfont, chat, lobby, tmp);
+        for(i=0;i<5;i++){
+            textToScreen(playerfont, chat[5-i], lobby, tmp[i]);
+        }
          //Update the surface
         SDL_UpdateWindowSurface(lobby);
     }

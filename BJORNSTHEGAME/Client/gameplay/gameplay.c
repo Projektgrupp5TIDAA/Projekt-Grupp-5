@@ -4,11 +4,11 @@ void gameplayWindow()
 {
     int i;
     SDL_Window* gameplay;
-   // SDL_Surface* bakgroundTextureurface;
+
 
     SDL_Surface* gameBackground = IMG_Load("bar.jpg");;
     SDL_Surface* ground =IMG_Load("ground2.png");
-    SDL_Surface* platform1[100];
+    SDL_Surface* platform1[35];
     SDL_Surface* platform2 = IMG_Load("platform_ver.png");
     SDL_Surface* band = IMG_Load("band2.png");
     SDL_Surface* bjrons = IMG_Load("bjorndrapare.png");
@@ -107,67 +107,67 @@ void gameplayWindow()
             platforms[0].h =70;
 
             platforms[1].x = screen->w/5 -300;
-            platforms[1].y =screen ->h/2 +100;
+            platforms[1].y =screen ->h/2 -390;
             platforms[1].w = 1920;
-            platforms[1].h = 65;
+            platforms[1].h = 90;
 
-            platforms[2].x = 200;
-            platforms[2].y = 550;
+            platforms[2].x = screen->w/3 -200;
+            platforms[2].y = screen->h - 180;
             platforms[2].w = 550;
             platforms[2].h = 40;
 
-            platforms[3].x = 450;
-            platforms[3].y = 200;
+            platforms[3].x = screen->w/3 +30;
+            platforms[3].y = screen->h -590;
             platforms[3].w = 45;
-            platforms[3].h = 350;
+            platforms[3].h = 410;
 
-            platforms[4].x = 290;
-            platforms[4].y = 160;
+            platforms[4].x = screen ->w/3 -130;
+            platforms[4].y = screen  ->h - 610;
             platforms[4].w = 350;
             platforms[4].h = 40;
 
-            platforms[5].x = 0;
-            platforms[5].y = 250;
+            platforms[5].x = screen->w/3 -460;
+            platforms[5].y = screen->h/2 -100;
             platforms[5].w = 150;
             platforms[5].h = 30;
 
-            platforms[6].x = 0;
-            platforms[6].y = 400;
+            platforms[6].x = screen->w/3 -460;
+            platforms[6].y = screen->h/2 +140;
             platforms[6].w = 150;
             platforms[6].h = 30;
 
-            platforms[7].x = 1000;
-            platforms[7].y = 300;
+            platforms[7].x = screen ->w/2 +300;
+            platforms[7].y = screen->h/2 -80;
             platforms[7].w = 400;
             platforms[7].h = 60;
 
-            platforms[8].x = 280;
-            platforms[8].y = 300;
+            platforms[8].x = screen->w/3 -139;
+            platforms[8].y = screen -> h/2 -70;
             platforms[8].w = 170;
             platforms[8].h = 30;
 
-            platforms[9].x = 280;
-            platforms[9].y = 470;
+            platforms[9].x = screen->w/3 -139;
+            platforms[9].y = screen -> h/2 +90;
             platforms[9].w = 170;
             platforms[9].h = 30;
 
-            platforms[10].x = 493;
-            platforms[10].y = 300;
+            platforms[10].x = screen ->w/3 +75;
+            platforms[10].y = screen -> h/2 -70;
             platforms[10].w = 170;
             platforms[10].h = 30;
 
-            platforms[11].x = 720;
-            platforms[11].y = 200;
+            platforms[11].x = screen ->w/3 +300;
+            platforms[11].y = screen -> h/2 -140;
             platforms[11].w = 170;
             platforms[11].h = 30;
 
-            platforms[12].x = 920;
-            platforms[12].y = 600;
+            platforms[12].x = screen ->w/2 +390;
+            platforms[12].y = screen -> h/2 +150;
             platforms[12].w = 300;
             platforms[12].h = 40;
 
-            platforms[13].x = 493;
-            platforms[13].y = 400;
+            platforms[13].x = screen ->w/3 +73;
+            platforms[13].y = screen -> h/2 +30;
             platforms[13].w = 170;
             platforms[13].h = 30;
 
@@ -178,8 +178,8 @@ void gameplayWindow()
             bool onPlatform = true;
             //size and position
             SDL_Rect position;
-            position.y = 400;
-            position.x = 100;
+            position.y = screen-> h/2 +100;
+            position.x = screen->w/2 +80;
             position.h = 100;
             position.w = 110;
 
@@ -301,19 +301,7 @@ void gameplayWindow()
                 for(i=0;i<15;i++){
                    SDL_RenderCopy(gRenderer, picture[i],NULL,&platforms[i]);
                 }
-               /* SDL_RenderCopy(gRenderer, picture[0],NULL,&platforms[0]);
-                SDL_RenderCopy(gRenderer, picture[1],NULL,&platforms[1]);
-                SDL_RenderCopy(gRenderer, picture[2],NULL,&platforms[2]);
-                SDL_RenderCopy(gRenderer, picture[3],NULL,&platforms[3]);
-                SDL_RenderCopy(gRenderer, picture[4],NULL,&platforms[4]);
-                SDL_RenderCopy(gRenderer, picture[5],NULL,&platforms[5]);
-                SDL_RenderCopy(gRenderer, picture[6],NULL,&platforms[6]);
-                SDL_RenderCopy(gRenderer, picture[7],NULL,&platforms[7]);
-                SDL_RenderCopy(gRenderer, picture[8],NULL,&platforms[8]);
-                SDL_RenderCopy(gRenderer, picture[9],NULL,&platforms[9]);
-                SDL_RenderCopy(gRenderer, picture[10],NULL,&platforms[10]);
-                SDL_RenderCopy(gRenderer, picture[11],NULL,&platforms[11]);
-                SDL_RenderCopy(gRenderer, picture[12],NULL,&platforms[12]);*/
+
                 SDL_RenderCopyEx(gRenderer, player, &spriteClips[frame],&position, 0, NULL, flip);
 
 
@@ -337,21 +325,8 @@ void gameplayWindow()
     for(i=0;i<15;i++){
         SDL_DestroyTexture(picture[i]);
     }
-   /* SDL_DestroyTexture(picture[0]);
-    SDL_DestroyTexture(picture[1]);
-    SDL_DestroyTexture(picture[2]);
-    SDL_DestroyTexture(picture[3]);
-    SDL_DestroyTexture(picture[4]);
-    SDL_DestroyTexture(picture[5]);
-    SDL_DestroyTexture(picture[6]);
-    SDL_DestroyTexture(picture[7]);
-    SDL_DestroyTexture(picture[8]);
-    SDL_DestroyTexture(picture[9]);
-    SDL_DestroyTexture(picture[10]);
-    SDL_DestroyTexture(picture[11]);
-    SDL_DestroyTexture(picture[12]);*/
+
     SDL_DestroyTexture(player);
-  //  SDL_DestroyWindow(bakgroundTexture);
     SDL_DestroyRenderer(gRenderer);
 
 

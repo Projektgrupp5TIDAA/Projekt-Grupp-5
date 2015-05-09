@@ -19,14 +19,14 @@
 #endif
 
 typedef struct startUpInfo{
-	TCPsocket* socket;
-	IPaddress* targethost;
+	TCPsocket socket;
+	IPaddress targethost;
 	char playerName[20];
 }StartInfo;
 
 int getMouseBounds(int mouse[2], SDL_Rect rect);
 
-int menu(StartInfo startup);
+int menu(StartInfo* startup);
 
 int getName(char* name, int len, SDL_Window* window);
 
@@ -38,7 +38,7 @@ int textToScreen(TTF_Font *font, SDL_Rect place, SDL_Window* window, char* text)
 
 int readKeyboard(char* output, int len);
 
-int readKeyboardToWindow(SDL_Rect pos, char* output, int len, SDL_Window* window, SDL_Surface* bg);
+int readKeyboardToWindow(TTF_Font* font, SDL_Rect pos, char* output, int len, SDL_Window* window, SDL_Surface* bg);
 
 int emptyString(char* incoming, int len);
 

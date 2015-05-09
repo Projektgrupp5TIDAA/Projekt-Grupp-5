@@ -5,15 +5,12 @@ typedef struct{
     char names[6][20];
 }nrecv;
 
-int LobbyWindow(StartInfo lobbyConnection);
+int LobbyWindow(StartInfo* lobbyConnection);
 
 void parseString(char* inc, int hops, int len);
 
+int timepoll(void* inctimer);
+
+void convertTimer(char output[5], int input);
+
 #endif // _LOBBY_H_
-
-/* time information in the lobby */ 
-typedef struct{
-    int *lobby_time;
-}timeinfo;
-
-SDL_Thread * timethr;

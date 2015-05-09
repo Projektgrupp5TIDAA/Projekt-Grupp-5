@@ -16,7 +16,7 @@ Projekt Grupp 5
 #include "bjornthreads.h"
 #include "bjornshared.h"
 
-/* Thread execution function */
+/* Connection handler function, creates a thread to handle an incoming connection */
 int Handler(void* thr){
     HandlerInfo* thread = (HandlerInfo *) thr;
     TCPsocket socket;
@@ -146,6 +146,7 @@ int poller(void* information){
     /* Main connection assignment loop */
     while(!(info->quit)){
         while(1){
+
             /* Whenever there is activity on the socket a thread is spawned to handle it */
             if(SDLNet_CheckSockets(activity, 50) > 0){
                 printf("Activity found, starting thread!\n");
@@ -167,8 +168,10 @@ int timer(void* information){
     for(i=0;i<10;i++)
         timerset[i] = GAMELENGTH+1;
     while(1){
+
         /* Thread will only ever do anything if the main-timer is > 0 */
         if((info->maintimer) > 0){
+
             /* The powerup-timer, checks all the powerups to see if they are active or not, if they are inactive
                they will be assigned a time on the game-timer that will trigger them once the timer hits that value */
             printf("Ticking. Timer: %d, Powerups: %d\n", (info->maintimer), info->powerup);

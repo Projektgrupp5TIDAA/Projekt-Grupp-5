@@ -26,7 +26,7 @@ int main(int argc, char **argv){
     int i, j, lastpop=0;
     nsend namestruct;
 
-    /* Initializing the information for the pollerinfo.stack and threads */
+    /* Initializing the information for the stack and threads */
     for(i=0;i<PLAYERCOUNT;i++){
         threadvariables[i].ID = i;
         for(j=0;j<PLAYERCOUNT;j++){
@@ -86,7 +86,6 @@ int main(int argc, char **argv){
                 /* If there is a message waiting to be handled it will be sent within the lobby */
                 if(!(isEmptyStrStack(pollerinfo.cstack))){
                     popString(&pollerinfo.cstack, sendpackage);
-                    printf("STRING IS: %s\n", sendpackage);
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket !=NULL)
                             SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
@@ -94,8 +93,8 @@ int main(int argc, char **argv){
                     SDL_Delay(200);
                 }else SDL_Delay(200);
 
-                /* If the current pollerinfo.stack population differs from the previous state
-                 the server will send a name update to connected players */
+                /* If the current stack population differs from the previous state
+                 the server will send a name and time update to connected players */
                 if(pollerinfo.stack.population != lastpop){
                     SDL_Delay(1000);
                     printf("Players changed!\n");
@@ -120,8 +119,10 @@ int main(int argc, char **argv){
                 }
             }
 
+
+            /* If enought players are connected the server starts the game timer and game communications protocols,
+               before doing so, the server sends a time-sync message to all connected players */
             if(pollerinfo.stack.population < 5){
-                /* Goes over to the game-loop */
                 printf("Game starting in 2 sec.\n");
                 SDL_Delay(2000);
                 timerinfo.maintimer = GAMELENGTH;
@@ -148,8 +149,8 @@ int main(int argc, char **argv){
             /* Keeps the game active as long as there is players connected to the server */
             while(timerinfo.maintimer > 0 && (pollerinfo.stack.population < 5)){
                 /*
-                if(!(isEmptyStrStack(dpollerinfo.stack))){
-                    popString(&dpollerinfo.stack, sendpackage);
+                if(!(isEmptyStrStack(pollerinfo.dstack))){
+                    popString(&pollerinfo.dstack, sendpackage);
                     printf("STRING IS: %s\n", sendpackage);
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket !=NULL)
@@ -167,10 +168,13 @@ int main(int argc, char **argv){
             }
             printf("Game stopping.\n");
         }else{
+
+            /* If only one player is connected to the server, the lobby-functions should still remain,
+               although useless, you can chat with yourself.. 
+               (also serves as a release for the stack not to be overpopulated before being able to send) */
             timerinfo.maintimer = 0;
             if(!(isEmptyStrStack(pollerinfo.cstack))){
                     popString(&pollerinfo.cstack, sendpackage);
-                    printf("STRING IS: %s\n", sendpackage);
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket != NULL)
                             SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));

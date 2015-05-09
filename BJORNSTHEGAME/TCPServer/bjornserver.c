@@ -82,12 +82,19 @@ int main(int argc, char **argv){
         maintimer = 0;
 
         /* Starts the lobby-timer if a player is connected to the server */
-        if(!(isFullStack(stack))){
-            printf("Lobby started.\n");
+        if(stack.population < 5){
+            printf("Lobby starting in 2 seconds.\n");
+            SDL_Delay(2000);
             maintimer = LOBBYLENGTH;
 
+            sprintf(sendpackage, "T%d", maintimer);
+            for(i=0;i<PLAYERCOUNT;i++){
+                if(clientsockets[i] != NULL)
+                    SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+            }
+
             /* Keeps the lobby active as long as there is players connected to the server */
-            while(maintimer > 0 && !(isFullStack(stack))){
+            while(maintimer > 0 && (stack.population < 5)){
 
                 /* If there is a message waiting to be handled it will be sent within the lobby */
                 if(!(isEmptyStrStack(cstack))){
@@ -126,7 +133,7 @@ int main(int argc, char **argv){
                 }
             }
 
-            if(!(isFullStack(stack))){
+            if(stack.population < 5){
                 /* Goes over to the game-loop */
                 printf("Game starting in 2 sec.\n");
                 SDL_Delay(2000);
@@ -134,7 +141,8 @@ int main(int argc, char **argv){
                 printf("Sending time sync message.\n");
                 sprintf(sendpackage, "T%d", maintimer);
                 for(i=0;i<PLAYERCOUNT;i++){
-                    SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+                    if(clientsockets[i] != NULL)
+                        SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
                 }
                 SDL_Delay(200);
                 powerup = 0;
@@ -142,10 +150,16 @@ int main(int argc, char **argv){
                 printf("No players remaining, exiting.\n");
                 maintimer=0;
                 powerup = 0;
+                SDL_Delay(1100);
+                sprintf(sendpackage, "T%d", maintimer);
+                for(i=0;i<PLAYERCOUNT;i++){
+                    if(clientsockets[i] != NULL)
+                        SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+                }
             }
 
             /* Keeps the game active as long as there is players connected to the server */
-            while(maintimer > 0 && !(isFullStack(stack))){
+            while(maintimer > 0 && (stack.population < 5)){
                 /*
                 if(!(isEmptyStrStack(dstack))){
                     popString(&dstack, sendpackage);
@@ -165,6 +179,34 @@ int main(int argc, char **argv){
                 }else*/ SDL_Delay(200);
             }
             printf("Game stopping.\n");
+        }else{
+            maintimer = 0;
+            if(!(isEmptyStrStack(cstack))){
+                    popString(&cstack, sendpackage);
+                    printf("STRING IS: %s\n", sendpackage);
+                    for(i=0;i<PLAYERCOUNT;i++){
+                        if(clientsockets[i] != NULL)
+                            SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+                    }
+                SDL_Delay(200);
+            }else SDL_Delay(200);
+
+            if(stack.population != lastpop){
+                SDL_Delay(1000);
+                printf("Players changed!\n");
+                for(i=0;i<PLAYERCOUNT;i++){
+                    namestruct.ID[i] = i;
+                    strcpy(namestruct.names[i], players[i].playername);
+                }
+                memcpy(&sendpackage, &namestruct, sizeof(namestruct));
+                parseChat(sendpackage, -1, strlen(sendpackage));
+                sendpackage[0] = 'N';
+                for(i=0;i<PLAYERCOUNT;i++){
+                    if(clientsockets[i] != NULL)
+                        SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+                }
+                lastpop = stack.population;
+            }
         }
     }
 

@@ -40,7 +40,7 @@ int LobbyWindow(StartInfo* lobbyConnection){
     SDL_Rect buttonPlacement;
     SDL_Rect chat[20], typing[2], timerpos;
 
-    char* message, timechar[5];
+    char* message, timechar[8];
 
     SDL_Thread * timethr;
     
@@ -207,8 +207,12 @@ int LobbyWindow(StartInfo* lobbyConnection){
             textToScreen(chatfont, chat[i], lobby, chatmessages[i]);
         }
 
-        convertTimer(timechar, timer);
-        textToScreen(timerfont, timerpos, lobby, timechar);
+        if(timer>0){
+            convertTimer(timechar, timer);
+            textToScreen(timerfont, timerpos, lobby, timechar);
+        }else{
+            textToScreen(chatfont, timerpos, lobby, "Waiting for more players.");
+        }
 
          //Update the surface
         SDL_UpdateWindowSurface(lobby);
@@ -224,12 +228,12 @@ int LobbyWindow(StartInfo* lobbyConnection){
     return 0;
 }
 
-void convertTimer(char output[5], int input){
+void convertTimer(char output[8], int input){
     int min=0;
     for(;input>59;input-=60){
         min++;
     }
-    if(input>10)
+    if(input>9)
         sprintf(output, "%d:%d", min, input);
     else
         sprintf(output, "%d:0%d", min, input);

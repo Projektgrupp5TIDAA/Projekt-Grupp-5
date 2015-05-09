@@ -1,6 +1,6 @@
 /*
 Functions acting on the stacks used by the server
-Created 2015-04-21 by Jonathan Kåhre
+Created 2015-04-21 by Jonathan KÃ¥hre
 Projekt Grupp 5
 */
 

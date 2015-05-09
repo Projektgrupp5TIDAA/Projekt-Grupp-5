@@ -1,6 +1,6 @@
 /*
 Functions used for bit-manipulation on TCP-packages
-Created 2015-04-22 by Jonathan Kåhre
+Created 2015-04-22 by Jonathan KÃ¥hre
 Projekt Grupp 5
 */
 

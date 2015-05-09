@@ -30,7 +30,7 @@ int main(int argc, char **argv){
     TimerInfo timerinfo = {&maintimer, &powerup};
     SDL_Thread* connectionpoller, *timerthr;
 
-    /* Initiates the pointers for the connectionpoller-thread */
+/* Initiates the pointers for the connectionpoller-thread */
     pollerinfo.stack = &stack;
     pollerinfo.cstack = &cstack;
     pollerinfo.dstack = &dstack;

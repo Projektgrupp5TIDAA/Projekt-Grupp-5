@@ -1,6 +1,6 @@
 /*
 Functions required by the server to execute threads
-Created 2015-04-16 by Jonathan Kåhre
+Created 2015-04-16 by Jonathan KÃ¥hre
 Edited by Dani Daryaweesh
 Projekt Grupp 5
 */

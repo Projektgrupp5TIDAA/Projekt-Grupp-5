@@ -18,12 +18,12 @@ Projekt Grupp 5
 
 /* Thread execution function */
 int Handler(void* thr){
+    HandlerInfo* thread = (HandlerInfo *) thr;
     TCPsocket socket;
     char packet[PACKETSIZE], serialnames[sizeof(nsend)];
     int i;
     nsend names;
     tinfo* clientvar;
-    HandlerInfo* thread = (HandlerInfo *) thr;
     printf("Thread is active!\n");
 
     /* Accepts the incoming connection on the socket to handle the request */
@@ -53,7 +53,7 @@ int Handler(void* thr){
                 SDLNet_TCP_Send(socket, "F", 1);
             else{
                 clientvar = popStack(thread->stack);
-                *(clientvar->socket) = socket;
+                clientvar->socket = socket;
             }
             break;
         default:
@@ -66,12 +66,12 @@ int Handler(void* thr){
 
     /* Gets the name from the client */
     while(1){
-        if(SDLNet_TCP_Recv(socket, clientvar->player->playername, 20)){
+        if(SDLNet_TCP_Recv(socket, clientvar->player.playername, 20)){
             break;
         }
     }
 
-    printf("Player %s was assigned to thread %d.\n", clientvar->player->playername, clientvar->ID);
+    printf("Player %s was assigned to thread %d.\n", clientvar->player.playername, clientvar->ID);
 
     /* The main thread-loop */
     while(1){
@@ -87,10 +87,8 @@ int Handler(void* thr){
         if(SDLNet_TCP_Recv(socket, packet, PACKETSIZE)){
             if((strstr(packet, "EXITCONNECTION"))){
                 printf("Exit command recieved, quitting thread #%d!\n", clientvar->ID);
-                memset(clientvar->player->playername,0,strlen(clientvar->player->playername));
+                memset(clientvar->player.playername,0,strlen(clientvar->player.playername));
                 SDLNet_TCP_Close(clientvar->socket);
-                if(clientvar->socket == NULL)
-                    printf("Socket closed properly!\n");
                 pushStack(thread->stack, clientvar);
                 return 0;
             }else{
@@ -105,7 +103,6 @@ int Handler(void* thr){
                         break;
                     case 'C':
                         printf("Chat message recieved, pushing to stack!\n");
-                        printf("Chat message recieved is: %s\n", packet);
                         pushString(thread->cstack, packet);
                         break;
                     case 'N':
@@ -129,7 +126,7 @@ int poller(void* information){
     IPaddress listenerIP;
     TCPsocket socket;
     SDLNet_SocketSet activity = SDLNet_AllocSocketSet(1);
-    HandlerInfo connectionhandler = {info->quit, &socket, info->stack, info->cstack, info->dstack};
+    HandlerInfo connectionhandler = {&(info->quit), &socket, &(info->stack), &(info->cstack), &(info->dstack)};
 
     /* Resolve listener ip */
     if(SDLNet_ResolveHost(&listenerIP,NULL,PORT) < 0){
@@ -147,7 +144,7 @@ int poller(void* information){
     printf("Connection-poller thread is now active, awaiting incoming connections.\n");
 
     /* Main connection assignment loop */
-    while(!*(info->quit)){
+    while(!(info->quit)){
         while(1){
             /* Whenever there is activity on the socket a thread is spawned to handle it */
             if(SDLNet_CheckSockets(activity, 50) > 0){
@@ -171,17 +168,17 @@ int timer(void* information){
         timerset[i] = GAMELENGTH+1;
     while(1){
         /* Thread will only ever do anything if the main-timer is > 0 */
-        if(*(info->main) > 0){
+        if((info->maintimer) > 0){
             /* The powerup-timer, checks all the powerups to see if they are active or not, if they are inactive
                they will be assigned a time on the game-timer that will trigger them once the timer hits that value */
-            printf("Ticking. Timer: %d, Powerups: %d\n", *(info->main), *(info->powerup));
+            printf("Ticking. Timer: %d, Powerups: %d\n", (info->maintimer), info->powerup);
             for(i=0;i<10;i++){
-                if(!(is_set((*(info->powerup)), i+1))){
-                    if(*(info->main) == timerset[i]){
-                        set_bit(info->powerup, i);
-                    }else if(timerset[i] > *(info->main)){
-                        if(*(info->main) -POWERTIMER > 0){
-                            timerset[i] = *(info->main)-POWERTIMER;
+                if(!(is_set(info->powerup, i+1))){
+                    if((info->maintimer) == timerset[i]){
+                        set_bit(&(info->powerup), i);
+                    }else if(timerset[i] > (info->maintimer)){
+                        if((info->maintimer) -POWERTIMER > 0){
+                            timerset[i] = (info->maintimer)-POWERTIMER;
                         }else{
                             timerset[i] = 0;
                         }
@@ -190,7 +187,7 @@ int timer(void* information){
             }
 
             /* And then the game-timer ticks down */
-            (*(info->main))--;
+            ((info->maintimer))--;
         }
         SDL_Delay(1000);
     }

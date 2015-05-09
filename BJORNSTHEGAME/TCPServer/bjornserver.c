@@ -18,34 +18,21 @@ Projekt Grupp 5
 #include "bjornshared.h"
 
 int main(int argc, char **argv){
-    TCPsocket clientsockets[PLAYERCOUNT]={NULL};
-    ThreadStack stack = {0, 0, {0}};
-    DataStack cstack = {0, {{0}}}, dstack = {0, {{0}}};
-    tinfo threadvariables[PLAYERCOUNT];
-    pinfo players[PLAYERCOUNT] = {{HEALTH, {0}, {0}}};
-    int quit=0, j, i, threadactive[PLAYERCOUNT], maintimer=0, powerup=0, lastpop=0;
-    char sendpackage[200];
-    nsend namestruct;
-    PollInfo pollerinfo;
-    TimerInfo timerinfo = {&maintimer, &powerup};
+    tinfo threadvariables[PLAYERCOUNT] = {{0, NULL, {5, {0}, {0}}, {NULL}}};
+    PollInfo pollerinfo = {0, {0, NULL, {NULL}}, {0, {{0}}}, {0, {{0}}}};
     SDL_Thread* connectionpoller, *timerthr;
+    TimerInfo timerinfo = {0, 0};
+    char sendpackage[200];
+    int i, j, lastpop=0;
+    nsend namestruct;
 
-/* Initiates the pointers for the connectionpoller-thread */
-    pollerinfo.stack = &stack;
-    pollerinfo.cstack = &cstack;
-    pollerinfo.dstack = &dstack;
-    pollerinfo.quit = &quit;
-
-    /* Initializing the information for the stack and threads */
+    /* Initializing the information for the pollerinfo.stack and threads */
     for(i=0;i<PLAYERCOUNT;i++){
         threadvariables[i].ID = i;
-        threadvariables[i].socket = &clientsockets[i];
-        threadvariables[i].player = &players[i];
-        threadvariables[i].active = &threadactive[i];
         for(j=0;j<PLAYERCOUNT;j++){
-            threadvariables[i].names[j] = players[j].playername;
+            threadvariables[i].names[j] = threadvariables[j].player.playername;
         }
-        pushStack(&stack, &threadvariables[i]);
+        pushStack(&pollerinfo.stack, &threadvariables[i]);
     }
 
     /* Initialize SDL */
@@ -78,134 +65,134 @@ int main(int argc, char **argv){
     SDL_Delay(300);
 
     /* Main broadcasting loop */
-    while(!quit){
-        maintimer = 0;
+    while(!(pollerinfo.quit)){
+        timerinfo.maintimer = 0;
 
         /* Starts the lobby-timer if a player is connected to the server */
-        if(stack.population < 5){
+        if(pollerinfo.stack.population < 5){
             printf("Lobby starting in 2 seconds.\n");
             SDL_Delay(2000);
-            maintimer = LOBBYLENGTH;
+            timerinfo.maintimer = LOBBYLENGTH;
 
-            sprintf(sendpackage, "T%d", maintimer);
+            sprintf(sendpackage, "T%d", timerinfo.maintimer);
             for(i=0;i<PLAYERCOUNT;i++){
-                if(clientsockets[i] != NULL)
-                    SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+                if(threadvariables[i].socket != NULL)
+                    SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
             }
 
             /* Keeps the lobby active as long as there is players connected to the server */
-            while(maintimer > 0 && (stack.population < 5)){
+            while(timerinfo.maintimer > 0 && (pollerinfo.stack.population < 5)){
 
                 /* If there is a message waiting to be handled it will be sent within the lobby */
-                if(!(isEmptyStrStack(cstack))){
-                    popString(&cstack, sendpackage);
+                if(!(isEmptyStrStack(pollerinfo.cstack))){
+                    popString(&pollerinfo.cstack, sendpackage);
                     printf("STRING IS: %s\n", sendpackage);
                     for(i=0;i<PLAYERCOUNT;i++){
-                        if(clientsockets[i] !=NULL)
-                            SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+                        if(threadvariables[i].socket !=NULL)
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
                     }
                     SDL_Delay(200);
                 }else SDL_Delay(200);
 
-                /* If the current stack population differs from the previous state
+                /* If the current pollerinfo.stack population differs from the previous state
                  the server will send a name update to connected players */
-                if(stack.population != lastpop){
+                if(pollerinfo.stack.population != lastpop){
                     SDL_Delay(1000);
                     printf("Players changed!\n");
                     for(i=0;i<PLAYERCOUNT;i++){
                         namestruct.ID[i] = i;
-                        strcpy(namestruct.names[i], players[i].playername);
+                        strcpy(namestruct.names[i], threadvariables[i].player.playername);
                     }
                     memcpy(&sendpackage, &namestruct, sizeof(namestruct));
                     parseChat(sendpackage, -1, strlen(sendpackage));
                     sendpackage[0] = 'N';
                     for(i=0;i<PLAYERCOUNT;i++){
-                        if(clientsockets[i] != NULL)
-                            SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+                        if(threadvariables[i].socket != NULL)
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
                     }
                     SDL_Delay(1100);
-                    sprintf(sendpackage, "T%d", maintimer);
+                    sprintf(sendpackage, "T%d", timerinfo.maintimer);
                     for(i=0;i<PLAYERCOUNT;i++){
-                        if(clientsockets[i] != NULL)
-                            SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+                        if(threadvariables[i].socket != NULL)
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
                     }
-                    lastpop = stack.population;
+                    lastpop = pollerinfo.stack.population;
                 }
             }
 
-            if(stack.population < 5){
+            if(pollerinfo.stack.population < 5){
                 /* Goes over to the game-loop */
                 printf("Game starting in 2 sec.\n");
                 SDL_Delay(2000);
-                maintimer = GAMELENGTH;
+                timerinfo.maintimer = GAMELENGTH;
                 printf("Sending time sync message.\n");
-                sprintf(sendpackage, "T%d", maintimer);
+                sprintf(sendpackage, "T%d", timerinfo.maintimer);
                 for(i=0;i<PLAYERCOUNT;i++){
-                    if(clientsockets[i] != NULL)
-                        SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+                    if(threadvariables[i].socket != NULL)
+                        SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
                 }
                 SDL_Delay(200);
-                powerup = 0;
+                timerinfo.powerup = 0;
             }else{
                 printf("No players remaining, exiting.\n");
-                maintimer=0;
-                powerup = 0;
+                timerinfo.maintimer=0;
+                timerinfo.powerup = 0;
                 SDL_Delay(1100);
-                sprintf(sendpackage, "T%d", maintimer);
+                sprintf(sendpackage, "T%d", timerinfo.maintimer);
                 for(i=0;i<PLAYERCOUNT;i++){
-                    if(clientsockets[i] != NULL)
-                        SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+                    if(threadvariables[i].socket != NULL)
+                        SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
                 }
             }
 
             /* Keeps the game active as long as there is players connected to the server */
-            while(maintimer > 0 && (stack.population < 5)){
+            while(timerinfo.maintimer > 0 && (pollerinfo.stack.population < 5)){
                 /*
-                if(!(isEmptyStrStack(dstack))){
-                    popString(&dstack, sendpackage);
+                if(!(isEmptyStrStack(dpollerinfo.stack))){
+                    popString(&dpollerinfo.stack, sendpackage);
                     printf("STRING IS: %s\n", sendpackage);
                     for(i=0;i<PLAYERCOUNT;i++){
-                        if(clientsockets[i] !=NULL)
-                            SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+                        if(threadvariables[i].socket !=NULL)
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
                     }
                     SDL_Delay(200);
                 }else
                 // If there is a message waiting to be handled it will be sent within the lobby
-                if(!(isEmptyStrStack(cstack))){
-                    strcpy(popString(&cstack), cmess);
+                if(!(isEmptyStrStack(pollerinfo.cstack))){
+                    strcpy(popString(&pollerinfo.cstack), cmess);
                     for(i=0;i<PLAYERCOUNT;i++){
-                        SDLNet_TCP_Send(clientsockets[i], cmess, 40);
+                        SDLNet_TCP_Send(threadvariables[i].socket, cmess, 40);
                     }
                 }else*/ SDL_Delay(200);
             }
             printf("Game stopping.\n");
         }else{
-            maintimer = 0;
-            if(!(isEmptyStrStack(cstack))){
-                    popString(&cstack, sendpackage);
+            timerinfo.maintimer = 0;
+            if(!(isEmptyStrStack(pollerinfo.cstack))){
+                    popString(&pollerinfo.cstack, sendpackage);
                     printf("STRING IS: %s\n", sendpackage);
                     for(i=0;i<PLAYERCOUNT;i++){
-                        if(clientsockets[i] != NULL)
-                            SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+                        if(threadvariables[i].socket != NULL)
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
                     }
                 SDL_Delay(200);
             }else SDL_Delay(200);
 
-            if(stack.population != lastpop){
+            if(pollerinfo.stack.population != lastpop){
                 SDL_Delay(1000);
                 printf("Players changed!\n");
                 for(i=0;i<PLAYERCOUNT;i++){
                     namestruct.ID[i] = i;
-                    strcpy(namestruct.names[i], players[i].playername);
+                    strcpy(namestruct.names[i], threadvariables[i].player.playername);
                 }
                 memcpy(&sendpackage, &namestruct, sizeof(namestruct));
                 parseChat(sendpackage, -1, strlen(sendpackage));
                 sendpackage[0] = 'N';
                 for(i=0;i<PLAYERCOUNT;i++){
-                    if(clientsockets[i] != NULL)
-                        SDLNet_TCP_Send(clientsockets[i], sendpackage, sizeof(sendpackage));
+                    if(threadvariables[i].socket != NULL)
+                        SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
                 }
-                lastpop = stack.population;
+                lastpop = pollerinfo.stack.population;
             }
         }
     }

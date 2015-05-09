@@ -29,9 +29,9 @@ typedef struct{
 
 /* Struct with all the information a thread will have to get when getting a slot from the stack */
 typedef struct{
-    int ID, *active;
-    TCPsocket* socket;
-    pinfo* player;
+    int ID;
+    TCPsocket socket;
+    pinfo player;
     char* names[PLAYERCOUNT];
 }tinfo;
 
@@ -44,7 +44,7 @@ typedef struct{
 /* The stack containing pointers to all of the information regarding the slots on the server */
 typedef struct{
 	int population;
-	TCPsocket* socket;
+	TCPsocket socket;
 	tinfo* thread[PLAYERCOUNT];
 }ThreadStack;
 
@@ -56,15 +56,15 @@ typedef struct{
 
 /* Struct with pointers required for the Poller to work */
 typedef struct{
-    int* quit;
-    ThreadStack* stack;
-    DataStack* cstack;
-    DataStack* dstack;
+    int quit;
+    ThreadStack stack;
+    DataStack cstack;
+    DataStack dstack;
 }PollInfo;
 
 /* Struct for counting down all the timers */
 typedef struct{
-    int *main, *powerup;
+    int maintimer, powerup;
 }TimerInfo;
 
 /* Struct with pointers required for the Clienthandlers to work */

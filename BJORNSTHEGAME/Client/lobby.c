@@ -21,7 +21,7 @@
 #define PLAYERCOUNT 6
 #endif
 
-
+/* The Lobby function, spawns a pre-game window where you can see other players and chat with them */
 int LobbyWindow(StartInfo* lobbyConnection){
     //********************** INIT *************************
     TTF_Font* playerfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 30);
@@ -147,6 +147,7 @@ int LobbyWindow(StartInfo* lobbyConnection){
         SDL_GetMouseState(&mousePosition[0], &mousePosition[1]);
         emptyString(packet, strlen(packet));
 
+        /* If there is activity on the socket it is recieved and sorted depending on type */
         if(SDLNet_SocketReady(lobbyConnection->socket)){
             SDLNet_TCP_Recv(lobbyConnection->socket, packet, 200);
             switch(packet[0]){
@@ -175,9 +176,7 @@ int LobbyWindow(StartInfo* lobbyConnection){
             }
         }
 
-        
-        //SDL_Delay(500);
-
+        /* If the player clicks on the ready button their state will be set to ready */
         if( getMouseBounds(mousePosition, buttonPlacement))
         {
             if(SDL_GetMouseState(NULL, NULL) && SDL_BUTTON(SDL_BUTTON_LEFT)) //leftclick
@@ -187,6 +186,7 @@ int LobbyWindow(StartInfo* lobbyConnection){
             }
         }
 
+        /* Checks if the 't'-key has been hit, in which case the keyboard is recorded to form a chat message */
         if(keys[SDL_SCANCODE_T]){
             char temp[sizeof(packet)];
             emptyString(packet, sizeof(packet));
@@ -195,7 +195,7 @@ int LobbyWindow(StartInfo* lobbyConnection){
             SDLNet_TCP_Send(lobbyConnection->socket, packet, strlen(packet));
         }
 
-
+        /* Applies all pictures and text to the window */
         SDL_BlitScaled(lobbyBackground, NULL, lobbySurface, NULL);
         SDL_BlitScaled(readyButton, NULL, lobbySurface, &buttonPlacement);
         textToScreen(chatfont, typing[0], lobby, "Press 't' to type:");
@@ -214,7 +214,7 @@ int LobbyWindow(StartInfo* lobbyConnection){
             textToScreen(chatfont, timerpos, lobby, "Waiting for more players.");
         }
 
-         //Update the surface
+        //Update the surface
         SDL_UpdateWindowSurface(lobby);
         SDL_Delay(20);
     }
@@ -228,6 +228,7 @@ int LobbyWindow(StartInfo* lobbyConnection){
     return 0;
 }
 
+/* Converts the current time from seconds into a string in 'MM:SS' format */
 void convertTimer(char output[8], int input){
     int min=0;
     for(;input>59;input-=60){
@@ -239,6 +240,7 @@ void convertTimer(char output[8], int input){
         sprintf(output, "%d:0%d", min, input);
 }
 
+/* Parses a string forwards or back 'hops' times */
 void parseString(char* inc, int hops, int len){
     int i;
     if(hops>0){
@@ -252,7 +254,7 @@ void parseString(char* inc, int hops, int len){
     }
 }
 
-// time thread - not working yet
+/* Timer thread, uses delay to count down an int */
 int timepoll(void* inctimer){
     int* timer = (int*) inctimer;
     printf("Timer thread started!\n");
@@ -262,7 +264,6 @@ int timepoll(void* inctimer){
             (*(timer))--;
             printf("Time ticking: %d\n", *timer);
         }else 
-            printf("Nothing to do.\n");
         SDL_Delay(995);
     }
     return 0;

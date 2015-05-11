@@ -130,7 +130,8 @@ int menu(StartInfo* startup){
                                         TTF_CloseFont(fontsmall);
                                         Mix_FreeMusic(music);
                                         Mix_FreeChunk(uselt);
-                                        Mix_FreeChunk(tmp);
+                                        if(!tmp)
+                                            Mix_FreeChunk(tmp);
                                         SDL_DestroyWindow(window); // close when done and goto lobby
                                         printf("Bjornstartup finished!\n");
                                         return 0;

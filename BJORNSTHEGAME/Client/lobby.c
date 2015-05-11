@@ -35,7 +35,7 @@ int LobbyWindow(StartInfo* lobbyConnection){
     //background pic for lobby
 	SDL_Surface* lobbyBackground = IMG_Load("../Images/lobby/lobby.png");
     // image for ready button
-	SDL_Surface* readyButton = IMG_Load("../Images/lobby/ready.png");
+	SDL_Surface* readyButton = IMG_Load("../Images/lobby/exit.png");
 
     SDL_Rect buttonPlacement;
     SDL_Rect chat[20], typing[2], timerpos;
@@ -181,8 +181,7 @@ int LobbyWindow(StartInfo* lobbyConnection){
         {
             if(SDL_GetMouseState(NULL, NULL) && SDL_BUTTON(SDL_BUTTON_LEFT)) //leftclick
             {
-                printf("PLAYER %s IS Exisitng the lobby!\n", lobbyConnection->playerName);
-                endLobby=1;
+                printf("%s exisited the lobby!\n", lobbyConnection->playerName);
                 return 1;
             }
         }

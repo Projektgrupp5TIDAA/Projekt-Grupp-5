@@ -103,7 +103,7 @@ int main(int argc, char **argv){
                         strcpy(namestruct.names[i], threadvariables[i].player.playername);
                     }
                     memcpy(&sendpackage, &namestruct, sizeof(namestruct));
-                    parseChat(sendpackage, -1, strlen(sendpackage));
+                    parseString(sendpackage, -1, strlen(sendpackage));
                     sendpackage[0] = 'N';
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket != NULL)
@@ -190,7 +190,7 @@ int main(int argc, char **argv){
                     strcpy(namestruct.names[i], threadvariables[i].player.playername);
                 }
                 memcpy(&sendpackage, &namestruct, sizeof(namestruct));
-                parseChat(sendpackage, -1, strlen(sendpackage));
+                parseString(sendpackage, -1, strlen(sendpackage));
                 sendpackage[0] = 'N';
                 for(i=0;i<PLAYERCOUNT;i++){
                     if(threadvariables[i].socket != NULL)

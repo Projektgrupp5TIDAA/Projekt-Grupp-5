@@ -60,7 +60,6 @@ int menu(StartInfo* startup){
             if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                 Mix_PlayChannel(-1, uselt, 1);
                 SDL_BlitScaled(openDoor, NULL, screen, &exitplacement);
-                SDL_Delay(500);
                 SDL_UpdateWindowSurface(window);
                 SDL_Delay(1000);
 

@@ -12,7 +12,7 @@ int is_set(int comp, int bit);
 
 void set_bit(int *num, int bit);
 
-void parseChat(char* inc, int hops, int len);
+void parseString(char* inc, int hops, int len);
 
 int emptyString(char* incoming, int len);
 

@@ -17,7 +17,7 @@ void set_bit(int *num, int bit){
 }
 
 /* Parses the string 'hops' places forward */
-void parseChat(char* inc, int hops, int len){
+void parseString(char* inc, int hops, int len){
     int i;
     if(hops>0){
         for(i=0;i<len;i++){

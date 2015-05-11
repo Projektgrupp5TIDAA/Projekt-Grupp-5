@@ -263,7 +263,7 @@ int timepoll(void* inctimer){
         if((*(timer)) > 0){
             (*(timer))--;
             printf("Time ticking: %d\n", *timer);
-        }else 
+        }
         SDL_Delay(995);
     }
     return 0;

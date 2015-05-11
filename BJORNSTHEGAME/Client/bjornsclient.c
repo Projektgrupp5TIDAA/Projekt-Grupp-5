@@ -18,8 +18,15 @@ int main(int argc, char *argv[]){
     }
     Mix_HaltMusic();
     LobbyWindow(&startup);
-
+    
+    /* if exit is pressed, exit the game */
+    if(LobbyWindow(&startup)==1){
+        SDLNet_TCP_Send(startup.socket, "EXITCONNECTION", 16);
+        printf("Exiting the game!\n");
+        return 0;
+    }
     /* Clean up */
+    printf("Going to the gameplay!\n");
     SDLNet_TCP_Send(startup.socket, "EXITCONNECTION", 16);
     SDL_Quit();
     TTF_Quit();

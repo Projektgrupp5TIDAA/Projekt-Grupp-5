@@ -7,7 +7,7 @@ WSDL2_LIB = C:\MinGW-libs\lib
 CC = gcc
 
 ifeq ($(OS),Windows_NT)
-	CFLAGS=-I$(WSDL2_INC) -L$(WSDL2_LIB) -lmingw32 -lSDL2main -lSDL2 -lSDL2_net
+	CFLAGS=-I$(WSDL2_INC) -L$(WSDL2_LIB) -lmingw32 -lSDL2main -lSDL2 -lSDL2_net -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 	objectlist = main.o gameplay.o
 else
 	UNAME_TARGET := $(shell uname -s)
@@ -22,4 +22,4 @@ else
 endif
 
 bjornserver : $(objectlist)
-	$(CC) -o game.out $(CFLAGS) $(objectlist)
+	$(CC) $(objectlist) $(CFLAGS) -o game.out  

@@ -57,8 +57,8 @@ void gameplayWindow()
         //Create a window
         gameplay = SDL_CreateWindow("BJORNSGAMEPLAY", SDL_WINDOWPOS_UNDEFINED,
                                     SDL_WINDOWPOS_UNDEFINED,
-                                    1920,1080,
-                                    SDL_WINDOW_FULLSCREEN_DESKTOP);
+                                    1280,800,
+                                    SDL_WINDOW_FULLSCREEN);
         if(gameplay == NULL)
         {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());

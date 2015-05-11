@@ -35,7 +35,7 @@ int LobbyWindow(StartInfo* lobbyConnection){
     //background pic for lobby
 	SDL_Surface* lobbyBackground = IMG_Load("../Images/lobby/lobby.png");
     // image for ready button
-	SDL_Surface* readyButton = IMG_Load("../Images/lobby/exit.png");
+	SDL_Surface* exitButton = IMG_Load("../Images/lobby/exit.png");
 
     SDL_Rect buttonPlacement;
     SDL_Rect chat[20], typing[2], timerpos;
@@ -197,7 +197,7 @@ int LobbyWindow(StartInfo* lobbyConnection){
 
         /* Applies all pictures and text to the window */
         SDL_BlitScaled(lobbyBackground, NULL, lobbySurface, NULL);
-        SDL_BlitScaled(readyButton, NULL, lobbySurface, &buttonPlacement);
+        SDL_BlitScaled(exitButton, NULL, lobbySurface, &buttonPlacement);
         textToScreen(chatfont, typing[0], lobby, "Press 't' to type:");
         for(i=0;i<PLAYERCOUNT;i++){
             textToScreen(playerfont, player[i], lobby, name.names[5-i]);
@@ -222,7 +222,7 @@ int LobbyWindow(StartInfo* lobbyConnection){
     SDL_FreeSurface(lobbySurface);
     SDL_DestroyWindow(lobby); //Destroy window
     SDL_FreeSurface(lobbyBackground);
-    SDL_FreeSurface(readyButton);
+    SDL_FreeSurface(exitButton);
 
     SDL_Quit(); //Quit SDL subsystems
     return 0;

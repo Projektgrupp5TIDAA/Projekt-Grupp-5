@@ -8,16 +8,16 @@ void gameplayWindow()
     SDL_Window* gameplay;
 
 
-    SDL_Surface* gameBackground = IMG_Load("bar.jpg");;
-    SDL_Surface* ground =IMG_Load("ground2.png");
+    SDL_Surface* gameBackground = IMG_Load("../Images/game/bar.jpg");;
+    SDL_Surface* ground =IMG_Load("../Images/game/ground2.png");
     SDL_Surface* platform1[size1];
-    SDL_Surface* platform2 = IMG_Load("platform_ver.png");
-    SDL_Surface* band = IMG_Load("band2.png");
+    SDL_Surface* platform2 = IMG_Load("../Images/game/platform_ver.png");
+    SDL_Surface* band = IMG_Load("../Images/game/band2.png");
     SDL_Surface* bjorns[size3];
     SDL_Surface* ammo[size2];
     SDL_Renderer* gRenderer = NULL;
     SDL_Texture* player = NULL;
-    SDL_Surface* playerSurface = IMG_Load("spriteBlue.PNG");
+    SDL_Surface* playerSurface = IMG_Load("../Images/game/spriteBlue.PNG");
     SDL_Rect platforms[size1];
     SDL_Texture* bakgroundTexture;
     SDL_Texture* picture[size1];
@@ -35,17 +35,17 @@ void gameplayWindow()
 
     for(i=0; i<size2; i++)
     {
-        ammo[i]=IMG_Load("caps.png");
+        ammo[i]=IMG_Load("../Images/game/caps.png");
     }
 
     for(i=0; i<size3; i++)
     {
-        bjorns[i]=IMG_Load("bjorndrapare.png");
+        bjorns[i]=IMG_Load("../Images/game/bjorndrapare.png");
     }
 
     for(i=0; i<size1; i++)
     {
-        platform1[i] = IMG_Load("platform_hor.png");
+        platform1[i] = IMG_Load("../Images/game/platform_hor.png");
         SDL_FillRect(platform1[i], NULL, SDL_MapRGB(platform1[i]->format, 200, 190, 200));
     }
 
@@ -81,7 +81,7 @@ void gameplayWindow()
 
             /*text*/
             SDL_Color colorT= {170,60,255};
-            TTF_Font *font = TTF_OpenFont("StencilStd.ttf", 35);
+            TTF_Font *font = TTF_OpenFont("../Images/game/StencilStd.ttf", 35);
             if(font == NULL)
                 {printf("FONT E NULL\n");}
 

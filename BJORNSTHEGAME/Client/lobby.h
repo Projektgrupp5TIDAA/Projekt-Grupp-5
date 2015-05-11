@@ -1,4 +1,5 @@
 #ifndef _LOBBY_H_
+#define _LOBBY_H_
 
 typedef struct{
     char ID[6];

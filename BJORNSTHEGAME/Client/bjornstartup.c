@@ -76,7 +76,8 @@ int menu(StartInfo* startup){
                 TTF_CloseFont(fontsmall);
                 Mix_FreeMusic(music);
                 Mix_FreeChunk(uselt);
-                Mix_FreeChunk(tmp);
+                if(!tmp)
+                    Mix_FreeChunk(tmp);
                 SDL_DestroyWindow(window);
 
                 return 1;

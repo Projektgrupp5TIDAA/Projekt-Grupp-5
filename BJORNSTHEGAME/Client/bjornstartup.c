@@ -2,7 +2,7 @@
 #include "lobby.h"
 
 int menu(StartInfo* startup){
-    int quit = 0, mouse[2] = {0};
+    int quit = 0, mouse[2] = {0}, pointcount=0;
     char packet[PACKETSIZE];
 
     /* Create window and get the surface */
@@ -24,6 +24,7 @@ int menu(StartInfo* startup){
     SDL_Surface* nobutton = IMG_Load("../Images/menu/NoButton.png");
     SDL_Surface* openDoor = IMG_Load("../Images/menu/dooropen.png");
     SDL_Surface* lamp = IMG_Load("../Images/menu/lampa.png");
+    SDL_Surface* point = IMG_Load("../Images/menu/point.png");
 
     /* Load colour, font and then render text-surfaces */
     SDL_Colour black={0,0,0};
@@ -45,6 +46,7 @@ int menu(StartInfo* startup){
     SDL_Rect button3placement = {((screen->w/2) - 125), (screen->h/2 - 70), 250, 60};
     SDL_Rect exitplacement = {(screen->w - 66), (screen->h - 106), 60, 100};
     SDL_Rect tapirplacement = {0, (screen->h - 66), 100, 66};
+    SDL_Rect pointpos = {20, (screen->h - 166), 0, 0};
     SDL_Rect menutextpos = {230, 150, 0, 0};
     SDL_Rect yespos = {200, 400, 180, 64};
     SDL_Rect nopos = {420, 400, 180, 64};
@@ -153,6 +155,8 @@ int menu(StartInfo* startup){
                 tmp=randomMusic();
                 Mix_HaltChannel(3);
                 Mix_PlayChannel(3, tmp, 0);
+                if(pointcount < 4)
+                    pointcount++;
                 SDL_Delay(100);
             }
         }
@@ -161,6 +165,8 @@ int menu(StartInfo* startup){
                 tmp=randomMusic();
                 Mix_HaltChannel(3);
                 Mix_PlayChannel(3, tmp, 0);
+                if(pointcount < 4)
+                    pointcount++;
                 SDL_Delay(100);
             }
         }
@@ -169,6 +175,8 @@ int menu(StartInfo* startup){
                 tmp=randomMusic();
                 Mix_HaltChannel(3);
                 Mix_PlayChannel(3, tmp, 0);
+                if(pointcount < 4)
+                    pointcount++;
                 SDL_Delay(100);
             }
         }
@@ -181,6 +189,8 @@ int menu(StartInfo* startup){
         SDL_BlitScaled(playbutton, NULL, screen, &button3placement);
         SDL_BlitScaled(lamp, NULL , screen , &lamp1);
         SDL_BlitScaled(exitbutton, NULL, screen, &exitplacement);
+        if(pointcount > 2)
+            SDL_BlitSurface(point, NULL, screen, &pointpos);
         SDL_BlitScaled(tapir, NULL, screen, &tapirplacement);
 
         /* Update the window */

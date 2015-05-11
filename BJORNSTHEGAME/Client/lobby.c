@@ -181,8 +181,9 @@ int LobbyWindow(StartInfo* lobbyConnection){
         {
             if(SDL_GetMouseState(NULL, NULL) && SDL_BUTTON(SDL_BUTTON_LEFT)) //leftclick
             {
-                printf("PLAYER %s IS READY!\n", lobbyConnection->playerName);
+                printf("PLAYER %s IS Exisitng the lobby!\n", lobbyConnection->playerName);
                 endLobby=1;
+                return 1;
             }
         }
 

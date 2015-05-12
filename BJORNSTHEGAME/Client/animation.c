@@ -331,6 +331,11 @@ int animate(updaterInfo updater){
                         if(onPlatform == true)
                         {
                             onPlatform = false;
+                            int tmp=0;
+                            moveUP(&tmp, platforms[1], screen);
+                            //   position.y -=SPEEDy;
+                            updater.players[0].pos-=tmp;
+                            break;
                         }
                         break;
                     default:
@@ -402,4 +407,18 @@ int animate(updaterInfo updater){
     SDL_DestroyRenderer(gRenderer);
 
 	
+}
+
+/* gravity fucntion */
+void moveUP(int* test, SDL_Rect wall, SDL_Surface* s){
+    
+    float my_gravity= 0.2, MaxFall_speed= 0.5, MyJump_force=5.0, CurJump_force=0.0, Delta_time;
+    
+    CurJump_force=MyJump_force;
+    *(test)+=CurJump_force * Delta_time;
+    if(CurJump_force > MaxFall_speed){
+        MyJump_force-= my_gravity * Delta_time;
+    }else{
+        CurJump_force=MaxFall_speed;
+    }
 }

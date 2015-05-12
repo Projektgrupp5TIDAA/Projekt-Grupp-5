@@ -4,10 +4,11 @@
 
 int gameplayWindow(ClientInfo* information)
 {
-    int i;
+    int i, tmp_timer=0;
     int platformamount=14, texts=3, size3=2;
     updaterInfo updater = {NULL, &(information->socket), {{0, 0, {0, 0, 0, 0}}}};
     SDL_Thread* updaterThread;
+    SDL_Thread * timercounter_thr;
 
     /*Loading and declaration of all images*/
     SDL_Window* gameplay;
@@ -41,6 +42,9 @@ int gameplayWindow(ClientInfo* information)
     SDL_RendererFlip flip = SDL_FLIP_VERTICAL;
     bool quit = false;
     bool onPlatform = true;
+    char spacket[512], timer_array[8];
+    SDLNet_SocketSet chsock = SDLNet_AllocSocketSet(1);
+    SDLNet_AddSocket(chsock, information->socket);
 
     /* Fill the platforms with colors */
     SDL_FillRect(platform1, NULL, SDL_MapRGB(platform1->format, 200, 190, 200));
@@ -67,15 +71,12 @@ int gameplayWindow(ClientInfo* information)
 
     gRenderer=SDL_GetRenderer(gameplay);
     if(! gRenderer)
-<<<<<<< HEAD
         printf("Coulnd not get the render: %s\n", SDL_GetError());
 
-=======
         gRenderer = SDL_CreateRenderer(gameplay, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
     if(!gRenderer)
         printf("Couldn't start the render: %s\n", SDL_GetError());
     
->>>>>>> origin/master
     bakgroundTexture = SDL_CreateTextureFromSurface(gRenderer,gameBackground); //Load a texture background to the render
 
     /*text*/
@@ -254,10 +255,29 @@ int gameplayWindow(ClientInfo* information)
     spriteClips[3].y = 0;
     spriteClips[3].w = 210;
     spriteClips[3].h = 348;
+    
+    /* start time thread */
+    timercounter_thr= SDL_CreateThread=(timeupdater, "timeupdate", (void*)&tmp_timer);
+    if(timercounter_thr == NULL){
+        printf("Couldnt create the time thread: %s\n", SDL_GetError());
+        return 1;
+    }
 
 
-    while (!quit) // while not Esc
+    while (!quit)
     {
+        if(SDLNet_SocketReady(information->socket)){
+            SDLNet_TCP_Recv(information->socket, spacket, 200);
+            switch (spacket[0]){
+                case 'T':
+                    parseString(spacket, 1, strlen(spacket));
+                    tmp_timer=atoi(spacket);
+                    break;
+                default:
+                    printf("Unkown package type\n");
+                    break;
+            }
+        }
         while (SDL_PollEvent(&e)) //events
         {
             if (e.type == SDL_QUIT)
@@ -273,7 +293,7 @@ int gameplayWindow(ClientInfo* information)
                         quit = true;
                         break;
                     case SDLK_LEFT:
-<<<<<<< HEAD
+
                         //  moveP(position, platforms[1],screen);
                            // position.x -=SPEEDx;
                            if(( updater.players[0].x <0)||(  updater.players[0].x +  updater.players[0].w> screen->w/2 -625)|| checkCollision( updater.players[0].x ,platforms[0]))
@@ -283,9 +303,9 @@ int gameplayWindow(ClientInfo* information)
                                 }
 
                       //  updater.players[0].x -= SPEEDx;
-=======
+
                         updater.players[0].pos.x -= SPEEDx;
->>>>>>> origin/master
+
                         flip = SDL_FLIP_HORIZONTAL;
 
                         if(frame == 2)
@@ -372,7 +392,15 @@ int gameplayWindow(ClientInfo* information)
         }
 
         //copy all players
+
         SDL_RenderCopyEx(gRenderer, player, &spriteClips[frame],&updater.players[0].pos, 0, NULL, flip);
+
+        SDL_RenderCopyEx(gRenderer, player, &spriteClips[frame],&updater.players[0], 0, NULL, flip);
+        
+        if(tmp_timer > 0){
+            convertTimer(timer_array,tmp_timer);
+            // textToscreen(font,rect for time? ,gameplay, timer_array);
+        }
 
         // present the result on the render  "the screen"
         SDL_RenderPresent(gRenderer);
@@ -415,6 +443,21 @@ int gameplayWindow(ClientInfo* information)
     TTF_Quit();
     return 0;
 
+}
+
+
+int timeupdater(void * inc_time){
+    int* tmp_timer= (int*) inc_time;
+    printf("Timer thread uppdater started\n");
+    SDL_Delay(1000);
+    while(1){
+        if((*(tmp_timer)) > 0){
+            (*(tmp_timer))--;
+            printf("Gameplay time: %s is ticking\n", *tmp_timer);
+        }
+        SDL_Delay(995);
+    }
+    return 0;
 }
 
 
@@ -489,3 +532,4 @@ void moveUP(SDL_Rect p, SDL_Rect wall, SDL_Surface* s)
 
 
 }
+

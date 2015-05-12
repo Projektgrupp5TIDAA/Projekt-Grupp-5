@@ -169,6 +169,8 @@ int LobbyWindow(ClientInfo* lobbyConnection){
                 case 'T':
                     parseString(packet, 1, strlen(packet));
                     timer=atoi(packet);
+                    if(timer == 0)
+                        return 0;
                     break;
                 default:
                     printf("Invalid package recieved!\n");

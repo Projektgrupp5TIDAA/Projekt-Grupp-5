@@ -32,4 +32,8 @@ typedef struct{
 
 int updateHandler(void* info);
 
+int timeupdater(void* inc_time);
+
+
+
 #endif

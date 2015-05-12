@@ -15,6 +15,7 @@
 #include <SDL2/SDL_net.h>
 #endif
 #include "bjornstartup.h"
+#include "lobby.h"
 
 #define SPEEDx 10
 
@@ -23,6 +24,7 @@ bool checkCollision( SDL_Rect a, SDL_Rect b );
 void moveP(SDL_Rect p, SDL_Rect wall, SDL_Surface *s);
 void moveUP(SDL_Rect p, SDL_Rect wall, SDL_Surface *s);
 
+int timeupdater(void* inc_time);
 
 #endif // GAMEPLAY_H_INCLUDED
 

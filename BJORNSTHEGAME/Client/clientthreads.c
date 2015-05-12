@@ -78,3 +78,17 @@ int updateHandler(void* incinfo){
 
 	return 0;
 }
+
+int timeupdater(void * inc_time){
+    int* tmp_timer= (int*) inc_time;
+    printf("Timer thread uppdater started\n");
+    SDL_Delay(1000);
+    while(1){
+        if((*(tmp_timer)) > 0){
+            (*(tmp_timer))--;
+            printf("Gameplay time: %s is ticking\n", *tmp_timer);
+        }
+        SDL_Delay(995);
+    }
+    return 0;
+}

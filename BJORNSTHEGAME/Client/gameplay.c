@@ -13,22 +13,6 @@ int gameplayWindow(ClientInfo* information)
 
 }
 
-
-int timeupdater(void * inc_time){
-    int* tmp_timer= (int*) inc_time;
-    printf("Timer thread uppdater started\n");
-    SDL_Delay(1000);
-    while(1){
-        if((*(tmp_timer)) > 0){
-            (*(tmp_timer))--;
-            printf("Gameplay time: %s is ticking\n", *tmp_timer);
-        }
-        SDL_Delay(995);
-    }
-    return 0;
-}
-
-
 bool checkCollision( SDL_Rect a, SDL_Rect b )
 {
     //The sides of the rectangles
@@ -73,31 +57,3 @@ bool checkCollision( SDL_Rect a, SDL_Rect b )
     //If none of the sides from A are outside B
     return true;
 }
-
-
-void moveP(SDL_Rect p, SDL_Rect wall, SDL_Surface* s)
-{
-
-
-    if((p.x<0)||( p.x + p.w > s->w/2 -590)|| checkCollision(p,wall))
-    {
-
-        p.x -= SPEEDx;
-    }
-
-
-
-}
-
-void moveUP(SDL_Rect p, SDL_Rect wall, SDL_Surface* s)
-{
-
-    if((p.y<0)||( p.y + p.h > s->h/2 -200)|| checkCollision(p,wall))
-    {
-        p.y -=SPEEDy;
-    }
-
-
-
-}
-

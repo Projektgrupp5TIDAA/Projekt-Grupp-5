@@ -20,7 +20,7 @@ Projekt Grupp 5
 int Handler(void* thr){
     HandlerInfo* thread = (HandlerInfo *) thr;
     TCPsocket socket;
-    char packet[PACKETSIZE], serialnames[sizeof(nsend)], tmp[PACKETSIZE];
+    char packet[PACKETSIZE], serialnames[sizeof(nsend)], tmp[PACKETSIZE] = {0};
     int i;
     nsend names;
     tinfo* clientvar;
@@ -93,15 +93,20 @@ int Handler(void* thr){
                 return 0;
             }else{
                 switch(packet[0]){
-                    case 'D':
+                    case 'B':
                         printf("Data recieved, pushing to stack!\n");
                         parseString(packet, 2, sizeof(packet));
-                        sprintf(tmp, "D%d%s", packet);
+                        sprintf(tmp, "B%d%s", clientvar->ID, packet);
                         pushString(thread->dstack, tmp);
                         break;
                     case 'P':
-                        printf("Playerupdate recieved, updating!\n");
-                        //updatePlayer(packet, clientvar->player);
+                        printf("Data recieved, pushing to stack!\n");
+                        parseString(packet, -1, sizeof(packet));
+                        packet[0] = 'P';
+                        packet[0] = clientvar->ID;
+                        //sprintf(tmp, "P%d%s", clientvar->ID, packet);
+                        pushString(thread->dstack, tmp);
+                        emptyString(tmp, sizeof(tmp));
                         break;
                     case 'C':
                         printf("Chat message recieved, pushing to stack!\n");

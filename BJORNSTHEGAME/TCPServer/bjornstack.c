@@ -7,6 +7,7 @@ Projekt Grupp 5
 #include <stdio.h>
 #include <string.h>
 #include "bjornstack.h"
+#include "bjornshared.h"
 
 /* Push the struct to the top of the stack */
 void pushStack(ThreadStack *stack, tinfo *pushThread){
@@ -62,6 +63,7 @@ void popString(DataStack *stack, char* string){
 		fprintf(stderr, "Error taking from stack: Stack is Empty\n");
 	}else{
 		(stack->population)--;
+		emptyString(string, strlen(string));
 		strcpy(string, *(stack->item));
 	}
 }

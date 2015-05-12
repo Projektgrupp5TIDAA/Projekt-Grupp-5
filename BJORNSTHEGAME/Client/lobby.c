@@ -172,6 +172,9 @@ int LobbyWindow(ClientInfo* lobbyConnection){
                     if(timer == 0)
                         return 0;
                     break;
+                case 'G':
+                    endLobby = 1;
+                    break;
                 default:
                     printf("Invalid package recieved!\n");
                     break;
@@ -183,7 +186,7 @@ int LobbyWindow(ClientInfo* lobbyConnection){
         {
             if(SDL_GetMouseState(NULL, NULL) && SDL_BUTTON(SDL_BUTTON_LEFT)) //leftclick
             {
-                printf("%s exisited the lobby!\n", lobbyConnection->playerName);
+                printf("%s exited the lobby!\n", lobbyConnection->playerName);
                 return 1;
             }
         }
@@ -251,7 +254,7 @@ void parseString(char* inc, int hops, int len){
         }
     }else if(hops<0){
         for(i=len;i>0;i++){
-            *(inc+i) = *(inc+i-hops);
+            *(inc+i) = *(inc+i+hops);
         }
     }
 }

@@ -1,15 +1,29 @@
-#include "gameplay.h"
+#ifndef _ANIMATION_
+#define _ANIMATION_
+#ifdef __APPLE__
+#include <SDL2_ttf/SDL_ttf.h>
+#include <SDL2_image/SDL_image.h>
+#include <SDL2_mixer/SDL_mixer.h>
+#include <SDL2_net/SDL_net.h>
+#else
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_net.h>
+#endif
+//ALL PLATFORMS
+#include <stdio.h>
+#include <SDL2/SDL.h>
 #include "clientthreads.h"
 #include "animation.h"
+#include "gameplay.h"
+#define AMMO 3
+#endif
 
-int gameplayWindow(ClientInfo* information)
-{
-<<<<<<< Updated upstream
-    int i, tmp_timer=0;
+int animate(updaterInfo updater){
+	int i;
     int platformamount=14, texts=3, size3=2;
-    updaterInfo updater = {NULL, &(information->socket), {{0, 0, {0, 0, 0, 0}}}};
     SDL_Thread* updaterThread;
-    SDL_Thread * timercounter_thr;
 
     /*Loading and declaration of all images*/
     SDL_Window* gameplay;
@@ -43,16 +57,13 @@ int gameplayWindow(ClientInfo* information)
     SDL_RendererFlip flip = SDL_FLIP_VERTICAL;
     bool quit = false;
     bool onPlatform = true;
-    char spacket[512], timer_array[8];
-    SDLNet_SocketSet chsock = SDLNet_AllocSocketSet(1);
-    SDLNet_AddSocket(chsock, information->socket);
 
     /* Fill the platforms with colors */
     SDL_FillRect(platform1, NULL, SDL_MapRGB(platform1->format, 200, 190, 200));
     SDL_FillRect(platform2, NULL, SDL_MapRGB(platform2->format, 200, 190, 200));
 
     //Create a window
-    gameplay = SDL_CreateWindow("BJORNS THE GAME",
+    gameplay = SDL_CreateWindow("BJORNS THE GAME", 
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         1280,800,
@@ -72,8 +83,6 @@ int gameplayWindow(ClientInfo* information)
 
     gRenderer=SDL_GetRenderer(gameplay);
     if(! gRenderer)
-        printf("Coulnd not get the render: %s\n", SDL_GetError());
-
         gRenderer = SDL_CreateRenderer(gameplay, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
     if(!gRenderer)
         printf("Couldn't start the render: %s\n", SDL_GetError());
@@ -256,29 +265,10 @@ int gameplayWindow(ClientInfo* information)
     spriteClips[3].y = 0;
     spriteClips[3].w = 210;
     spriteClips[3].h = 348;
-    
-    /* start time thread */
-    timercounter_thr= SDL_CreateThread=(timeupdater, "timeupdate", (void*)&tmp_timer);
-    if(timercounter_thr == NULL){
-        printf("Couldnt create the time thread: %s\n", SDL_GetError());
-        return 1;
-    }
 
 
-    while (!quit)
+    while (!quit) // while not Esc
     {
-        if(SDLNet_SocketReady(information->socket)){
-            SDLNet_TCP_Recv(information->socket, spacket, 200);
-            switch (spacket[0]){
-                case 'T':
-                    parseString(spacket, 1, strlen(spacket));
-                    tmp_timer=atoi(spacket);
-                    break;
-                default:
-                    printf("Unkown package type\n");
-                    break;
-            }
-        }
         while (SDL_PollEvent(&e)) //events
         {
             if (e.type == SDL_QUIT)
@@ -294,19 +284,7 @@ int gameplayWindow(ClientInfo* information)
                         quit = true;
                         break;
                     case SDLK_LEFT:
-
-                        //  moveP(position, platforms[1],screen);
-                           // position.x -=SPEEDx;
-                           if(( updater.players[0].x <0)||(  updater.players[0].x +  updater.players[0].w> screen->w/2 -625)|| checkCollision( updater.players[0].x ,platforms[0]))
-                                {
-
-                                    updater.players[0].x  -= SPEEDx;
-                                }
-
-                      //  updater.players[0].x -= SPEEDx;
-
                         updater.players[0].pos.x -= SPEEDx;
-
                         flip = SDL_FLIP_HORIZONTAL;
 
                         if(frame == 2)
@@ -352,15 +330,7 @@ int gameplayWindow(ClientInfo* information)
                     case SDLK_SPACE:
                         if(onPlatform == true)
                         {
-                            //onPlatform = false;
-                             // moveUP(position, platforms[1],screen);
-                                //   position.y -=SPEEDy;
-
-                                if(( updater.players[0].y<0)||(  updater.players[0].y +  updater.players[0].h > screen->h/2 -200)|| checkCollision( updater.players[0],platforms[1]))
-                                {
-                                     updater.players[0].y -=SPEEDy;
-                                }
-
+                            onPlatform = false;
                         }
                         break;
                     default:
@@ -393,15 +363,7 @@ int gameplayWindow(ClientInfo* information)
         }
 
         //copy all players
-
         SDL_RenderCopyEx(gRenderer, player, &spriteClips[frame],&updater.players[0].pos, 0, NULL, flip);
-
-        SDL_RenderCopyEx(gRenderer, player, &spriteClips[frame],&updater.players[0], 0, NULL, flip);
-        
-        if(tmp_timer > 0){
-            convertTimer(timer_array,tmp_timer);
-            // textToscreen(font,rect for time? ,gameplay, timer_array);
-        }
 
         // present the result on the render  "the screen"
         SDL_RenderPresent(gRenderer);
@@ -439,102 +401,5 @@ int gameplayWindow(ClientInfo* information)
     //  SDL_DestroyWindow(bakgroundTexture);
     SDL_DestroyRenderer(gRenderer);
 
-=======
-    updaterInfo updater = {NULL, &(information->socket), {{0, 0, {0, 0, 0, 0}}}};
-    animate(updater);
->>>>>>> Stashed changes
-
-    SDL_Quit();
-    TTF_Quit();
-    return 0;
-
+	
 }
-
-
-int timeupdater(void * inc_time){
-    int* tmp_timer= (int*) inc_time;
-    printf("Timer thread uppdater started\n");
-    SDL_Delay(1000);
-    while(1){
-        if((*(tmp_timer)) > 0){
-            (*(tmp_timer))--;
-            printf("Gameplay time: %s is ticking\n", *tmp_timer);
-        }
-        SDL_Delay(995);
-    }
-    return 0;
-}
-
-
-bool checkCollision( SDL_Rect a, SDL_Rect b )
-{
-    //The sides of the rectangles
-    int leftA, leftB;
-    int rightA, rightB;
-    int topA, topB;
-    int bottomA, bottomB;
-
-    //Calculate the sides of rect A
-    leftA = a.x;
-    rightA = a.x + a.w;
-    topA = a.y;
-    bottomA = a.y + a.h;
-
-    //Calculate the sides of rect B
-    leftB = b.x;
-    rightB = b.x + b.w;
-    topB = b.y;
-    bottomB = b.y + b.h;
-
-    //If any of the sides from A are outside of B
-    if( bottomA <= topB )
-    {
-        return false;
-    }
-
-    if( topA >= bottomB )
-    {
-        return false;
-    }
-
-    if( rightA <= leftB )
-    {
-        return false;
-    }
-
-    if( leftA >= rightB )
-    {
-        return false;
-    }
-
-    //If none of the sides from A are outside B
-    return true;
-}
-
-
-void moveP(SDL_Rect p, SDL_Rect wall, SDL_Surface* s)
-{
-
-
-    if((p.x<0)||( p.x + p.w > s->w/2 -590)|| checkCollision(p,wall))
-    {
-
-        p.x -= SPEEDx;
-    }
-
-
-
-}
-
-void moveUP(SDL_Rect p, SDL_Rect wall, SDL_Surface* s)
-{
-
-    if((p.y<0)||( p.y + p.h > s->h/2 -200)|| checkCollision(p,wall))
-    {
-        p.y -=SPEEDy;
-    }
-
-
-
-}
-

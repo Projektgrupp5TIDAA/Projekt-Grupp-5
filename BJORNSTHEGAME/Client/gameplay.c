@@ -47,7 +47,7 @@ int gameplayWindow(ClientInfo* information)
     SDL_FillRect(platform2, NULL, SDL_MapRGB(platform2->format, 200, 190, 200));
 
     //Create a window
-    gameplay = SDL_CreateWindow("BJORNS THE GAME", 
+    gameplay = SDL_CreateWindow("BJORNS THE GAME",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         1280,800,
@@ -69,7 +69,7 @@ int gameplayWindow(ClientInfo* information)
     gRenderer=SDL_GetRenderer(gameplay);
     if(! gRenderer)
         printf("Coulnd not get the render: %s\n", SDL_GetError());
-    
+
     bakgroundTexture = SDL_CreateTextureFromSurface(gRenderer,gameBackground); //Load a texture background to the render
 
     /*text*/
@@ -267,7 +267,15 @@ int gameplayWindow(ClientInfo* information)
                         quit = true;
                         break;
                     case SDLK_LEFT:
-                        updater.players[0].x -= SPEEDx;
+                        //  moveP(position, platforms[1],screen);
+                           // position.x -=SPEEDx;
+                           if(( updater.players[0].x <0)||(  updater.players[0].x +  updater.players[0].w> screen->w/2 -625)|| checkCollision( updater.players[0].x ,platforms[0]))
+                                {
+
+                                    updater.players[0].x  -= SPEEDx;
+                                }
+
+                      //  updater.players[0].x -= SPEEDx;
                         flip = SDL_FLIP_HORIZONTAL;
 
                         if(frame == 2)
@@ -313,7 +321,15 @@ int gameplayWindow(ClientInfo* information)
                     case SDLK_SPACE:
                         if(onPlatform == true)
                         {
-                            onPlatform = false;
+                            //onPlatform = false;
+                             // moveUP(position, platforms[1],screen);
+                                //   position.y -=SPEEDy;
+
+                                if(( updater.players[0].y<0)||(  updater.players[0].y +  updater.players[0].h > screen->h/2 -200)|| checkCollision( updater.players[0],platforms[1]))
+                                {
+                                     updater.players[0].y -=SPEEDy;
+                                }
+
                         }
                         break;
                     default:
@@ -388,5 +404,78 @@ int gameplayWindow(ClientInfo* information)
     SDL_Quit();
     TTF_Quit();
     return 0;
+
+}
+
+
+bool checkCollision( SDL_Rect a, SDL_Rect b )
+{
+    //The sides of the rectangles
+    int leftA, leftB;
+    int rightA, rightB;
+    int topA, topB;
+    int bottomA, bottomB;
+
+    //Calculate the sides of rect A
+    leftA = a.x;
+    rightA = a.x + a.w;
+    topA = a.y;
+    bottomA = a.y + a.h;
+
+    //Calculate the sides of rect B
+    leftB = b.x;
+    rightB = b.x + b.w;
+    topB = b.y;
+    bottomB = b.y + b.h;
+
+    //If any of the sides from A are outside of B
+    if( bottomA <= topB )
+    {
+        return false;
+    }
+
+    if( topA >= bottomB )
+    {
+        return false;
+    }
+
+    if( rightA <= leftB )
+    {
+        return false;
+    }
+
+    if( leftA >= rightB )
+    {
+        return false;
+    }
+
+    //If none of the sides from A are outside B
+    return true;
+}
+
+
+void moveP(SDL_Rect p, SDL_Rect wall, SDL_Surface* s)
+{
+
+
+    if((p.x<0)||( p.x + p.w > s->w/2 -590)|| checkCollision(p,wall))
+    {
+
+        p.x -= SPEEDx;
+    }
+
+
+
+}
+
+void moveUP(SDL_Rect p, SDL_Rect wall, SDL_Surface* s)
+{
+
+    if((p.y<0)||( p.y + p.h > s->h/2 -200)|| checkCollision(p,wall))
+    {
+        p.y -=SPEEDy;
+    }
+
+
 
 }

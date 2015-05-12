@@ -19,6 +19,9 @@
 #define SPEEDx 10
 
 int gameplayWindow(ClientInfo* information);
+bool checkCollision( SDL_Rect a, SDL_Rect b );
+void moveP(SDL_Rect p, SDL_Rect wall, SDL_Surface *s);
+void moveUP(SDL_Rect p, SDL_Rect wall, SDL_Surface *s);
 
 
 #endif // GAMEPLAY_H_INCLUDED

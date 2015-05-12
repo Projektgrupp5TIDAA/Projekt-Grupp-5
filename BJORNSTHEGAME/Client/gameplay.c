@@ -5,6 +5,9 @@
 int gameplayWindow(ClientInfo* information)
 {
     updaterInfo updater = {NULL, &(information->socket), {{0, 0, {0, 0, 0, 0}}}};
+    SDL_Threads* updaterThread;
+    SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
+    
     animate(updater);
     
     SDL_Quit();

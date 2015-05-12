@@ -1,10 +1,13 @@
 #include "gameplay.h"
+#include "clientthreads.h"
 #define AMMO 3
 
 int gameplayWindow(ClientInfo* information)
 {
     int i;
     int platformamount=14, texts=3, size3=2;
+    updaterInfo updater = {NULL, &(information->socket), {{0, 0, 0, 0}}};
+    SDL_Thread* updaterThread;
 
     /*Loading and declaration of all images*/
     SDL_Window* gameplay;
@@ -54,6 +57,11 @@ int gameplayWindow(ClientInfo* information)
         printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
         return 1;
     }
+    updater.window = gameplay;
+
+    /* Create the thread in charge of polling updates from the server */
+    updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
+
     SDL_Surface* screen = SDL_GetWindowSurface(gameplay); //get the screen size
     printf("Width: %d, Height: %d\n", screen->w, screen->h);
 
@@ -211,11 +219,10 @@ int gameplayWindow(ClientInfo* information)
     textRect[2].h= screen->h*0.055;
 
     //size and position for the player
-    SDL_Rect position;
-    position.y = screen-> h/2 +110;
-    position.x = screen->w/2 +120;
-    position.h = screen->h*0.11;//120;
-    position.w = screen->w*0.034;//66;
+    updater.players[0].y = screen-> h/2 +110;
+    updater.players[0].x = screen->w/2 +120;
+    updater.players[0].h = screen->h*0.11;//120;
+    updater.players[0].w = screen->w*0.034;//66;
 
     //start frame and be facing to the right
     int frame = 2;
@@ -260,7 +267,7 @@ int gameplayWindow(ClientInfo* information)
                         quit = true;
                         break;
                     case SDLK_LEFT:
-                        position.x -= SPEEDx;
+                        updater.players[0].x -= SPEEDx;
                         flip = SDL_FLIP_HORIZONTAL;
 
                         if(frame == 2)
@@ -282,7 +289,7 @@ int gameplayWindow(ClientInfo* information)
                         break;
 
                     case SDLK_RIGHT:
-                        position.x += SPEEDx;
+                        updater.players[0].x += SPEEDx;
                         flip = SDL_FLIP_NONE;
 
                         if(frame == 2)
@@ -339,7 +346,7 @@ int gameplayWindow(ClientInfo* information)
         }
 
         //copy all players
-        SDL_RenderCopyEx(gRenderer, player, &spriteClips[frame],&position, 0, NULL, flip);
+        SDL_RenderCopyEx(gRenderer, player, &spriteClips[frame],&updater.players[0], 0, NULL, flip);
 
         // present the result on the render  "the screen"
         SDL_RenderPresent(gRenderer);

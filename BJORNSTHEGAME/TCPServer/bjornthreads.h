@@ -27,6 +27,11 @@ typedef struct{
   char playername[20];
 }pinfo;
 
+/* Struct with the information needed by the client to render the players */
+typedef struct{
+    short health, pos[2], kills;
+}psend;
+
 /* Struct with all the information a thread will have to get when getting a slot from the stack */
 typedef struct{
     int ID;

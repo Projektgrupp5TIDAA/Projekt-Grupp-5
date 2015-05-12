@@ -57,7 +57,11 @@ int gameplayWindow(ClientInfo* information)
     SDL_Surface* screen = SDL_GetWindowSurface(gameplay); //get the screen size
     printf("Width: %d, Height: %d\n", screen->w, screen->h);
 
-    gRenderer = SDL_CreateRenderer(gameplay, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
+    // gRenderer = SDL_CreateRenderer(gameplay, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
+    gRenderer=SDL_GetRenderer(gameplay);
+    if(! gRenderer)
+        printf("Coulnd not get the render: %s\n", SDL_GetError());
+    
     bakgroundTexture = SDL_CreateTextureFromSurface(gRenderer,gameBackground); //Load a texture background to the render
 
     /*text*/
@@ -73,6 +77,8 @@ int gameplayWindow(ClientInfo* information)
     textSurface[2]= TTF_RenderText_Solid(font, "Drunk:", colorT);
 
     player = SDL_CreateTextureFromSurface(gRenderer, playerSurface); //the texture of the player
+    if(! player)
+        printf("Couldnt create texture from surface: %s\n", SDL_GetError());
     /*creating texture for all the images and texts */
     picture[0]= SDL_CreateTextureFromSurface(gRenderer,ground );
     picture[1]= SDL_CreateTextureFromSurface(gRenderer,band);

@@ -20,4 +20,4 @@ else
 endif
 
 bjornserver : $(objectlist)
-	$(CC) $(objectlist) $(CFLAGS) -o bjornsclient.out
+	$(CC) $(objectlist) $(CFLAGS) -std=gnu99  -o bjornsclient.out

@@ -148,23 +148,16 @@ int main(int argc, char **argv){
 
             /* Keeps the game active as long as there is players connected to the server */
             while(timerinfo.maintimer > 0 && (pollerinfo.stack.population < 5)){
-                /*
                 if(!(isEmptyStrStack(pollerinfo.dstack))){
-                    popString(&pollerinfo.dstack, sendpackage);
-                    printf("STRING IS: %s\n", sendpackage);
-                    for(i=0;i<PLAYERCOUNT;i++){
-                        if(threadvariables[i].socket !=NULL)
-                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
-                    }
-                    SDL_Delay(200);
-                }else
+                }else{
                 // If there is a message waiting to be handled it will be sent within the lobby
-                if(!(isEmptyStrStack(pollerinfo.cstack))){
-                    strcpy(popString(&pollerinfo.cstack), cmess);
-                    for(i=0;i<PLAYERCOUNT;i++){
-                        SDLNet_TCP_Send(threadvariables[i].socket, cmess, 40);
-                    }
-                }else*/ SDL_Delay(200);
+                    if(!(isEmptyStrStack(pollerinfo.cstack))){
+                        popString(&pollerinfo.cstack, sendpackage);
+                        for(i=0;i<PLAYERCOUNT;i++){
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, 40);
+                        }
+                    }else SDL_Delay(200);
+                }
             }
             printf("Game stopping.\n");
         }else{

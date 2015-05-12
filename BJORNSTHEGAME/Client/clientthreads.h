@@ -14,14 +14,20 @@ Created on 2015-05-12 by Jonathan Kåhre
 
 /* Struct with the information needed by the client to render the players */
 typedef struct{
-    short health, pos[2], kills;
-}precv;
+    short health, kills;
+    SDL_Rect pos;
+}playerInfo;
+
+/* Struct to recieve bulletinformation */
+typedef struct{
+
+}brecv;
 
 /* Struct containing information on all the players */
 typedef struct{
 	SDL_Window* window;
 	TCPsocket* socket;
-	SDL_Rect players[PLAYERCOUNT];
+	playerInfo players[PLAYERCOUNT];
 }updaterInfo;
 
 int updateHandler(void* info);

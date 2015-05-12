@@ -332,9 +332,9 @@ int animate(updaterInfo updater){
                         {
                             onPlatform = false;
                             int tmp=0;
-                            moveUP(&tmp, platforms[1], screen);
+                            //moveUP(&tmp, platforms[1], screen);
                             //   position.y -=SPEEDy;
-                            updater.players[0].pos-=tmp;
+                            //updater.players[0].pos-=tmp;
                             break;
                         }
                         break;
@@ -409,7 +409,7 @@ int animate(updaterInfo updater){
 	
 }
 
-/* gravity fucntion */
+/* gravity fucntion 
 void moveUP(int* test, SDL_Rect wall, SDL_Surface* s){
     
     float my_gravity= 0.2, MaxFall_speed= 0.5, MyJump_force=5.0, CurJump_force=0.0, Delta_time;
@@ -421,4 +421,4 @@ void moveUP(int* test, SDL_Rect wall, SDL_Surface* s){
     }else{
         CurJump_force=MaxFall_speed;
     }
-}
+}*/

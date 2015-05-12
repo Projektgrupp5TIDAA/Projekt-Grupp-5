@@ -6,11 +6,15 @@ Created on 2015-05-12 by Jonathan Kåhre
 #include <stdio.h>
 #include <string.h>
 #include "clientthreads.h"
+#include "bjornstartup.h"
+#include "lobby.h"
 #include <SDL2/SDL.h>
 #ifdef __APPLE__
 #include <SDL2_net/SDL_net.h>
+#include <SDL2_ttf/SDL_ttf.h>
 #else
 #include <SDL2/SDL_net.h>
+#include <SDL2/SDL_ttf.h>
 #endif
 
 int updateHandler(void* incinfo){
@@ -18,24 +22,55 @@ int updateHandler(void* incinfo){
 	printf("Update poller running.\n");
 	SDLNet_SocketSet activity = SDLNet_AllocSocketSet(1);
 	SDLNet_AddSocket(activity, *(info->socket));
-	char packet[512];
+	char packet[512], *message;
+	SDL_Rect chat[20];
+	playerInfo players[6];
+    char chatmessages[6][512]={{0}};
+    TTF_Font* chatfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 18);
+	int i, playerpack;
+
+	SDL_Surface* screen = SDL_GetWindowSurface(info->window);
+
+	for(i=0;i<6;i++){
+        chat[i].x=(screen->w)/3 * 2 + 5;
+        chat[i].y=(screen->h)/5 * 4 - (22*(i+1));
+    }
 
 	while(1){
 		SDLNet_CheckSockets(activity, 30);
 		if(SDLNet_SocketReady(*(info->socket))){
 			SDLNet_TCP_Recv(*(info->socket), &packet, sizeof(packet));
 			switch(packet[0]){
-				case 'P':
+				case 'D':
+					parseString(packet, 1, strlen(packet));
+					playerpack = packet[0] - 48;
+					parseString(packet, 1, strlen(packet));
+					memcpy(&players[playerpack], &packet, sizeof(packet));
+					for(i=0;i<PLAYERCOUNT;i++)
+						printf("Player %d: %d, %d\n", i, players[i].pos.x, players[i].pos.y);
 					break;
 				case 'C':
+					parseString(packet,1,strlen(packet));
+                    for(i=5;i>0;i--){
+                        strcpy(chatmessages[i], chatmessages[i-2]);
+                    }
+                    message = strtok(packet, "\n");
+                    message = strtok(NULL, "\n");
+                    strcpy(chatmessages[0], message);
+                    emptyString(message, strlen(message));
+                    strcpy(chatmessages[1], packet);
 					break;
-				case '':
+				case 'B':
+					//createBullet();
 					break;
 				default:
 					printf("Invalid packet recieved, ignoring.\n");
 					break;
 			}
 		}
+		for(i=0;i<5;i++){
+            textToScreen(chatfont, chat[i], info->window, chatmessages[i]);
+        }
 	}
 
 	return 0;

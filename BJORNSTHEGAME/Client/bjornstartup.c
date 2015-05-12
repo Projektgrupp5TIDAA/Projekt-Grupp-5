@@ -1,7 +1,7 @@
 #include "bjornstartup.h"
 #include "lobby.h"
 
-int menu(StartInfo* startup){
+int menu(ClientInfo* startup){
     int quit = 0, mouse[2] = {0}, pointcount=0;
     char packet[PACKETSIZE];
 

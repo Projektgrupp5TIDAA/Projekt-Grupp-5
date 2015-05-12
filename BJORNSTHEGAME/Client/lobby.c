@@ -22,7 +22,7 @@
 #endif
 
 /* The Lobby function, spawns a pre-game window where you can see other players and chat with them */
-int LobbyWindow(StartInfo* lobbyConnection){
+int LobbyWindow(ClientInfo* lobbyConnection){
     //********************** INIT *************************
     TTF_Font* playerfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 30);
     TTF_Font* chatfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 18);

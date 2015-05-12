@@ -1,6 +1,6 @@
 #include "gameplay.h"
 
-void gameplayWindow()
+void gameplayWindow(ClientInfo* information)
 {
     int i;
     int size1=14, size2=3, size3=2;
@@ -56,10 +56,11 @@ void gameplayWindow()
     {
         TTF_Init();
         //Create a window
-        gameplay = SDL_CreateWindow("BJORNSGAMEPLAY", SDL_WINDOWPOS_UNDEFINED,
+        gameplay = SDL_CreateWindow("BJORNS THE GAME", 
+                                    SDL_WINDOWPOS_UNDEFINED,
                                     SDL_WINDOWPOS_UNDEFINED,
                                     1280,800,
-                                    0);//SDL_WINDOW_FULLSCREEN_DESKTOP);
+                                    SDL_WINDOW_FULLSCREEN_DESKTOP);
         if(gameplay == NULL)
         {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -71,7 +72,7 @@ void gameplayWindow()
 
 
 
-            gRenderer = SDL_CreateRenderer(gameplay, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
+            gRenderer = SDL_CreateRenderer(gameplay, -1, SDL_RENDERER_SOFTWARE); //Create a Render for the window
             bakgroundTexture = SDL_CreateTextureFromSurface(gRenderer,gameBackground); //Load a texture background to the render
 
 

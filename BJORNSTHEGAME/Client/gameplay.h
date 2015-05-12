@@ -18,7 +18,7 @@
 
 #define SPEEDx 10
 
-void gameplayWindow(Clientinfo* information);
+int gameplayWindow(ClientInfo* information);
 
 
 #endif // GAMEPLAY_H_INCLUDED

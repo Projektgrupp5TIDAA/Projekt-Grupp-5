@@ -86,7 +86,7 @@ int timeupdater(void * inc_time){
     while(1){
         if((*(tmp_timer)) > 0){
             (*(tmp_timer))--;
-            printf("Gameplay time: %s is ticking\n", *tmp_timer);
+            printf("Gameplay time: %d is ticking\n", *tmp_timer);
         }
         SDL_Delay(995);
     }

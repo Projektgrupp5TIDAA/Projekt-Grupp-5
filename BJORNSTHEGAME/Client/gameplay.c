@@ -5,10 +5,57 @@
 int gameplayWindow(ClientInfo* information)
 {
     updaterInfo updater = {NULL, &(information->socket), {{0, 0, {0, 0, 0, 0}}}};
-    SDL_Threads* updaterThread;
-    SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
+    SDL_Thread* updaterThread, *animator;
+    SDL_Event event;
+    int i, quit=0;
+
+    //Create a window
+    updater.window = SDL_CreateWindow("BJORNS THE GAME", 
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        1280,800,
+        SDL_WINDOW_FULLSCREEN_DESKTOP);
+    if(updater.window == NULL)
+    {
+        printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+        return 1;
+    }
     
-    animate(updater);
+    updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
+
+    animator = SDL_CreateThread(animate, "Animator", (void*)&updater);
+
+    while(!quit){
+        while (SDL_PollEvent(&event)) //events
+        {
+            if (event.type == SDL_QUIT)
+            {
+                quit = true;
+            }
+            if(event.type == SDL_KEYDOWN)
+            {
+                //Select surfaces based on key press
+                switch(event.key.keysym.sym)
+                {
+                    case SDLK_ESCAPE:
+                        quit = true;
+                        break;
+                    case SDLK_LEFT:
+                        
+                        break;
+
+                    case SDLK_RIGHT:
+                        
+                        break;
+                    case SDLK_SPACE:
+                        
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
     
     SDL_Quit();
     TTF_Quit();

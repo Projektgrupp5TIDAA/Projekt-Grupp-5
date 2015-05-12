@@ -20,13 +20,13 @@
 #define AMMO 3
 #endif
 
-int animate(updaterInfo updater){
-	int i;
+int animate(void* info){
+    updaterInfo* updater = (updaterInfo*) updater;
+	int i, quit=0, frame=0;
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
     int platformamount=14, texts=3, size3=2;
-    SDL_Thread* updaterThread;
 
     /*Loading and declaration of all images*/
-    SDL_Window* gameplay;
     SDL_Surface* gameBackground = IMG_Load("../Images/game/bar.jpg");;
     SDL_Surface* ground = IMG_Load("../Images/game/ground2.png");
     SDL_Surface* platform1 = IMG_Load("../Images/game/platform_hor.png");
@@ -38,7 +38,7 @@ int animate(updaterInfo updater){
     SDL_Surface* textSurface[texts];
 
     /*Texture declaration*/
-    SDL_Renderer* gRenderer = NULL;
+    SDL_Renderer* Renderer = NULL;
     SDL_Texture* player = NULL;
     SDL_Texture* bakgroundTexture;
     SDL_Texture* picture[platformamount];
@@ -53,41 +53,20 @@ int animate(updaterInfo updater){
     SDL_Rect spriteClips[4];
     SDL_Rect textRect[texts];
 
-    SDL_Event e;
-    SDL_RendererFlip flip = SDL_FLIP_VERTICAL;
-    bool quit = false;
-    bool onPlatform = true;
-
     /* Fill the platforms with colors */
     SDL_FillRect(platform1, NULL, SDL_MapRGB(platform1->format, 200, 190, 200));
     SDL_FillRect(platform2, NULL, SDL_MapRGB(platform2->format, 200, 190, 200));
 
-    //Create a window
-    gameplay = SDL_CreateWindow("BJORNS THE GAME", 
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        1280,800,
-        SDL_WINDOW_FULLSCREEN_DESKTOP);
-    if(gameplay == NULL)
-    {
-        printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-        return 1;
-    }
-    updater.window = gameplay;
-
-    /* Create the thread in charge of polling updates from the server */
-    updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
-
-    SDL_Surface* screen = SDL_GetWindowSurface(gameplay); //get the screen size
+    SDL_Surface* screen = SDL_GetWindowSurface(updater->window); //get the screen size
     printf("Width: %d, Height: %d\n", screen->w, screen->h);
 
-    gRenderer=SDL_GetRenderer(gameplay);
-    if(! gRenderer)
-        gRenderer = SDL_CreateRenderer(gameplay, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
-    if(!gRenderer)
+    Renderer=SDL_GetRenderer(updater->window);
+    if(! Renderer)
+        Renderer = SDL_CreateRenderer(updater->window, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
+    if(!Renderer)
         printf("Couldn't start the render: %s\n", SDL_GetError());
     
-    bakgroundTexture = SDL_CreateTextureFromSurface(gRenderer,gameBackground); //Load a texture background to the render
+    bakgroundTexture = SDL_CreateTextureFromSurface(Renderer,gameBackground); //Load a texture background to the render
 
     /*text*/
     SDL_Color colorT= {170,60,255};
@@ -101,35 +80,35 @@ int animate(updaterInfo updater){
     textSurface[1]= TTF_RenderText_Solid(font, "HP:", colorT);
     textSurface[2]= TTF_RenderText_Solid(font, "Drunk:", colorT);
 
-    player = SDL_CreateTextureFromSurface(gRenderer, playerSurface); //the texture of the player
+    player = SDL_CreateTextureFromSurface(Renderer, playerSurface); //the texture of the player
     if(! player)
         printf("Couldnt create texture from surface: %s\n", SDL_GetError());
     /*creating texture for all the images and texts */
-    picture[0]= SDL_CreateTextureFromSurface(gRenderer,ground );
-    picture[1]= SDL_CreateTextureFromSurface(gRenderer,band);
-    picture[2]= SDL_CreateTextureFromSurface(gRenderer,platform1);
-    picture[3]= SDL_CreateTextureFromSurface(gRenderer,platform2);
-    picture[4]= SDL_CreateTextureFromSurface(gRenderer,platform1);
-    picture[5]= SDL_CreateTextureFromSurface(gRenderer,platform1);
-    picture[6]= SDL_CreateTextureFromSurface(gRenderer,platform1);
-    picture[7]= SDL_CreateTextureFromSurface(gRenderer,platform1);
-    picture[8]= SDL_CreateTextureFromSurface(gRenderer,platform1);
-    picture[9]= SDL_CreateTextureFromSurface(gRenderer,platform1);
-    picture[10]= SDL_CreateTextureFromSurface(gRenderer,platform1);
-    picture[11]= SDL_CreateTextureFromSurface(gRenderer,platform1);
-    picture[12]= SDL_CreateTextureFromSurface(gRenderer,platform1);
-    picture[13]= SDL_CreateTextureFromSurface(gRenderer,platform1);
+    picture[0]= SDL_CreateTextureFromSurface(Renderer,ground );
+    picture[1]= SDL_CreateTextureFromSurface(Renderer,band);
+    picture[2]= SDL_CreateTextureFromSurface(Renderer,platform1);
+    picture[3]= SDL_CreateTextureFromSurface(Renderer,platform2);
+    picture[4]= SDL_CreateTextureFromSurface(Renderer,platform1);
+    picture[5]= SDL_CreateTextureFromSurface(Renderer,platform1);
+    picture[6]= SDL_CreateTextureFromSurface(Renderer,platform1);
+    picture[7]= SDL_CreateTextureFromSurface(Renderer,platform1);
+    picture[8]= SDL_CreateTextureFromSurface(Renderer,platform1);
+    picture[9]= SDL_CreateTextureFromSurface(Renderer,platform1);
+    picture[10]= SDL_CreateTextureFromSurface(Renderer,platform1);
+    picture[11]= SDL_CreateTextureFromSurface(Renderer,platform1);
+    picture[12]= SDL_CreateTextureFromSurface(Renderer,platform1);
+    picture[13]= SDL_CreateTextureFromSurface(Renderer,platform1);
 
-    caps[0]= SDL_CreateTextureFromSurface(gRenderer,ammo);
-    caps[1]= SDL_CreateTextureFromSurface(gRenderer,ammo);
-    caps[2]= SDL_CreateTextureFromSurface(gRenderer,ammo);
+    caps[0]= SDL_CreateTextureFromSurface(Renderer,ammo);
+    caps[1]= SDL_CreateTextureFromSurface(Renderer,ammo);
+    caps[2]= SDL_CreateTextureFromSurface(Renderer,ammo);
 
-    bjornDrapare[0]=SDL_CreateTextureFromSurface(gRenderer,bjorns);
-    bjornDrapare[1]=SDL_CreateTextureFromSurface(gRenderer,bjorns);
+    bjornDrapare[0]=SDL_CreateTextureFromSurface(Renderer,bjorns);
+    bjornDrapare[1]=SDL_CreateTextureFromSurface(Renderer,bjorns);
 
-    myText[0]=SDL_CreateTextureFromSurface(gRenderer,textSurface[0]);
-    myText[1]=SDL_CreateTextureFromSurface(gRenderer,textSurface[1]);
-    myText[2]=SDL_CreateTextureFromSurface(gRenderer,textSurface[2]);
+    myText[0]=SDL_CreateTextureFromSurface(Renderer,textSurface[0]);
+    myText[1]=SDL_CreateTextureFromSurface(Renderer,textSurface[1]);
+    myText[2]=SDL_CreateTextureFromSurface(Renderer,textSurface[2]);
 
     /*make a rectangle for every texture to loading images in specific position on the screen*/
     platforms[0].x = 0;
@@ -236,14 +215,10 @@ int animate(updaterInfo updater){
     textRect[2].h= screen->h*0.055;
 
     //size and position for the player
-    updater.players[0].pos.y = screen-> h/2 +110;
-    updater.players[0].pos.x = screen->w/2 +120;
-    updater.players[0].pos.h = screen->h*0.11;//120;
-    updater.players[0].pos.w = screen->w*0.034;//66;
-
-    //start frame and be facing to the right
-    int frame = 2;
-    flip = SDL_FLIP_NONE;
+    updater->players[0].pos.y = screen-> h/2 +110;
+    updater->players[0].pos.x = screen->w/2 +120;
+    updater->players[0].pos.h = screen->h*0.11;//120;
+    updater->players[0].pos.w = screen->w*0.034;//66;
 
     /*position of the sprites in the image*/
     spriteClips[0].x = 0;
@@ -269,115 +244,40 @@ int animate(updaterInfo updater){
 
     while (!quit) // while not Esc
     {
-        while (SDL_PollEvent(&e)) //events
-        {
-            if (e.type == SDL_QUIT)
-            {
-                quit = true;
-            }
-            if(e.type == SDL_KEYDOWN)
-            {
-                //Select surfaces based on key press
-                switch(e.key.keysym.sym)
-                {
-                    case SDLK_ESCAPE:
-                        quit = true;
-                        break;
-                    case SDLK_LEFT:
-                        updater.players[0].pos.x -= SPEEDx;
-                        flip = SDL_FLIP_HORIZONTAL;
-
-                        if(frame == 2)
-                        {
-                            frame = 0;
-                        }
-                        else if(frame == 0)
-                        {
-                            frame = 3;
-                        }
-                        else if(frame == 3)
-                        {
-                            frame = 1;
-                        }
-                        else
-                        {
-                            frame = 2;
-                        }
-                        break;
-
-                    case SDLK_RIGHT:
-                        updater.players[0].pos.x += SPEEDx;
-                        flip = SDL_FLIP_NONE;
-
-                        if(frame == 2)
-                        {
-                            frame = 0;
-                        }
-                        else if(frame == 0)
-                        {
-                            frame = 3;
-                        }
-                        else if(frame == 3)
-                        {
-                            frame = 1;
-                        }
-                        else
-                        {
-                            frame = 2;
-                        }
-
-                        break;
-                    case SDLK_SPACE:
-                        if(onPlatform == true)
-                        {
-                            onPlatform = false;
-                            int tmp=0;
-                            //moveUP(&tmp, platforms[1], screen);
-                            //   position.y -=SPEEDy;
-                            //updater.players[0].pos-=tmp;
-                            break;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
-        SDL_RenderClear(gRenderer); // Clear the entire screen to our selected color/images.
-        SDL_RenderCopy(gRenderer,  bakgroundTexture,NULL,NULL); //view the background on the render "screen"
+        SDL_RenderClear(Renderer); // Clear the entire screen to our selected color/images.
+        SDL_RenderCopy(Renderer,  bakgroundTexture,NULL,NULL); //view the background on the render "screen"
 
         for(i=0; i<platformamount; i++) //copy all platforms to the render
         {
 
-            SDL_RenderCopy(gRenderer, picture[i],NULL,&platforms[i]);
+            SDL_RenderCopy(Renderer, picture[i],NULL,&platforms[i]);
         }
 
         for(i=0; i<AMMO; i++) //copy all ammo to the render
         {
-            SDL_RenderCopy(gRenderer, caps[i],NULL,&capsRect[i]);
+            SDL_RenderCopy(Renderer, caps[i],NULL,&capsRect[i]);
         }
 
         for(i=0; i<size3; i++) //copy all "bjornDrapare" to the render "the screen"
         {
-            SDL_RenderCopy(gRenderer, bjornDrapare[i],NULL,&bjornDRect[i]);
+            SDL_RenderCopy(Renderer, bjornDrapare[i],NULL,&bjornDRect[i]);
         }
         for(i=0; i<AMMO; i++) // copy all text to the render "screen"
         {
-            SDL_RenderCopy(gRenderer, myText[i],NULL,&textRect[i]);
+            SDL_RenderCopy(Renderer, myText[i],NULL,&textRect[i]);
         }
 
         //copy all players
-        SDL_RenderCopyEx(gRenderer, player, &spriteClips[frame],&updater.players[0].pos, 0, NULL, flip);
+        SDL_RenderCopyEx(Renderer, player, &spriteClips[frame],&updater->players[0].pos, 0, NULL, flip);
 
         // present the result on the render  "the screen"
-        SDL_RenderPresent(gRenderer);
+        SDL_RenderPresent(Renderer);
     }
 
 
 
     //Destroy window
-    SDL_DestroyWindow(gameplay);
+    SDL_DestroyWindow(updater->window);
     //Quit SDL subsystems
 
     /*Destroy all textures*/
@@ -404,9 +304,8 @@ int animate(updaterInfo updater){
 
     SDL_DestroyTexture(player);
     //  SDL_DestroyWindow(bakgroundTexture);
-    SDL_DestroyRenderer(gRenderer);
-
-	
+    SDL_DestroyRenderer(Renderer);
+    return 0;
 }
 
 /* gravity fucntion 

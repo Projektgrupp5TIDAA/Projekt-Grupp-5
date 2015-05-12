@@ -65,10 +65,11 @@ int gameplayWindow(ClientInfo* information)
     SDL_Surface* screen = SDL_GetWindowSurface(gameplay); //get the screen size
     printf("Width: %d, Height: %d\n", screen->w, screen->h);
 
-    // gRenderer = SDL_CreateRenderer(gameplay, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
     gRenderer=SDL_GetRenderer(gameplay);
     if(! gRenderer)
-        printf("Coulnd not get the render: %s\n", SDL_GetError());
+        gRenderer = SDL_CreateRenderer(gameplay, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
+    if(!gRenderer)
+        printf("Couldn't start the render: %s\n", SDL_GetError());
     
     bakgroundTexture = SDL_CreateTextureFromSurface(gRenderer,gameBackground); //Load a texture background to the render
 

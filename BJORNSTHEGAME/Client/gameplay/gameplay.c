@@ -41,7 +41,6 @@ void gameplayWindow(ClientInfo* information)
 
 
 
-
     /* Fill the platforms with colors */
     SDL_FillRect(platform1, NULL, SDL_MapRGB(platform1->format, 200, 190, 200));
     SDL_FillRect(platform2, NULL, SDL_MapRGB(platform2->format, 200, 190, 200));
@@ -70,12 +69,21 @@ void gameplayWindow(ClientInfo* information)
             SDL_Surface* screen = SDL_GetWindowSurface(gameplay); //get the screen size
             printf("Width: %d, Height: %d\n", screen->w, screen->h);
 
+<<<<<<< HEAD
+            gRenderer=SDL_GetRenderer(gameplay);
+            if(! gRenderer){
+                printf("Could not create a renderer: %s\n", SDL_GetError());
+            }
+=======
 
 
             gRenderer = SDL_CreateRenderer(gameplay, -1, SDL_RENDERER_SOFTWARE); //Create a Render for the window
+<<<<<<< Updated upstream
+=======
+>>>>>>> origin/master
+>>>>>>> Stashed changes
             bakgroundTexture = SDL_CreateTextureFromSurface(gRenderer,gameBackground); //Load a texture background to the render
-
-
+            
             /*text*/
             SDL_Color colorT= {170,60,255};
             TTF_Font *font = TTF_OpenFont("../../Images/game/StencilStd.ttf", 100);
@@ -89,6 +97,9 @@ void gameplayWindow(ClientInfo* information)
             textSurface[2]= TTF_RenderText_Solid(font, "Drunk:", colorT);
 
             player = SDL_CreateTextureFromSurface(gRenderer, playerSurface); //the texture of the player
+            if(! player){
+                printf("Could not create texture from surface: %s\n", SDL_GetError());
+            }
             /*creating texture for all the images and texts */
             picture[0]= SDL_CreateTextureFromSurface(gRenderer,ground );
             picture[1]= SDL_CreateTextureFromSurface(gRenderer,band);

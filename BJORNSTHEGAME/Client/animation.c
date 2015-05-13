@@ -25,6 +25,11 @@ int animate(void* info){
 	int i, quit=0, frame=0;
     SDL_RendererFlip flip = SDL_FLIP_NONE;
     int platformamount=14, texts=3, size3=2;
+    char apacket[512];
+    
+    // Set and add a socket
+    SDLNet_SocketSet asock = SDLNet_AllocSocketSet(1);
+    SDLNet_AddSocket(asock, info->socket);
 
     /*Loading and declaration of all images*/
     SDL_Surface* gameBackground = IMG_Load("../Images/game/bar.jpg");;
@@ -244,37 +249,41 @@ int animate(void* info){
 
     while (!quit) // while not Esc
     {
-        SDL_RenderClear(Renderer); // Clear the entire screen to our selected color/images.
-        SDL_RenderCopy(Renderer,  bakgroundTexture,NULL,NULL); //view the background on the render "screen"
+        if(SDLNet_SocketReady(info->socket)){
+            SDLNet_TCP_Recv(info->socket, apacket, sizeof(apacket));
+            printf("Animation thread recieved some packet\n");
+            if(strstr(apacket[0], "A")){
+                SDL_RenderClear(Renderer); // Clear the entire screen to our selected color/images.
+                SDL_RenderCopy(Renderer,  bakgroundTexture,NULL,NULL); //view the background    on the render "screen"
 
-        for(i=0; i<platformamount; i++) //copy all platforms to the render
-        {
+                for(i=0; i<platformamount; i++) //copy all platforms to the render
+                {
 
-            SDL_RenderCopy(Renderer, picture[i],NULL,&platforms[i]);
+                    SDL_RenderCopy(Renderer, picture[i],NULL,&platforms[i]);
+                }
+
+                for(i=0; i<AMMO; i++) //copy all ammo to the render
+                {
+                    SDL_RenderCopy(Renderer, caps[i],NULL,&capsRect[i]);
+                }
+            
+                for(i=0; i<size3; i++) //copy all "bjornDrapare" to the render "the screen"
+                {
+                    SDL_RenderCopy(Renderer, bjornDrapare[i],NULL,&bjornDRect[i]);
+                }
+                for(i=0; i<AMMO; i++) // copy all text to the render "screen"
+                {
+                    SDL_RenderCopy(Renderer, myText[i],NULL,&textRect[i]);
+                }
+                //copy all players
+                SDL_RenderCopyEx(Renderer, player, &spriteClips[frame],&updater->players[0].    pos, 0, NULL, flip);
+
+                // present the result on the render  "the screen"
+                SDL_RenderPresent(Renderer);
+            }else
+                printf("Invalid packet type, ignoring..\n");
         }
-
-        for(i=0; i<AMMO; i++) //copy all ammo to the render
-        {
-            SDL_RenderCopy(Renderer, caps[i],NULL,&capsRect[i]);
-        }
-
-        for(i=0; i<size3; i++) //copy all "bjornDrapare" to the render "the screen"
-        {
-            SDL_RenderCopy(Renderer, bjornDrapare[i],NULL,&bjornDRect[i]);
-        }
-        for(i=0; i<AMMO; i++) // copy all text to the render "screen"
-        {
-            SDL_RenderCopy(Renderer, myText[i],NULL,&textRect[i]);
-        }
-
-        //copy all players
-        SDL_RenderCopyEx(Renderer, player, &spriteClips[frame],&updater->players[0].pos, 0, NULL, flip);
-
-        // present the result on the render  "the screen"
-        SDL_RenderPresent(Renderer);
     }
-
-
 
     //Destroy window
     SDL_DestroyWindow(updater->window);

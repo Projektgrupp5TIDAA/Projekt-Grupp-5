@@ -10,9 +10,10 @@ int gameplayWindow(ClientInfo* information)
     playerInfo playerDummy = {0, 0, {0, 0, 0, 0}};
     SDL_Event event;
     int i, quit=0;
+    int platformamount=14
 
     //Create a window
-    updater.window = SDL_CreateWindow("BJORNS THE GAME", 
+    updater.window = SDL_CreateWindow("BJORNS THE GAME",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         800,600,//1280,800,
@@ -23,12 +24,12 @@ int gameplayWindow(ClientInfo* information)
         return 1;
     }
     SDL_Surface* screen = SDL_GetWindowSurface(updater.window);
-    
+
     playerDummy.pos.y = screen->h/2;
     playerDummy.pos.x = screen->w/2;
     playerDummy.pos.h = screen->h*0.11;
     playerDummy.pos.w = screen->w*0.034;
-    
+
     updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
 
     animator = SDL_CreateThread(animate, "Animator", (void*)&updater);
@@ -49,7 +50,35 @@ int gameplayWindow(ClientInfo* information)
                         quit = true;
                         break;
                     case SDLK_LEFT:
-                        playerDummy.pos.x -= 3;
+                       // playerDummy.pos.x -= 3;
+                       playerDummy.pos.x -= SPEEDx;
+                            for(i=0; i<platformamount; i++)
+                            {
+                                if(( playerDummy.pos.x < 0 ) || ( playerDummy.pos.x + playerDummy.pos.w >screen ->w ) ||checkCollision(playerDummy.pos,platforms[i])==true)
+                                {
+
+                                    playerDummy.pos.x+= SPEEDx;
+
+                                }
+                            }
+                            flip = SDL_FLIP_HORIZONTAL;
+
+                            if(frame == 2)
+                            {
+                                frame = 0;
+                            }
+                            else if(frame == 0)
+                            {
+                                frame = 3;
+                            }
+                            else if(frame == 3)
+                            {
+                                frame = 1;
+                            }
+                            else
+                            {
+                                frame = 2;
+                            }
                         memcpy(&serializedplayer, &playerDummy, sizeof(playerDummy));
                         parseString(serializedplayer, -1, sizeof(serializedplayer));
                         printf("PlayerDummy x+y = %d, %d\n", playerDummy.pos.x, playerDummy.pos.y);
@@ -57,7 +86,35 @@ int gameplayWindow(ClientInfo* information)
                         SDLNet_TCP_Send(information->socket, serializedplayer, sizeof(serializedplayer));
                         break;
                     case SDLK_RIGHT:
-                        playerDummy.pos.x += 3;
+                        //playerDummy.pos.x += 3;
+                        playerDummy.pos.x += SPEEDx;
+                            for(i=0; i<platformamount; i++)
+                            {
+                                if((playerDummy.pos.x < 0 ) || (playerDummy.pos.x + playerDummy.pos.w >screen ->w )||checkCollision(playerDummy.pos,platforms[i])==true)
+                                {
+
+                                    playerDummy.pos.x -= SPEEDx;
+
+                                }
+                            }
+                            flip = SDL_FLIP_NONE;
+
+                            if(frame == 2)
+                            {
+                                frame = 0;
+                            }
+                            else if(frame == 0)
+                            {
+                                frame = 3;
+                            }
+                            else if(frame == 3)
+                            {
+                                frame = 1;
+                            }
+                            else
+                            {
+                                frame = 2;
+                            }
                         memcpy(&serializedplayer, &playerDummy, sizeof(playerDummy));
                         parseString(serializedplayer, -1, sizeof(serializedplayer));
                         printf("PlayerDummy x+y = %d, %d\n", playerDummy.pos.x, playerDummy.pos.y);
@@ -65,7 +122,20 @@ int gameplayWindow(ClientInfo* information)
                         SDLNet_TCP_Send(information->socket, serializedplayer, sizeof(serializedplayer));
                         break;
                     case SDLK_SPACE:
-                        //TODO: Jump
+                       //TODO JUMP
+                        if(onPlatform == true)
+                            {
+                                playerDummy.pos.y -=SPEEDy;
+                                for(i=0; i<platformamount; i++)
+                                {
+                                    if(checkCollision(playerDummy.pos,platforms[i])==true)
+                                    {
+                                        playerDummy.pos.y +=SPEEDy;
+                                    }
+                                }
+
+                            }
+
                         break;
                     default:
                         break;
@@ -74,7 +144,7 @@ int gameplayWindow(ClientInfo* information)
             }
         }
     }
-    
+
     SDL_Quit();
     TTF_Quit();
     return 0;

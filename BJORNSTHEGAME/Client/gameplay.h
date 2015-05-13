@@ -18,6 +18,7 @@
 #include "lobby.h"
 
 #define SPEEDx 10
+#define SPEEDy 10
 
 int gameplayWindow(ClientInfo* information);
 bool checkCollision( SDL_Rect a, SDL_Rect b );

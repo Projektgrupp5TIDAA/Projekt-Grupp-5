@@ -24,10 +24,9 @@ int updateHandler(void* incinfo){
 	SDLNet_AddSocket(activity, *(info->socket));
 	char packet[512], *message;
 	SDL_Rect chat[20];
-	playerInfo players[6] = {{0, 0, {0, 0, 0, 0}}};
     char chatmessages[6][512]={{0}};
     TTF_Font* chatfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 18);
-	int i, playerpack;
+	int i;
 
 	SDL_Surface* screen = SDL_GetWindowSurface(info->window);
 
@@ -45,9 +44,7 @@ int updateHandler(void* incinfo){
 				case 'P':
 					printf("Playerupdate recieved!\n");
 					parseString(packet, 1, sizeof(packet));
-					playerpack = packet[0];
-					parseString(packet, 1, sizeof(packet));
-					memcpy(&info->players[playerpack], &packet, sizeof(playerInfo));
+					memcpy(&info->players, &packet, sizeof(playerInfo));
 					for(i=0;i<PLAYERCOUNT;i++)
 						printf("Player %d: %d, %d\n", i, info->players[i].pos.x, info->players[i].pos.y);
 					break;

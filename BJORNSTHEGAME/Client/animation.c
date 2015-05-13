@@ -21,7 +21,7 @@
 #endif
 
 int animate(void* info){
-    updaterInfo* updater = (updaterInfo*) updater;
+    updaterInfo* updater = (updaterInfo*) info;
 	int i, quit=0, frame=0;
     SDL_RendererFlip flip = SDL_FLIP_NONE;
     int platformamount=14, texts=3, size3=2;

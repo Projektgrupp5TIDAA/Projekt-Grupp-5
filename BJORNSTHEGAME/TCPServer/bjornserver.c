@@ -85,7 +85,7 @@ int main(int argc, char **argv){
 
                 /* If there is a message waiting to be handled it will be sent within the lobby */
                 if(!(isEmptyStrStack(pollerinfo.cstack))){
-                    popString(&pollerinfo.cstack, sendpackage);
+                    popString(&pollerinfo.cstack, sendpackage, sizeof(sendpackage));
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket !=NULL)
                             SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
@@ -153,7 +153,8 @@ int main(int argc, char **argv){
             /* Keeps the game active as long as there is players connected to the server */
             while(timerinfo.maintimer > 0 && (pollerinfo.stack.population < 5)){
                 if(!(isEmptyStrStack(pollerinfo.dstack))){
-                    popString(&pollerinfo.dstack, sendpackage);
+                    printf("Sending data message!\n");
+                    popString(&pollerinfo.dstack, sendpackage, sizeof(sendpackage));
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket != NULL)
                             SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
@@ -161,7 +162,7 @@ int main(int argc, char **argv){
                 }else{
                 // If there is a message waiting to be handled it will be sent within the lobby
                     if(!(isEmptyStrStack(pollerinfo.cstack))){
-                        popString(&pollerinfo.cstack, sendpackage);
+                        popString(&pollerinfo.cstack, sendpackage, sizeof(sendpackage));
                         for(i=0;i<PLAYERCOUNT;i++){
                             if(threadvariables[i].socket != NULL)
                                 SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
@@ -177,7 +178,7 @@ int main(int argc, char **argv){
                (also serves as a release for the stack not to be overpopulated before being able to send) */
             timerinfo.maintimer = 0;
             if(!(isEmptyStrStack(pollerinfo.cstack))){
-                    popString(&pollerinfo.cstack, sendpackage);
+                    popString(&pollerinfo.cstack, sendpackage, sizeof(sendpackage));
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket != NULL)
                             SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));

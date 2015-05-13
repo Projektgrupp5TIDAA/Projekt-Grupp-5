@@ -215,10 +215,12 @@ int animate(void* info){
     textRect[2].h= screen->h*0.055;
 
     //size and position for the player
-    updater->players[0].pos.y = screen-> h/2 +110;
-    updater->players[0].pos.x = screen->w/2 +120;
-    updater->players[0].pos.h = screen->h*0.11;//120;
-    updater->players[0].pos.w = screen->w*0.034;//66;
+    for(i=0;i<PLAYERCOUNT;i++){
+        updater->players[i].pos.y = screen->h/2;
+        updater->players[i].pos.x = screen->w/2+(i*50);
+        updater->players[i].pos.h = screen->h*0.11;//120;
+        updater->players[i].pos.w = screen->w*0.034;//66;
+    }
 
     /*position of the sprites in the image*/
     spriteClips[0].x = 0;
@@ -268,7 +270,9 @@ int animate(void* info){
         }
 
         //copy all players
-        SDL_RenderCopyEx(Renderer, player, &spriteClips[frame],&updater->players[0].pos, 0, NULL, flip);
+        for(i=0;i<PLAYERCOUNT;i++){
+            SDL_RenderCopyEx(Renderer, player, &spriteClips[frame],&updater->players[i].pos, 0, NULL, flip);
+        }
 
         // present the result on the render  "the screen"
         SDL_RenderPresent(Renderer);

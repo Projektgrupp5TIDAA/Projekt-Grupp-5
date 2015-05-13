@@ -6,6 +6,8 @@ int gameplayWindow(ClientInfo* information)
 {
     updaterInfo updater = {NULL, &(information->socket), {{0, 0, {0, 0, 0, 0}}}};
     SDL_Thread* updaterThread, *animator;
+    char serializedplayer[sizeof(playerInfo)+2] = {0};
+    playerInfo playerDummy = {0, 0, {0, 0, 0, 0}};
     SDL_Event event;
     int i, quit=0;
 
@@ -13,13 +15,19 @@ int gameplayWindow(ClientInfo* information)
     updater.window = SDL_CreateWindow("BJORNS THE GAME", 
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
-        1280,800,
+        800,600,//1280,800,
         0);//SDL_WINDOW_FULLSCREEN_DESKTOP);
     if(updater.window == NULL)
     {
         printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
         return 1;
     }
+    SDL_Surface* screen = SDL_GetWindowSurface(updater.window);
+    
+    playerDummy.pos.y = screen->h/2;
+    playerDummy.pos.x = screen->w/2;
+    playerDummy.pos.h = screen->h*0.11;
+    playerDummy.pos.w = screen->w*0.034;
     
     updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
 
@@ -41,18 +49,28 @@ int gameplayWindow(ClientInfo* information)
                         quit = true;
                         break;
                     case SDLK_LEFT:
-                        
+                        playerDummy.pos.x -= 3;
+                        memcpy(&serializedplayer, &playerDummy, sizeof(playerDummy));
+                        parseString(serializedplayer, -1, sizeof(serializedplayer));
+                        printf("PlayerDummy x+y = %d, %d\n", playerDummy.pos.x, playerDummy.pos.y);
+                        serializedplayer[0] = 'P';
+                        SDLNet_TCP_Send(information->socket, serializedplayer, sizeof(serializedplayer));
                         break;
-
                     case SDLK_RIGHT:
-                        
+                        playerDummy.pos.x += 3;
+                        memcpy(&serializedplayer, &playerDummy, sizeof(playerDummy));
+                        parseString(serializedplayer, -1, sizeof(serializedplayer));
+                        printf("PlayerDummy x+y = %d, %d\n", playerDummy.pos.x, playerDummy.pos.y);
+                        serializedplayer[0] = 'P';
+                        SDLNet_TCP_Send(information->socket, serializedplayer, sizeof(serializedplayer));
                         break;
                     case SDLK_SPACE:
-                        
+                        //TODO: Jump
                         break;
                     default:
                         break;
                 }
+
             }
         }
     }

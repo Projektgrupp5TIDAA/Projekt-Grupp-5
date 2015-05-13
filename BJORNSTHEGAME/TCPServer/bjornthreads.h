@@ -56,7 +56,7 @@ typedef struct{
 /* The struct for adding to stack from incoming data */
 typedef struct{
     int population;
-    char item[PLAYERCOUNT][20];
+    char item[PLAYERCOUNT][PACKETSIZE];
 }DataStack;
 
 /* Struct with pointers required for the Poller to work */

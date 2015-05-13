@@ -48,23 +48,29 @@ int isFullStack(ThreadStack stack){
 }
 
 /* Push the incoming string onto the stack */
-void pushString(DataStack *stack, char pushStr[20]){
+void pushString(DataStack *stack, char* pushStr, int len){
 	if(isFullStrStack(*stack)){
 		fprintf(stderr, "Error adding to the stack: Stack is full\n");
 	}else{
-		strcpy(stack->item[stack->population], pushStr);
+		printf("PUSHING TO THE STACK\n");
+		memcpy(stack->item[stack->population], pushStr, len);
+		//strcpy(stack->item[stack->population], pushStr);
 		(stack->population)++;
+		printf("PUSHING TO THE STACK END\n");
 	}
 }
 
 /* Grab the string at the top of the stack */
-void popString(DataStack *stack, char* string){
+void popString(DataStack *stack, char* string, int len){
 	if(isEmptyStrStack(*stack)){
 		fprintf(stderr, "Error taking from stack: Stack is Empty\n");
 	}else{
+		printf("TAKING FROM THE STACK\n");
 		(stack->population)--;
 		emptyString(string, strlen(string));
-		strcpy(string, *(stack->item));
+		memcpy(string, stack->item[stack->population], len);
+		printf("TAKING FROM THE STACK END\n");
+		//strcpy(string, *(stack->item));
 	}
 }
 

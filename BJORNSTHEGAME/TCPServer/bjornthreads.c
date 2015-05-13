@@ -94,23 +94,21 @@ int Handler(void* thr){
             }else{
                 switch(packet[0]){
                     case 'B':
-                        printf("Data recieved, pushing to stack!\n");
+                        printf("Bullet data recieved, pushing to stack!\n");
                         parseString(packet, 2, sizeof(packet));
                         sprintf(tmp, "B%d%s", clientvar->ID, packet);
-                        pushString(thread->dstack, tmp);
+                        pushString(thread->dstack, tmp, sizeof(tmp));
                         break;
                     case 'P':
-                        printf("Data recieved, pushing to stack!\n");
+                        printf("Player data recieved, pushing to stack!\n");
                         parseString(packet, -1, sizeof(packet));
                         packet[0] = 'P';
-                        packet[0] = clientvar->ID;
-                        //sprintf(tmp, "P%d%s", clientvar->ID, packet);
-                        pushString(thread->dstack, tmp);
-                        emptyString(tmp, sizeof(tmp));
+                        packet[1] = clientvar->ID;
+                        pushString(thread->dstack, packet, sizeof(packet));
                         break;
                     case 'C':
                         printf("Chat message recieved, pushing to stack!\n");
-                        pushString(thread->cstack, packet);
+                        pushString(thread->cstack, packet, sizeof(packet));
                         break;
                     case 'N':
                         printf("Name request recieved, sending!\n");

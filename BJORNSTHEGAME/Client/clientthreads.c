@@ -45,11 +45,11 @@ int updateHandler(void* incinfo){
 				case 'P':
 					printf("Playerupdate recieved!\n");
 					parseString(packet, 1, sizeof(packet));
-					playerpack = packet[0] - 48;
+					playerpack = packet[0];
 					parseString(packet, 1, sizeof(packet));
-					memcpy(&players[playerpack], &packet, sizeof(players[playerpack]));
+					memcpy(&info->players[playerpack], &packet, sizeof(playerInfo));
 					for(i=0;i<PLAYERCOUNT;i++)
-						printf("Player %d: %d, %d\n", i, players[i].pos.x, players[i].pos.y);
+						printf("Player %d: %d, %d\n", i, info->players[i].pos.x, info->players[i].pos.y);
 					break;
 				case 'C':
 					printf("Chat recieved!\n");

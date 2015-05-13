@@ -11,6 +11,7 @@ int gameplayWindow(ClientInfo* information)
     SDL_Event event;
     int i, quit=0;
     int platformamount=14
+    bool onPlatform= false;
 
     //Create a window
     updater.window = SDL_CreateWindow("BJORNS THE GAME",

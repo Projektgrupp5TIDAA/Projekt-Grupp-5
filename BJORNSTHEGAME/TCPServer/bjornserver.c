@@ -18,19 +18,22 @@ Projekt Grupp 5
 #include "bjornshared.h"
 
 int main(int argc, char **argv){
-    tinfo threadvariables[PLAYERCOUNT] = {{0, NULL, {5, {0}, {0}}, {NULL}}};
+    tinfo threadvariables[PLAYERCOUNT] = {{0, NULL, NULL, NULL, {0}, {NULL}}};
+    pinfo playersend[PLAYERCOUNT] = {{5, 0, {0}}};
     PollInfo pollerinfo = {0, {0, NULL, {NULL}}, {0, {{0}}}, {0, {{0}}}};
     SDL_Thread* connectionpoller, *timerthr;
     TimerInfo timerinfo = {0, 0};
     char sendpackage[200];
-    int i, j, lastpop=0;
+    int i, j, lastpop=0, newdata=0;
     nsend namestruct;
 
     /* Initializing the information for the stack and threads */
     for(i=0;i<PLAYERCOUNT;i++){
         threadvariables[i].ID = i;
+        threadvariables[i].newdata = &newdata;
+        threadvariables[i].player = &playersend[i];
         for(j=0;j<PLAYERCOUNT;j++){
-            threadvariables[i].names[j] = threadvariables[j].player.playername;
+            threadvariables[i].names[j] = threadvariables[j].playername;
         }
         pushStack(&pollerinfo.stack, &threadvariables[i]);
     }
@@ -100,7 +103,7 @@ int main(int argc, char **argv){
                     printf("Players changed!\n");
                     for(i=0;i<PLAYERCOUNT;i++){
                         namestruct.ID[i] = i;
-                        strcpy(namestruct.names[i], threadvariables[i].player.playername);
+                        strcpy(namestruct.names[i], threadvariables[i].playername);
                     }
                     memcpy(&sendpackage, &namestruct, sizeof(namestruct));
                     parseString(sendpackage, -1, strlen(sendpackage));
@@ -152,13 +155,17 @@ int main(int argc, char **argv){
 
             /* Keeps the game active as long as there is players connected to the server */
             while(timerinfo.maintimer > 0 && (pollerinfo.stack.population < 5)){
-                if(!(isEmptyStrStack(pollerinfo.dstack))){
+                if(newdata == 1){
                     printf("Sending data message!\n");
+                    memcpy(&sendpackage, &playersend, sizeof(playersend));
                     popString(&pollerinfo.dstack, sendpackage, sizeof(sendpackage));
+                    parseString(sendpackage, -1, sizeof(sendpackage));
+                    sendpackage[0] = 'P';
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket != NULL)
                             SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
                     }
+                    newdata = 0;
                 }else{
                 // If there is a message waiting to be handled it will be sent within the lobby
                     if(!(isEmptyStrStack(pollerinfo.cstack))){
@@ -191,7 +198,7 @@ int main(int argc, char **argv){
                 printf("Players changed!\n");
                 for(i=0;i<PLAYERCOUNT;i++){
                     namestruct.ID[i] = i;
-                    strcpy(namestruct.names[i], threadvariables[i].player.playername);
+                    strcpy(namestruct.names[i], threadvariables[i].playername);
                 }
                 memcpy(&sendpackage, &namestruct, sizeof(namestruct));
                 parseString(sendpackage, -1, strlen(sendpackage));

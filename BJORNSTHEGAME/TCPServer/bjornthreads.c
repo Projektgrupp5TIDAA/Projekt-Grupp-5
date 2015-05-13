@@ -66,12 +66,12 @@ int Handler(void* thr){
 
     /* Gets the name from the client */
     while(1){
-        if(SDLNet_TCP_Recv(socket, clientvar->player.playername, 20)){
+        if(SDLNet_TCP_Recv(socket, clientvar->playername, 20)){
             break;
         }
     }
 
-    printf("Player %s was assigned to thread %d.\n", clientvar->player.playername, clientvar->ID);
+    printf("Player %s was assigned to thread %d.\n", clientvar->playername, clientvar->ID);
 
     /* The main thread-loop */
     while(1){
@@ -87,7 +87,7 @@ int Handler(void* thr){
         if(SDLNet_TCP_Recv(socket, packet, PACKETSIZE)){
             if((strstr(packet, "EXITCONNECTION"))){
                 printf("Exit command recieved, quitting thread #%d!\n", clientvar->ID);
-                memset(clientvar->player.playername,0,strlen(clientvar->player.playername));
+                memset(clientvar->playername,0,strlen(clientvar->playername));
                 SDLNet_TCP_Close(clientvar->socket);
                 pushStack(thread->stack, clientvar);
                 return 0;
@@ -101,10 +101,9 @@ int Handler(void* thr){
                         break;
                     case 'P':
                         printf("Player data recieved, pushing to stack!\n");
-                        parseString(packet, -1, sizeof(packet));
-                        packet[0] = 'P';
-                        packet[1] = clientvar->ID;
-                        pushString(thread->dstack, packet, sizeof(packet));
+                        parseString(packet, 1, sizeof(packet));
+                        memcpy(clientvar->player, &packet, sizeof(pinfo));
+                        *(clientvar->newdata)=1;
                         break;
                     case 'C':
                         printf("Chat message recieved, pushing to stack!\n");

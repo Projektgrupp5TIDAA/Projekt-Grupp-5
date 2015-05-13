@@ -44,7 +44,7 @@ int updateHandler(void* incinfo){
 				case 'P':
 					printf("Playerupdate recieved!\n");
 					parseString(packet, 1, sizeof(packet));
-					memcpy(&info->players, &packet, sizeof(playerInfo));
+					memcpy(&info->players, &packet, sizeof(playerInfo)*PLAYERCOUNT);
 					for(i=0;i<PLAYERCOUNT;i++)
 						printf("Player %d: %d, %d\n", i, info->players[i].pos.x, info->players[i].pos.y);
 					break;

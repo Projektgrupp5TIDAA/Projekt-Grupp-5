@@ -23,20 +23,16 @@ Projekt Grupp 5
 
 /* Struct with important information regarding the thread and player */
 typedef struct{
-  short health, position[2];
-  char playername[20];
+  short health, kills;
+  SDL_Rect pos;
 }pinfo;
-
-/* Struct with the information needed by the client to render the players */
-typedef struct{
-    short health, pos[2], kills;
-}psend;
 
 /* Struct with all the information a thread will have to get when getting a slot from the stack */
 typedef struct{
-    int ID;
+    int ID, *newdata;
     TCPsocket socket;
-    pinfo player;
+    pinfo* player;
+    char playername[20];
     char* names[PLAYERCOUNT];
 }tinfo;
 

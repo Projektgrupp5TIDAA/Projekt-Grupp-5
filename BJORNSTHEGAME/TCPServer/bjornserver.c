@@ -123,7 +123,7 @@ int main(int argc, char **argv){
             }
 
 
-            /* If enought players are connected the server starts the game timer and game communications protocols,
+            /* If enough players are connected the server starts the game timer and game communications protocols,
                before doing so, the server sends a time-sync message to all connected players */
             if(pollerinfo.stack.population < 5){
                 for(i=0;i<PLAYERCOUNT;i++){
@@ -156,9 +156,9 @@ int main(int argc, char **argv){
             /* Keeps the game active as long as there is players connected to the server */
             while(timerinfo.maintimer > 0 && (pollerinfo.stack.population < 5)){
                 if(newdata == 1){
-                    printf("Sending data message!\n");
+                    printf("Sending player update message!\n");
                     memcpy(&sendpackage, &playersend, sizeof(playersend));
-                    popString(&pollerinfo.dstack, sendpackage, sizeof(sendpackage));
+                    //popString(&pollerinfo.dstack, sendpackage, sizeof(sendpackage));
                     parseString(sendpackage, -1, sizeof(sendpackage));
                     sendpackage[0] = 'P';
                     for(i=0;i<PLAYERCOUNT;i++){
@@ -167,7 +167,8 @@ int main(int argc, char **argv){
                     }
                     newdata = 0;
                 }else{
-                // If there is a message waiting to be handled it will be sent within the lobby
+
+                /* If there is a message waiting to be handled it will be sent as long as no high-priority updates are waiting */
                     if(!(isEmptyStrStack(pollerinfo.cstack))){
                         popString(&pollerinfo.cstack, sendpackage, sizeof(sendpackage));
                         for(i=0;i<PLAYERCOUNT;i++){

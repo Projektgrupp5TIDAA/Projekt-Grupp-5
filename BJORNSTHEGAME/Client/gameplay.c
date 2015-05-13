@@ -20,7 +20,7 @@ int gameplayWindow(ClientInfo* information)
     updater.window = SDL_CreateWindow("BJORNS THE GAME",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
-        800,600,//1280,800,
+        1280,800,
         0);//SDL_WINDOW_FULLSCREEN_DESKTOP);
     if(updater.window == NULL)
     {
@@ -34,12 +34,12 @@ int gameplayWindow(ClientInfo* information)
         animator.players[i] = &(updater.players[i]);
     }
 
-    playerDummy.pos.y = screen->h/2;
+    playerDummy.pos.y = screen->h/4*3+60;
     playerDummy.pos.x = screen->w/2;
     playerDummy.pos.h = screen->h*0.11;
     playerDummy.pos.w = screen->w*0.034;
 
-    //updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
+    updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
 
     animatorThread = SDL_CreateThread(animate, "Animator", (void*)&animator);
 
@@ -61,13 +61,13 @@ int gameplayWindow(ClientInfo* information)
                     case SDLK_LEFT:
                        // playerDummy.pos.x -= 3;
                        playerDummy.pos.x -= SPEEDx;
-                        for(i=0; i<PLATFORMAMOUNT; i++)
+                        /*for(i=0; i<PLATFORMAMOUNT; i++)
                         {
                             if(( playerDummy.pos.x < 0 ) || ( playerDummy.pos.x + playerDummy.pos.w >screen ->w ) ||checkCollision(playerDummy.pos,animator.platforms[i])==true)
                             {
                                 playerDummy.pos.x+= SPEEDx;
                             }
-                        }
+                        }*/
                         animator.flip = SDL_FLIP_HORIZONTAL;
 
                         if(animator.frame == 2)

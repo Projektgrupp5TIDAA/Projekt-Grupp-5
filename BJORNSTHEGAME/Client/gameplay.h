@@ -18,8 +18,8 @@
 #include "lobby.h"
 #include "clientthreads.h"
 
-#define SPEEDx 10
-#define SPEEDy 10
+#define SPEEDx 1
+#define SPEEDy 1
 
 int gameplayWindow(ClientInfo* information);
 

@@ -100,9 +100,10 @@ int Handler(void* thr){
                         pushString(thread->dstack, tmp, sizeof(tmp));
                         break;
                     case 'P':
-                        printf("Player data recieved, pushing to stack!\n");
+                        //printf("Player data recieved, updating!\n");
                         parseString(packet, 1, sizeof(packet));
                         memcpy(clientvar->player, &packet, sizeof(pinfo));
+                        printf("Player data: %d, %d\n", clientvar->player->pos.x, clientvar->player->pos.y);
                         *(clientvar->newdata)=1;
                         break;
                     case 'C':

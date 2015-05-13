@@ -1,16 +1,19 @@
 #include "gameplay.h"
 #include "clientthreads.h"
 #include "animation.h"
+#define AMMOAMOUNT 3
+#define PLATFORMAMOUNT 14
+#define TEXTAMOUNT 3
+#define DRINKAMOUNT 2
 
 int gameplayWindow(ClientInfo* information)
 {
-    updaterInfo updater = {NULL, &(information->socket), {{0, 0, {0, 0, 0, 0}}}};
-    SDL_Thread* updaterThread, *animator;
-    char serializedplayer[sizeof(playerInfo)+2] = {0};
+    int i, quit=0;
+    updaterInfo updater = {&quit, NULL, &(information->socket), {{0, 0, {0, 0, 0, 0}}}};
+    animationInfo animator = {0, &quit, NULL, {NULL}, SDL_FLIP_NONE, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
+    SDL_Thread* updaterThread, *animatorThread;
     playerInfo playerDummy = {0, 0, {0, 0, 0, 0}};
     SDL_Event event;
-    int i, quit=0;
-    int platformamount=14
     bool onPlatform= false;
 
     //Create a window
@@ -26,14 +29,19 @@ int gameplayWindow(ClientInfo* information)
     }
     SDL_Surface* screen = SDL_GetWindowSurface(updater.window);
 
+    animator.window = updater.window;
+    for(i=0;i<PLAYERCOUNT;i++){
+        animator.players[i] = &(updater.players[i]);
+    }
+
     playerDummy.pos.y = screen->h/2;
     playerDummy.pos.x = screen->w/2;
     playerDummy.pos.h = screen->h*0.11;
     playerDummy.pos.w = screen->w*0.034;
 
-    updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
+    //updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
 
-    animator = SDL_CreateThread(animate, "Animator", (void*)&updater);
+    animatorThread = SDL_CreateThread(animate, "Animator", (void*)&animator);
 
     while(!quit){
         while (SDL_PollEvent(&event)) //events
@@ -53,90 +61,83 @@ int gameplayWindow(ClientInfo* information)
                     case SDLK_LEFT:
                        // playerDummy.pos.x -= 3;
                        playerDummy.pos.x -= SPEEDx;
-                            for(i=0; i<platformamount; i++)
+                        for(i=0; i<PLATFORMAMOUNT; i++)
+                        {
+                            if(( playerDummy.pos.x < 0 ) || ( playerDummy.pos.x + playerDummy.pos.w >screen ->w ) ||checkCollision(playerDummy.pos,animator.platforms[i])==true)
                             {
-                                if(( playerDummy.pos.x < 0 ) || ( playerDummy.pos.x + playerDummy.pos.w >screen ->w ) ||checkCollision(playerDummy.pos,platforms[i])==true)
-                                {
+                                playerDummy.pos.x+= SPEEDx;
+                            }
+                        }
+                        animator.flip = SDL_FLIP_HORIZONTAL;
 
-                                    playerDummy.pos.x+= SPEEDx;
+                        if(animator.frame == 2)
+                        {
+                            animator.frame = 0;
+                        }
+                        else if(animator.frame == 0)
+                        {
+                            animator.frame = 3;
+                        }
+                        else if(animator.frame == 3)
+                        {
+                            animator.frame = 1;
+                        }
+                        else
+                        {
+                            animator.frame = 2;
+                        }
 
-                                }
-                            }
-                            flip = SDL_FLIP_HORIZONTAL;
+                        sendPlayerUpdate(playerDummy, &information->socket);
 
-                            if(frame == 2)
-                            {
-                                frame = 0;
-                            }
-                            else if(frame == 0)
-                            {
-                                frame = 3;
-                            }
-                            else if(frame == 3)
-                            {
-                                frame = 1;
-                            }
-                            else
-                            {
-                                frame = 2;
-                            }
-                        memcpy(&serializedplayer, &playerDummy, sizeof(playerDummy));
-                        parseString(serializedplayer, -1, sizeof(serializedplayer));
-                        printf("PlayerDummy x+y = %d, %d\n", playerDummy.pos.x, playerDummy.pos.y);
-                        serializedplayer[0] = 'P';
-                        SDLNet_TCP_Send(information->socket, serializedplayer, sizeof(serializedplayer));
                         break;
                     case SDLK_RIGHT:
                         //playerDummy.pos.x += 3;
                         playerDummy.pos.x += SPEEDx;
-                            for(i=0; i<platformamount; i++)
+                        for(i=0; i<PLATFORMAMOUNT; i++)
+                        {
+                            if((playerDummy.pos.x < 0 ) || (playerDummy.pos.x + playerDummy.pos.w >screen ->w )||checkCollision(playerDummy.pos,animator.platforms[i])==true)
                             {
-                                if((playerDummy.pos.x < 0 ) || (playerDummy.pos.x + playerDummy.pos.w >screen ->w )||checkCollision(playerDummy.pos,platforms[i])==true)
-                                {
 
-                                    playerDummy.pos.x -= SPEEDx;
+                                playerDummy.pos.x -= SPEEDx;
 
-                                }
                             }
-                            flip = SDL_FLIP_NONE;
+                        }
+                        animator.flip = SDL_FLIP_NONE;
 
-                            if(frame == 2)
-                            {
-                                frame = 0;
-                            }
-                            else if(frame == 0)
-                            {
-                                frame = 3;
-                            }
-                            else if(frame == 3)
-                            {
-                                frame = 1;
-                            }
-                            else
-                            {
-                                frame = 2;
-                            }
-                        memcpy(&serializedplayer, &playerDummy, sizeof(playerDummy));
-                        parseString(serializedplayer, -1, sizeof(serializedplayer));
-                        printf("PlayerDummy x+y = %d, %d\n", playerDummy.pos.x, playerDummy.pos.y);
-                        serializedplayer[0] = 'P';
-                        SDLNet_TCP_Send(information->socket, serializedplayer, sizeof(serializedplayer));
+                        if(animator.frame == 2)
+                        {
+                            animator.frame = 0;
+                        }
+                        else if(animator.frame == 0)
+                        {
+                            animator.frame = 3;
+                        }
+                        else if(animator.frame == 3)
+                        {
+                            animator.frame = 1;
+                        }
+                        else
+                        {
+                            animator.frame = 2;
+                        }
+
+                        sendPlayerUpdate(playerDummy, &information->socket);
+
                         break;
                     case SDLK_SPACE:
                        //TODO JUMP
                         if(onPlatform == true)
                             {
-                                playerDummy.pos.y -=SPEEDy;
-                                for(i=0; i<platformamount; i++)
+                                playerDummy.pos.y -= SPEEDy;
+                                for(i=0; i<PLATFORMAMOUNT; i++)
                                 {
-                                    if(checkCollision(playerDummy.pos,platforms[i])==true)
+                                    if(checkCollision(playerDummy.pos,animator.platforms[i])==true)
                                     {
                                         playerDummy.pos.y +=SPEEDy;
                                     }
                                 }
 
                             }
-
                         break;
                     default:
                         break;
@@ -146,6 +147,8 @@ int gameplayWindow(ClientInfo* information)
         }
     }
 
+    SDL_WaitThread(updaterThread, &i);
+    SDL_WaitThread(animatorThread, &i);
     SDL_Quit();
     TTF_Quit();
     return 0;
@@ -195,4 +198,18 @@ bool checkCollision( SDL_Rect a, SDL_Rect b )
 
     //If none of the sides from A are outside B
     return true;
+}
+
+int sendPlayerUpdate(playerInfo playerDummy, TCPsocket* socket){
+    char serializedplayer[sizeof(playerInfo)+2] = {0};
+
+    memcpy(&serializedplayer, &playerDummy, sizeof(playerDummy));
+    parseString(serializedplayer, -1, sizeof(serializedplayer));
+    printf("PlayerDummy x+y = %d, %d\n", playerDummy.pos.x, playerDummy.pos.y);
+    serializedplayer[0] = 'P';
+    if(*socket != NULL){
+        SDLNet_TCP_Send(*socket, serializedplayer, sizeof(serializedplayer));
+        return 0;
+    }else
+        return 1;
 }

@@ -22,6 +22,7 @@ typedef struct{
 	TCPsocket socket;
 	IPaddress targethost;
 	char playerName[20];
+	int directConnect;
 }ClientInfo;
 
 int getMouseBounds(int mouse[2], SDL_Rect rect);

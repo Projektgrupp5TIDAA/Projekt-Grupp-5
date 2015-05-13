@@ -2,8 +2,36 @@
 #include "lobby.h"
 
 int menu(ClientInfo* startup){
-    int quit = 0, mouse[2] = {0}, pointcount=0;
+    int quit = 0, mouse[2] = {0}, pointcount=0;  
     char packet[PACKETSIZE];
+
+    if(startup->directConnect > 0){
+        if(startup->directConnect == 1){
+            strcpy(startup->playerName, "directConnect");
+            if (SDLNet_ResolveHost(&(startup->targethost), "127.0.0.1", 4000) == -1){
+                fprintf(stderr, "SDLNet_ResolveHost(%s %d): %s\n", "127.0.0.1", 4000, SDLNet_GetError());
+                return 1;
+            }
+            startup->socket = SDLNet_TCP_Open(&(startup->targethost)); 
+            SDLNet_TCP_Send(startup->socket, "C", 1);
+            SDL_Delay(200);
+            SDLNet_TCP_Send(startup->socket, startup->playerName, 20);
+            SDL_Delay(100);
+            return 0;
+        }else{
+            strcpy(startup->playerName, "directConnect");
+            if(SDLNet_ResolveHost(&(startup->targethost), "130.237.84.189", 4000) == -1){
+                fprintf(stderr, "SDLNet_ResolveHost(%s %d): %s\n", "130.237.84.189", 4000, SDLNet_GetError());
+                return 1;
+            }
+            startup->socket = SDLNet_TCP_Open(&(startup->targethost)); 
+            SDLNet_TCP_Send(startup->socket, "C", 1);
+            SDL_Delay(200);
+            SDLNet_TCP_Send(startup->socket, startup->playerName, 20);
+            SDL_Delay(100);
+            return 0;
+        }
+    }
 
     /* Create window and get the surface */
     SDL_Window* window = SDL_CreateWindow("BJORNS THE GAME - MENU", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, 0);

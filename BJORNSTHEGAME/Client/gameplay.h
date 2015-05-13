@@ -16,12 +16,16 @@
 #endif
 #include "bjornstartup.h"
 #include "lobby.h"
+#include "clientthreads.h"
 
 #define SPEEDx 10
 #define SPEEDy 10
 
 int gameplayWindow(ClientInfo* information);
+
 bool checkCollision( SDL_Rect a, SDL_Rect b );
+
+int sendPlayerUpdate(playerInfo playerDummy, TCPsocket* socket);
 
 #endif // GAMEPLAY_H_INCLUDED
 

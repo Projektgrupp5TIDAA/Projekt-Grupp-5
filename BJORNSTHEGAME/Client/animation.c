@@ -24,9 +24,8 @@
 #endif
 
 int animate(void* info){
-    updaterInfo* updater = (updaterInfo*) info;
-    int i, quit=0, frame=0;
-    SDL_RendererFlip flip = SDL_FLIP_NONE;
+    animationInfo* animator = (animationInfo*) info;
+    int i, quit=0;
 
     /*Loading and declaration of all images*/
     SDL_Surface* gameBackground = IMG_Load("../Images/game/bar.jpg");;
@@ -48,28 +47,23 @@ int animate(void* info){
     SDL_Texture* caps[AMMOAMOUNT];
     SDL_Texture* myText[TEXTAMOUNT];
 
-    /*Arrys of rectangles*/
-    SDL_Rect capsRect[AMMOAMOUNT];
-    SDL_Rect platforms[PLATFORMAMOUNT];
-    SDL_Rect bjornDRect[DRINKAMOUNT];
     SDL_Rect spriteClips[4];
-    SDL_Rect textRect[TEXTAMOUNT];
 
     /* Fill the platforms with colors */
     SDL_FillRect(platform1, NULL, SDL_MapRGB(platform1->format, 200, 190, 200));
     SDL_FillRect(platform2, NULL, SDL_MapRGB(platform2->format, 200, 190, 200));
 
-    SDL_Surface* screen = SDL_GetWindowSurface(updater->window); //get the screen size
+    SDL_Surface* screen = SDL_GetWindowSurface(animator->window); //get the screen size
     printf("Width: %d, Height: %d\n", screen->w, screen->h);
 
-    Renderer=SDL_GetRenderer(updater->window);
-    if(! Renderer)
-        Renderer = SDL_CreateRenderer(updater->window, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
+    Renderer=SDL_GetRenderer(animator->window);
+    if(!Renderer)
+        Renderer = SDL_CreateRenderer(animator->window, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
     if(!Renderer)
         printf("Couldn't start the render: %s\n", SDL_GetError());
     
     bakgroundTexture = SDL_CreateTextureFromSurface(Renderer,gameBackground); //Load texture with image "bar.jpg" and Renderer
-
+    
     /*text*/
     SDL_Color colorT= {170,60,255};
     TTF_Font *font = TTF_OpenFont("../Images/game/StencilStd.ttf", 100);
@@ -111,115 +105,115 @@ int animate(void* info){
     myText[2]=SDL_CreateTextureFromSurface(Renderer,textsurface[2]);
 
     /*set position for every platform on screen*/
-    platforms[0].x = 0;
-    platforms[0].y = screen->h-(screen->h*0.06);
-    platforms[0].w = screen->w;
-    platforms[0].h = screen->h*0.06;
+    animator->platforms[0].x = 0;
+    animator->platforms[0].y = screen->h-(screen->h*0.06);
+    animator->platforms[0].w = screen->w;
+    animator->platforms[0].h = screen->h*0.06;
 
-    platforms[1].x = 0;
-    platforms[1].y = 0;
-    platforms[1].w = screen->w;
-    platforms[1].h = screen->h*0.08;
+    animator->platforms[1].x = 0;
+    animator->platforms[1].y = 0;
+    animator->platforms[1].w = screen->w;
+    animator->platforms[1].h = screen->h*0.08;
 
-    platforms[2].x = screen->w/3 -200;
-    platforms[2].y = screen->h - 180;
-    platforms[2].w = 550;
-    platforms[2].h = 40;
+    animator->platforms[2].x = screen->w/3 -200;
+    animator->platforms[2].y = screen->h - 180;
+    animator->platforms[2].w = 550;
+    animator->platforms[2].h = 40;
 
-    platforms[3].x = screen->w/3 +30;
-    platforms[3].y = screen->h -590;
-    platforms[3].w = 45;
-    platforms[3].h = 410;
+    animator->platforms[3].x = screen->w/3 +30;
+    animator->platforms[3].y = screen->h -590;
+    animator->platforms[3].w = 45;
+    animator->platforms[3].h = 410;
 
-    platforms[4].x = screen ->w/3 -130;
-    platforms[4].y = screen  ->h - 610;
-    platforms[4].w = 350;
-    platforms[4].h = 40;
+    animator->platforms[4].x = screen ->w/3 -130;
+    animator->platforms[4].y = screen  ->h - 610;
+    animator->platforms[4].w = 350;
+    animator->platforms[4].h = 40;
 
-    platforms[5].x = screen->w/3 -460;
-    platforms[5].y = screen->h/2 -100;
-    platforms[5].w = 150;
-    platforms[5].h = 30;
+    animator->platforms[5].x = screen->w/3 -460;
+    animator->platforms[5].y = screen->h/2 -100;
+    animator->platforms[5].w = 150;
+    animator->platforms[5].h = 30;
 
-    platforms[6].x = screen->w/3 -460;
-    platforms[6].y = screen->h/2 +140;
-    platforms[6].w = 150;
-    platforms[6].h = 30;
+    animator->platforms[6].x = screen->w/3 -460;
+    animator->platforms[6].y = screen->h/2 +140;
+    animator->platforms[6].w = 150;
+    animator->platforms[6].h = 30;
 
-    platforms[7].x = screen ->w/2 +300;
-    platforms[7].y = screen->h/2 -80;
-    platforms[7].w = 400;
-    platforms[7].h = 60;
+    animator->platforms[7].x = screen ->w/2 +300;
+    animator->platforms[7].y = screen->h/2 -80;
+    animator->platforms[7].w = 400;
+    animator->platforms[7].h = 60;
 
-    platforms[8].x = screen->w/3 -139;
-    platforms[8].y = screen -> h/2 -70;
-    platforms[8].w = 170;
-    platforms[8].h = 30;
+    animator->platforms[8].x = screen->w/3 -139;
+    animator->platforms[8].y = screen -> h/2 -70;
+    animator->platforms[8].w = 170;
+    animator->platforms[8].h = 30;
 
-    platforms[9].x = screen->w/3 -139;
-    platforms[9].y = screen -> h/2 +90;
-    platforms[9].w = 170;
-    platforms[9].h = 30;
+    animator->platforms[9].x = screen->w/3 -139;
+    animator->platforms[9].y = screen -> h/2 +90;
+    animator->platforms[9].w = 170;
+    animator->platforms[9].h = 30;
 
-    platforms[10].x = screen ->w/3 +75;
-    platforms[10].y = screen -> h/2 -70;
-    platforms[10].w = 170;
-    platforms[10].h = 30;
+    animator->platforms[10].x = screen ->w/3 +75;
+    animator->platforms[10].y = screen -> h/2 -70;
+    animator->platforms[10].w = 170;
+    animator->platforms[10].h = 30;
 
-    platforms[11].x = screen ->w/3 +300;
-    platforms[11].y = screen -> h/2 -140;
-    platforms[11].w = 170;
-    platforms[11].h = 30;
+    animator->platforms[11].x = screen ->w/3 +300;
+    animator->platforms[11].y = screen -> h/2 -140;
+    animator->platforms[11].w = 170;
+    animator->platforms[11].h = 30;
 
-    platforms[12].x = screen ->w/2 +390;
-    platforms[12].y = screen -> h/2 +150;
-    platforms[12].w = 300;
-    platforms[12].h = 40;
+    animator->platforms[12].x = screen ->w/2 +390;
+    animator->platforms[12].y = screen -> h/2 +150;
+    animator->platforms[12].w = 300;
+    animator->platforms[12].h = 40;
 
-    platforms[13].x = screen ->w/3 +73;
-    platforms[13].y = screen -> h/2 +30;
-    platforms[13].w = 170;
-    platforms[13].h = 30;
+    animator->platforms[13].x = screen ->w/3 +73;
+    animator->platforms[13].y = screen -> h/2 +30;
+    animator->platforms[13].w = 170;
+    animator->platforms[13].h = 30;
 
 
     for(i=0;i<AMMOAMOUNT;i++){
-        capsRect[i].x = screen->w*0.9+(i*screen->w*0.032);
-        capsRect[i].y = screen->h*0.02;//screen ->h - 740;
-        capsRect[i].w = screen->w*0.03;
-        capsRect[i].h = screen->h*0.046;
+        animator->capsRect[i].x = screen->w*0.9+(i*screen->w*0.032);
+        animator->capsRect[i].y = screen->h*0.02;//screen ->h - 740;
+        animator->capsRect[i].w = screen->w*0.03;
+        animator->capsRect[i].h = screen->h*0.046;
     }
 
-    bjornDRect[0].x = screen->w/2 -110;
-    bjornDRect[0].y = screen->h - 228;
-    bjornDRect[0].w = screen->w*0.03;//60;
-    bjornDRect[0].h = screen->h*0.046;//50;
+    animator->bjornDrapare[0].x = screen->w/2 -110;
+    animator->bjornDrapare[0].y = screen->h - 228;
+    animator->bjornDrapare[0].w = screen->w*0.03;//60;
+    animator->bjornDrapare[0].h = screen->h*0.046;//50;
 
-    bjornDRect[1].x = screen  ->w/2 +400;
-    bjornDRect[1].y = screen ->h - 512;
-    bjornDRect[1].w = screen->w*0.03;//60;
-    bjornDRect[1].h = screen->h*0.046;//50;
+    animator->bjornDrapare[1].x = screen  ->w/2 +400;
+    animator->bjornDrapare[1].y = screen ->h - 512;
+    animator->bjornDrapare[1].w = screen->w*0.03;//60;
+    animator->bjornDrapare[1].h = screen->h*0.046;//50;
 
-    textRect[0].x= screen->w*0.79;//screen ->w/2 +310;
-    textRect[0].y= screen->h*0.02;//screen ->h - 740;
-    textRect[0].w= screen->w*0.1;//120;
-    textRect[0].h= screen->h*0.055;//60;
+    animator->textRect[0].x= screen->w*0.79;//screen ->w/2 +310;
+    animator->textRect[0].y= screen->h*0.02;//screen ->h - 740;
+    animator->textRect[0].w= screen->w*0.1;//120;
+    animator->textRect[0].h= screen->h*0.055;//60;
 
-    textRect[1].x= screen->w*0.02;//screen ->w/2 -660;
-    textRect[1].y= screen->h*0.02;//screen ->h - 740;
-    textRect[1].w= screen->w*0.06;
-    textRect[1].h= screen->h*0.055;
+    animator->textRect[1].x= screen->w*0.02;//screen ->w/2 -660;
+    animator->textRect[1].y= screen->h*0.02;//screen ->h - 740;
+    animator->textRect[1].w= screen->w*0.06;
+    animator->textRect[1].h= screen->h*0.055;
 
-    textRect[2].x= screen->w*0.14;//screen->w/2 -450;
-    textRect[2].y= screen->h*0.02;
-    textRect[2].w= screen->w*0.11;
-    textRect[2].h= screen->h*0.055;
+    animator->textRect[2].x= screen->w*0.14;//screen->w/2 -450;
+    animator->textRect[2].y= screen->h*0.02;
+    animator->textRect[2].w= screen->w*0.11;
+    animator->textRect[2].h= screen->h*0.055;
 
     //size and position for the player
     for(i=0;i<PLAYERCOUNT;i++){
-        updater->players[i].pos.y = screen->h/2;
-        updater->players[i].pos.x = screen->w/2+(i*50);
-        updater->players[i].pos.h = screen->h*0.11;//120;
-        updater->players[i].pos.w = screen->w*0.034;//66;
+        animator->players[i]->pos.y = screen->h/2;
+        animator->players[i]->pos.x = screen->w/2+(i*50);
+        animator->players[i]->pos.h = screen->h*0.11;//120;
+        animator->players[i]->pos.w = screen->w*0.034;//66;
     }
 
     /*position of the sprites in the image*/
@@ -252,26 +246,26 @@ int animate(void* info){
         for(i=0; i<PLATFORMAMOUNT; i++) //copy all platforms to the render
         {
 
-            SDL_RenderCopy(Renderer, picture[i],NULL,&platforms[i]);
+            SDL_RenderCopy(Renderer, picture[i],NULL,&animator->platforms[i]);
         }
 
         for(i=0; i<AMMOAMOUNT; i++) //copy all ammo to the render
         {
-            SDL_RenderCopy(Renderer, caps[i],NULL,&capsRect[i]);
+            SDL_RenderCopy(Renderer, caps[i],NULL,&animator->capsRect[i]);
         }
 
         for(i=0; i<DRINKAMOUNT; i++) //copy all "bjornDrapare" to the render "the screen"
         {
-            SDL_RenderCopy(Renderer, bjornDrapare[i],NULL,&bjornDRect[i]);
+            SDL_RenderCopy(Renderer, bjornDrapare[i],NULL,&animator->bjornDrapare[i]);
         }
         for(i=0; i<AMMOAMOUNT; i++) // copy all text to the render "screen"
         {
-            SDL_RenderCopy(Renderer, myText[i],NULL,&textRect[i]);
+            SDL_RenderCopy(Renderer, myText[i],NULL,&animator->textRect[i]);
         }
 
         //copy all players
         for(i=0;i<PLAYERCOUNT;i++){
-            SDL_RenderCopyEx(Renderer, player, &spriteClips[frame],&updater->players[i].pos, 0, NULL, flip);
+            SDL_RenderCopyEx(Renderer, player, &spriteClips[animator->frame],&animator->players[i]->pos, 0, NULL, animator->flip);
         }
 
         // present the result on the render  "the screen"
@@ -281,7 +275,7 @@ int animate(void* info){
 
 
     //Destroy window
-    SDL_DestroyWindow(updater->window);
+    SDL_DestroyWindow(animator->window);
     //Quit SDL subsystems
 
     /*Destroy all textures*/

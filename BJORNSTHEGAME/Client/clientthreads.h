@@ -25,6 +25,7 @@ typedef struct{
 
 /* Struct containing information on all the players */
 typedef struct{
+	int *quit;
 	SDL_Window* window;
 	TCPsocket* socket;
 	playerInfo players[PLAYERCOUNT];

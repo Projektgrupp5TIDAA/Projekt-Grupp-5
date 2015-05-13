@@ -17,14 +17,16 @@
 #include "clientthreads.h"
 #include "animation.h"
 #include "gameplay.h"
-#define AMMO 3
+#define AMMOAMOUNT 3
+#define PLATFORMAMOUNT 14
+#define TEXTAMOUNT 3
+#define DRINKAMOUNT 2
 #endif
 
 int animate(void* info){
     updaterInfo* updater = (updaterInfo*) info;
     int i, quit=0, frame=0;
     SDL_RendererFlip flip = SDL_FLIP_NONE;
-    int platformamount=14, texts=3, size3=2;
 
     /*Loading and declaration of all images*/
     SDL_Surface* gameBackground = IMG_Load("../Images/game/bar.jpg");;
@@ -34,24 +36,24 @@ int animate(void* info){
     SDL_Surface* band = IMG_Load("../Images/game/band2.png");
     SDL_Surface* playerSurface = IMG_Load("../Images/game/spriteBlue.PNG");
     SDL_Surface* bjorns = IMG_Load("../Images/game/bjorndrapare.png");
-    SDL_Surface* ammo = IMG_Load("../Images/game/caps.png");
-    SDL_Surface* textSurface[texts];
+    SDL_Surface* AMMOAMOUNT = IMG_Load("../Images/game/caps.png");
+    SDL_Surface* TEXTAMOUNTurface[TEXTAMOUNT];
 
     /*Texture declaration*/
     SDL_Renderer* Renderer = NULL;
     SDL_Texture* player = NULL;
     SDL_Texture* bakgroundTexture;
-    SDL_Texture* picture[platformamount];
-    SDL_Texture* bjornDrapare[size3];
-    SDL_Texture* caps[AMMO];
-    SDL_Texture* myText[texts];
+    SDL_Texture* picture[PLATFORMAMOUNT];
+    SDL_Texture* bjornDrapare[DRINKAMOUNT];
+    SDL_Texture* caps[AMMOAMOUNT];
+    SDL_Texture* myText[TEXTAMOUNT];
 
     /*Arrys of rectangles*/
-    SDL_Rect capsRect[AMMO];
-    SDL_Rect platforms[platformamount];
-    SDL_Rect bjornDRect[size3];
+    SDL_Rect capsRect[AMMOAMOUNT];
+    SDL_Rect platforms[PLATFORMAMOUNT];
+    SDL_Rect bjornDRect[DRINKAMOUNT];
     SDL_Rect spriteClips[4];
-    SDL_Rect textRect[texts];
+    SDL_Rect textRect[TEXTAMOUNT];
 
     /* Fill the platforms with colors */
     SDL_FillRect(platform1, NULL, SDL_MapRGB(platform1->format, 200, 190, 200));
@@ -66,7 +68,7 @@ int animate(void* info){
     if(!Renderer)
         printf("Couldn't start the render: %s\n", SDL_GetError());
     
-    bakgroundTexture = SDL_CreateTextureFromSurface(Renderer,gameBackground); //Load a texture background to the render
+    bakgroundTexture = SDL_CreateTextureFromSurface(Renderer,gameBackground); //Load texture with image "bar.jpg" and Renderer
 
     /*text*/
     SDL_Color colorT= {170,60,255};
@@ -76,41 +78,39 @@ int animate(void* info){
         printf("FONT E NULL\n");
     }
 
-    textSurface[0]= TTF_RenderText_Solid(font, "Ammo:", colorT);
-    textSurface[1]= TTF_RenderText_Solid(font, "HP:", colorT);
-    textSurface[2]= TTF_RenderText_Solid(font, "Drunk:", colorT);
+    TEXTAMOUNTurface[0]= TTF_RenderText_Solid(font, "AMMOAMOUNT:", colorT);
+    TEXTAMOUNTurface[1]= TTF_RenderText_Solid(font, "HP:", colorT);
+    TEXTAMOUNTurface[2]= TTF_RenderText_Solid(font, "Drunk:", colorT);
 
     player = SDL_CreateTextureFromSurface(Renderer, playerSurface); //the texture of the player
     if(! player)
+    {
         printf("Couldnt create texture from surface: %s\n", SDL_GetError());
-    /*creating texture for all the images and texts */
+    }
+    /*creating texture for all the images and TEXTAMOUNT */
     picture[0]= SDL_CreateTextureFromSurface(Renderer,ground );
     picture[1]= SDL_CreateTextureFromSurface(Renderer,band);
     picture[2]= SDL_CreateTextureFromSurface(Renderer,platform1);
     picture[3]= SDL_CreateTextureFromSurface(Renderer,platform2);
-    picture[4]= SDL_CreateTextureFromSurface(Renderer,platform1);
-    picture[5]= SDL_CreateTextureFromSurface(Renderer,platform1);
-    picture[6]= SDL_CreateTextureFromSurface(Renderer,platform1);
-    picture[7]= SDL_CreateTextureFromSurface(Renderer,platform1);
-    picture[8]= SDL_CreateTextureFromSurface(Renderer,platform1);
-    picture[9]= SDL_CreateTextureFromSurface(Renderer,platform1);
-    picture[10]= SDL_CreateTextureFromSurface(Renderer,platform1);
-    picture[11]= SDL_CreateTextureFromSurface(Renderer,platform1);
-    picture[12]= SDL_CreateTextureFromSurface(Renderer,platform1);
-    picture[13]= SDL_CreateTextureFromSurface(Renderer,platform1);
+    
+    int loopcounter;
+    for (loopcounter = 4; loopcounter < PLATFORMAMOUNT; ++loopcounter)
+    {
+        picture[loopcounter]= SDL_CreateTextureFromSurface(Renderer,platform1);
+    }
 
-    caps[0]= SDL_CreateTextureFromSurface(Renderer,ammo);
-    caps[1]= SDL_CreateTextureFromSurface(Renderer,ammo);
-    caps[2]= SDL_CreateTextureFromSurface(Renderer,ammo);
+    caps[0]= SDL_CreateTextureFromSurface(Renderer,AMMOAMOUNT);
+    caps[1]= SDL_CreateTextureFromSurface(Renderer,AMMOAMOUNT);
+    caps[2]= SDL_CreateTextureFromSurface(Renderer,AMMOAMOUNT);
 
     bjornDrapare[0]=SDL_CreateTextureFromSurface(Renderer,bjorns);
     bjornDrapare[1]=SDL_CreateTextureFromSurface(Renderer,bjorns);
 
-    myText[0]=SDL_CreateTextureFromSurface(Renderer,textSurface[0]);
-    myText[1]=SDL_CreateTextureFromSurface(Renderer,textSurface[1]);
-    myText[2]=SDL_CreateTextureFromSurface(Renderer,textSurface[2]);
+    myText[0]=SDL_CreateTextureFromSurface(Renderer,TEXTAMOUNTurface[0]);
+    myText[1]=SDL_CreateTextureFromSurface(Renderer,TEXTAMOUNTurface[1]);
+    myText[2]=SDL_CreateTextureFromSurface(Renderer,TEXTAMOUNTurface[2]);
 
-    /*make a rectangle for every texture to loading images in specific position on the screen*/
+    /*set position for every platform on screen*/
     platforms[0].x = 0;
     platforms[0].y = screen->h-(screen->h*0.06);
     platforms[0].w = screen->w;
@@ -182,7 +182,7 @@ int animate(void* info){
     platforms[13].h = 30;
 
 
-    for(i=0;i<AMMO;i++){
+    for(i=0;i<AMMOAMOUNT;i++){
         capsRect[i].x = screen->w*0.9+(i*screen->w*0.032);
         capsRect[i].y = screen->h*0.02;//screen ->h - 740;
         capsRect[i].w = screen->w*0.03;
@@ -249,22 +249,22 @@ int animate(void* info){
         SDL_RenderClear(Renderer); // Clear the entire screen to our selected color/images.
         SDL_RenderCopy(Renderer,  bakgroundTexture,NULL,NULL); //view the background on the render "screen"
 
-        for(i=0; i<platformamount; i++) //copy all platforms to the render
+        for(i=0; i<PLATFORMAMOUNT; i++) //copy all platforms to the render
         {
 
             SDL_RenderCopy(Renderer, picture[i],NULL,&platforms[i]);
         }
 
-        for(i=0; i<AMMO; i++) //copy all ammo to the render
+        for(i=0; i<AMMOAMOUNT; i++) //copy all AMMOAMOUNT to the render
         {
             SDL_RenderCopy(Renderer, caps[i],NULL,&capsRect[i]);
         }
 
-        for(i=0; i<size3; i++) //copy all "bjornDrapare" to the render "the screen"
+        for(i=0; i<DRINKAMOUNT; i++) //copy all "bjornDrapare" to the render "the screen"
         {
             SDL_RenderCopy(Renderer, bjornDrapare[i],NULL,&bjornDRect[i]);
         }
-        for(i=0; i<AMMO; i++) // copy all text to the render "screen"
+        for(i=0; i<AMMOAMOUNT; i++) // copy all text to the render "screen"
         {
             SDL_RenderCopy(Renderer, myText[i],NULL,&textRect[i]);
         }
@@ -285,22 +285,22 @@ int animate(void* info){
     //Quit SDL subsystems
 
     /*Destroy all textures*/
-    for(i=0; i<platformamount; i++)
+    for(i=0; i<PLATFORMAMOUNT; i++)
     {
         SDL_DestroyTexture(picture[i]);
     }
 
-    for(i=0; i<AMMO; i++)
+    for(i=0; i<AMMOAMOUNT; i++)
     {
         SDL_DestroyTexture(caps[i]);
     }
 
-    for(i=0; i<size3; i++)
+    for(i=0; i<DRINKAMOUNT; i++)
     {
         SDL_DestroyTexture(bjornDrapare[i]);
     }
 
-    for(i=0; i<texts; i++)
+    for(i=0; i<TEXTAMOUNT; i++)
     {
         SDL_DestroyTexture(myText[i]);
     }

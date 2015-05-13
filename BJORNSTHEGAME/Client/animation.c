@@ -36,8 +36,8 @@ int animate(void* info){
     SDL_Surface* band = IMG_Load("../Images/game/band2.png");
     SDL_Surface* playerSurface = IMG_Load("../Images/game/spriteBlue.PNG");
     SDL_Surface* bjorns = IMG_Load("../Images/game/bjorndrapare.png");
-    SDL_Surface* AMMOAMOUNT = IMG_Load("../Images/game/caps.png");
-    SDL_Surface* TEXTAMOUNTurface[TEXTAMOUNT];
+    SDL_Surface* ammo = IMG_Load("../Images/game/caps.png");
+    SDL_Surface* textsurface[TEXTAMOUNT];
 
     /*Texture declaration*/
     SDL_Renderer* Renderer = NULL;
@@ -78,9 +78,9 @@ int animate(void* info){
         printf("FONT E NULL\n");
     }
 
-    TEXTAMOUNTurface[0]= TTF_RenderText_Solid(font, "AMMOAMOUNT:", colorT);
-    TEXTAMOUNTurface[1]= TTF_RenderText_Solid(font, "HP:", colorT);
-    TEXTAMOUNTurface[2]= TTF_RenderText_Solid(font, "Drunk:", colorT);
+    textsurface[0]= TTF_RenderText_Solid(font, "AMMO:", colorT);
+    textsurface[1]= TTF_RenderText_Solid(font, "HP:", colorT);
+    textsurface[2]= TTF_RenderText_Solid(font, "Drunk:", colorT);
 
     player = SDL_CreateTextureFromSurface(Renderer, playerSurface); //the texture of the player
     if(! player)
@@ -99,16 +99,16 @@ int animate(void* info){
         picture[loopcounter]= SDL_CreateTextureFromSurface(Renderer,platform1);
     }
 
-    caps[0]= SDL_CreateTextureFromSurface(Renderer,AMMOAMOUNT);
-    caps[1]= SDL_CreateTextureFromSurface(Renderer,AMMOAMOUNT);
-    caps[2]= SDL_CreateTextureFromSurface(Renderer,AMMOAMOUNT);
+    caps[0]= SDL_CreateTextureFromSurface(Renderer,ammo);
+    caps[1]= SDL_CreateTextureFromSurface(Renderer,ammo);
+    caps[2]= SDL_CreateTextureFromSurface(Renderer,ammo);
 
     bjornDrapare[0]=SDL_CreateTextureFromSurface(Renderer,bjorns);
     bjornDrapare[1]=SDL_CreateTextureFromSurface(Renderer,bjorns);
 
-    myText[0]=SDL_CreateTextureFromSurface(Renderer,TEXTAMOUNTurface[0]);
-    myText[1]=SDL_CreateTextureFromSurface(Renderer,TEXTAMOUNTurface[1]);
-    myText[2]=SDL_CreateTextureFromSurface(Renderer,TEXTAMOUNTurface[2]);
+    myText[0]=SDL_CreateTextureFromSurface(Renderer,textsurface[0]);
+    myText[1]=SDL_CreateTextureFromSurface(Renderer,textsurface[1]);
+    myText[2]=SDL_CreateTextureFromSurface(Renderer,textsurface[2]);
 
     /*set position for every platform on screen*/
     platforms[0].x = 0;

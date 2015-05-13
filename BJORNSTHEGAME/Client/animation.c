@@ -87,7 +87,7 @@ int animate(void* info){
     {
         printf("Couldnt create texture from surface: %s\n", SDL_GetError());
     }
-    /*creating texture for all the images and TEXTAMOUNT */
+    /*creating texture for all the images and texts */
     picture[0]= SDL_CreateTextureFromSurface(Renderer,ground );
     picture[1]= SDL_CreateTextureFromSurface(Renderer,band);
     picture[2]= SDL_CreateTextureFromSurface(Renderer,platform1);
@@ -255,7 +255,7 @@ int animate(void* info){
             SDL_RenderCopy(Renderer, picture[i],NULL,&platforms[i]);
         }
 
-        for(i=0; i<AMMOAMOUNT; i++) //copy all AMMOAMOUNT to the render
+        for(i=0; i<AMMOAMOUNT; i++) //copy all ammo to the render
         {
             SDL_RenderCopy(Renderer, caps[i],NULL,&capsRect[i]);
         }

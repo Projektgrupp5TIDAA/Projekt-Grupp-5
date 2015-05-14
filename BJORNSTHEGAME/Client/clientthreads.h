@@ -20,7 +20,8 @@ typedef struct{
 
 /* Struct to recieve bulletinformation */
 typedef struct{
-
+    short ammount;
+    SDL_Rect bulletpos;
 }brecv;
 
 /* Struct containing information on all the players */

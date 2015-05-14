@@ -13,6 +13,7 @@ int gameplayWindow(ClientInfo* information)
     animationInfo animator = {0, &quit, NULL, {NULL}, SDL_FLIP_NONE, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
     SDL_Thread* updaterThread, *animatorThread;
     playerInfo playerDummy = {0, 0, {0, 0, 0, 0}};
+    brecv bulletinfo={0,{0,0,0,0}};
     SDL_Event event;
     bool onPlatform= false;
 
@@ -38,6 +39,11 @@ int gameplayWindow(ClientInfo* information)
     playerDummy.pos.x = screen->w/2;
     playerDummy.pos.h = screen->h*0.11;
     playerDummy.pos.w = screen->w*0.034;
+    
+    bulletinfo.bulletpos.y = screen->h/4*3+90;
+    bulletinfo.bulletpos.x = screen->w/2;
+    bulletinfo.bulletpos.h = screen->h*0.13;
+    bulletinfo.bulletpos.w = screen->w*0.050;
 
     updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
 
@@ -86,10 +92,9 @@ int gameplayWindow(ClientInfo* information)
                         {
                             animator.frame = 2;
                         }
-
                         sendPlayerUpdate(playerDummy, &information->socket);
-
                         break;
+                        
                     case SDLK_RIGHT:
                         //playerDummy.pos.x += 3;
                         playerDummy.pos.x += SPEEDx;
@@ -120,9 +125,11 @@ int gameplayWindow(ClientInfo* information)
                         {
                             animator.frame = 2;
                         }
-
                         sendPlayerUpdate(playerDummy, &information->socket);
-
+                        break;
+                        
+                    case SDLK_x:
+                        printf("Spaming shoots\n");
                         break;
                     case SDLK_SPACE:
                         playerDummy.pos.y -= SPEEDy+ 200;

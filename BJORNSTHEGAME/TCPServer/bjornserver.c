@@ -182,6 +182,7 @@ int main(int argc, char **argv){
                             SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
                     }
                 }
+                newbullet=0;
                 }else{
 
                 /* If there is a message waiting to be handled it will be sent as long as no high-priority updates are waiting */

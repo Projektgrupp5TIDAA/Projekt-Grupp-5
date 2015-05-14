@@ -132,12 +132,14 @@ int gameplayWindow(ClientInfo* information)
                                         playerDummy.pos.y +=GRAVITY;
                                     }
                                 }
+                        sendPlayerUpdate(playerDummy, &information->socket);
                         playerDummy.pos.y += GRAVITY;
                         for(i=0; i<PLATFORMAMOUNT; i++){
                             if(checkCollision(playerDummy.pos, animator.platforms[i] )){
                                 playerDummy.pos.y += GRAVITY;
                             }
                         }
+                        sendPlayerUpdate(playerDummy, &information->socket);
                         break;
                     default:
                         break;

@@ -71,7 +71,11 @@ int updateHandler(void* incinfo){
                     strcpy(chatmessages[1], packet);
 					break;
 				case 'B':
-					//TODO: Bullets
+                    printf("Bulletupdate recieved!\n");
+                    parseString(packet, 1, sizeof(packet));
+                    memcpy(&info->bullets, &packet, sizeof(info->bullets));
+                    //test
+                    printf("Bullet: %d, %d\n", info->bullets->bulletpos.x, info->bullets->bulletpos.y);
 					break;
 				default:
 					printf("Invalid packet recieved, ignoring.\n");

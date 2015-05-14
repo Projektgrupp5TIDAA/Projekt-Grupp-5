@@ -20,7 +20,7 @@ typedef struct{
 
 /* Struct to recieve bulletinformation */
 typedef struct{
-    short ammount;
+    // short ammount;
     SDL_Rect bulletpos;
 }brecv;
 
@@ -30,6 +30,7 @@ typedef struct{
 	SDL_Window* window;
 	TCPsocket* socket;
 	playerInfo players[PLAYERCOUNT];
+    brecv* bullets;
 }updaterInfo;
 
 int updateHandler(void* info);

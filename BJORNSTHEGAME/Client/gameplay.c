@@ -8,14 +8,14 @@
 
 int gameplayWindow(ClientInfo* information)
 {
-    int i, quit=0;
+    int i, quit=0, ammo=0;
     updaterInfo updater = {&quit, NULL, &(information->socket), {{0, 0, {0, 0, 0, 0}}}};
     animationInfo animator = {0, &quit, NULL, {NULL}, SDL_FLIP_NONE, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
     SDL_Thread* updaterThread, *animatorThread;
-    playerInfo playerDummy = {0, 0, {0, 0, 0, 0}};
+    playerInfo playerDummy = {0,{0, 0, 0, 0}};
     brecv bulletinfo={0,{0,0,0,0}};
     SDL_Event event;
-    bool onPlatform= false;
+    bool right=false, left=false, upp=false;
 
     //Create a window
     updater.window = SDL_CreateWindow("BJORNS THE GAME",
@@ -65,8 +65,9 @@ int gameplayWindow(ClientInfo* information)
                         quit = true;
                         break;
                     case SDLK_LEFT:
-                       // playerDummy.pos.x -= 3;
-                       playerDummy.pos.x -= SPEEDx;
+                        left=true;
+                        right=false;
+                        playerDummy.pos.x -= SPEEDx;
                         /*for(i=0; i<PLATFORMAMOUNT; i++)
                         {
                             if(( playerDummy.pos.x < 0 ) || ( playerDummy.pos.x + playerDummy.pos.w >screen ->w ) ||checkCollision(playerDummy.pos,animator.platforms[i])==true)
@@ -97,6 +98,8 @@ int gameplayWindow(ClientInfo* information)
                         
                     case SDLK_RIGHT:
                         //playerDummy.pos.x += 3;
+                        right=true;
+                        left=false;
                         playerDummy.pos.x += SPEEDx;
                         for(i=0; i<PLATFORMAMOUNT; i++)
                         {
@@ -130,6 +133,22 @@ int gameplayWindow(ClientInfo* information)
                         
                     case SDLK_x:
                         printf("Spaming shoots\n");
+                        ammo= AMMOAMOUNT-1;
+                        if(ammo > 0){
+                            if(right== true){
+                                bulletinfo.bulletpos.x +=SPEEDx;
+                                sendBulletUpdate(bulletinfo, &information->socket);
+                            }
+                            else if(left == true){
+                                bulletinfo.bulletpos.x -=SPEEDx;
+                                sendBulletUpdate(bulletinfo, &information->socket);
+                            }
+                        }
+                        // reload
+                        else{
+                            ammo=3;
+                            SDL_Delay(500);
+                        }
                         break;
                     case SDLK_SPACE:
                         playerDummy.pos.y -= SPEEDy+ 200;
@@ -210,14 +229,27 @@ bool checkCollision( SDL_Rect a, SDL_Rect b )
 }
 
 int sendPlayerUpdate(playerInfo playerDummy, TCPsocket* socket){
+    
     char serializedplayer[sizeof(playerInfo)+2] = {0};
-
     memcpy(&serializedplayer, &playerDummy, sizeof(playerDummy));
     parseString(serializedplayer, -1, sizeof(serializedplayer));
     printf("PlayerDummy x+y = %d, %d\n", playerDummy.pos.x, playerDummy.pos.y);
     serializedplayer[0] = 'P';
     if(*socket != NULL){
         SDLNet_TCP_Send(*socket, serializedplayer, sizeof(serializedplayer));
+        return 0;
+    }else
+        return 1;
+}
+
+int sendBulletUpdate(brecv bulletsinfo, TCPsocket* socket){
+    char bulletstmp[sizeof(brecv)+2] = {0};
+    memcpy(&bulletstmp, &bulletsinfo, sizeof(bulletsinfo));
+    parseString(bulletstmp, -1, sizeof(bulletstmp));
+    printf("bullets x+y = %d, %d\n", bulletsinfo.bulletpos.x, bulletsinfo.bulletpos.y);
+    bulletstmp[0]= 'B';
+    if(*socket != NULL){
+        SDLNet_TCP_Send(*socket, bulletstmp, sizeof(bulletstmp));
         return 0;
     }else
         return 1;

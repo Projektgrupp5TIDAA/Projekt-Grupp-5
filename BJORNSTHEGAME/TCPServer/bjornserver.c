@@ -24,13 +24,15 @@ int main(int argc, char **argv){
     SDL_Thread* connectionpoller, *timerthr;
     TimerInfo timerinfo = {0, 0};
     char sendpackage[200];
-    int i, j, lastpop=0, newdata=0;
+    int i, j, lastpop=0, newdata=0, newbullet=0;
     nsend namestruct;
+    bsend bulletstruct;
 
     /* Initializing the information for the stack and threads */
     for(i=0;i<PLAYERCOUNT;i++){
         threadvariables[i].ID = i;
         threadvariables[i].newdata = &newdata;
+        threadvariables[i].newbullet = &newbullet;
         threadvariables[i].player = &playersend[i];
         for(j=0;j<PLAYERCOUNT;j++){
             threadvariables[i].names[j] = threadvariables[j].playername;
@@ -165,7 +167,21 @@ int main(int argc, char **argv){
                         if(threadvariables[i].socket != NULL)
                             SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
                     }
-                    newdata = 0;
+                }
+                newdata = 0;
+                SDL_Delay(200);
+                else if(newbullet == 1){
+                    printf("Sending the bullet position update");
+                    memcpy(&sendpackage, &bulletstruct, sizeof(bulletstruct));
+                    parseString(sendpackage, -1, sizeof(sendpackage));
+                    sendpackage[0]='B';
+                    for(i=0;i<PLAYERCOUNT;i++){
+                        
+                        if(threadvariables[i].socket != NULL)
+                            
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
+                    }
+                }
                 }else{
 
                 /* If there is a message waiting to be handled it will be sent as long as no high-priority updates are waiting */
@@ -177,7 +193,6 @@ int main(int argc, char **argv){
                         }
                     }else SDL_Delay(200);
                 }
-            }
             printf("Game stopping.\n");
         }else{
 

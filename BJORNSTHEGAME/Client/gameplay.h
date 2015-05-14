@@ -20,6 +20,7 @@
 
 #define SPEEDx 1
 #define SPEEDy 1
+#define GRAVITY 0.0000001
 
 int gameplayWindow(ClientInfo* information);
 

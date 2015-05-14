@@ -125,19 +125,19 @@ int gameplayWindow(ClientInfo* information)
 
                         break;
                     case SDLK_SPACE:
-                       //TODO JUMP
-                        if(onPlatform == true)
-                            {
-                                playerDummy.pos.y -= SPEEDy;
-                                for(i=0; i<PLATFORMAMOUNT; i++)
-                                {
-                                    if(checkCollision(playerDummy.pos,animator.platforms[i])==true)
+                        playerDummy.pos.y -= SPEEDy+ 200;
+                        for(i=0; i<PLATFORMAMOUNT; i++){
+                            if(checkCollision(playerDummy.pos,animator.platforms[i]))
                                     {
-                                        playerDummy.pos.y +=SPEEDy;
+                                        playerDummy.pos.y +=GRAVITY;
                                     }
                                 }
-
+                        playerDummy.pos.y += GRAVITY;
+                        for(i=0; i<PLATFORMAMOUNT; i++){
+                            if(checkCollision(playerDummy.pos, animator.platforms[i] )){
+                                playerDummy.pos.y += GRAVITY;
                             }
+                        }
                         break;
                     default:
                         break;

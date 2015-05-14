@@ -22,7 +22,7 @@
 #endif
 
 /* The Lobby function, spawns a pre-game window where you can see other players and chat with them */
-int LobbyWindow(StartInfo* lobbyConnection){
+int LobbyWindow(ClientInfo* lobbyConnection){
     //********************** INIT *************************
     TTF_Font* playerfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 30);
     TTF_Font* chatfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 18);
@@ -35,7 +35,7 @@ int LobbyWindow(StartInfo* lobbyConnection){
     //background pic for lobby
 	SDL_Surface* lobbyBackground = IMG_Load("../Images/lobby/lobby.png");
     // image for ready button
-	SDL_Surface* readyButton = IMG_Load("../Images/lobby/ready.png");
+	SDL_Surface* exitButton = IMG_Load("../Images/lobby/exit.png");
 
     SDL_Rect buttonPlacement;
     SDL_Rect chat[20], typing[2], timerpos;
@@ -169,6 +169,11 @@ int LobbyWindow(StartInfo* lobbyConnection){
                 case 'T':
                     parseString(packet, 1, strlen(packet));
                     timer=atoi(packet);
+                    if(timer == 0)
+                        return 0;
+                    break;
+                case 'G':
+                    endLobby = 1;
                     break;
                 default:
                     printf("Invalid package recieved!\n");
@@ -181,8 +186,8 @@ int LobbyWindow(StartInfo* lobbyConnection){
         {
             if(SDL_GetMouseState(NULL, NULL) && SDL_BUTTON(SDL_BUTTON_LEFT)) //leftclick
             {
-                printf("PLAYER %s IS READY!\n", lobbyConnection->playerName);
-                endLobby=1;
+                printf("%s exited the lobby!\n", lobbyConnection->playerName);
+                return 1;
             }
         }
 
@@ -197,7 +202,7 @@ int LobbyWindow(StartInfo* lobbyConnection){
 
         /* Applies all pictures and text to the window */
         SDL_BlitScaled(lobbyBackground, NULL, lobbySurface, NULL);
-        SDL_BlitScaled(readyButton, NULL, lobbySurface, &buttonPlacement);
+        SDL_BlitScaled(exitButton, NULL, lobbySurface, &buttonPlacement);
         textToScreen(chatfont, typing[0], lobby, "Press 't' to type:");
         for(i=0;i<PLAYERCOUNT;i++){
             textToScreen(playerfont, player[i], lobby, name.names[5-i]);
@@ -222,7 +227,7 @@ int LobbyWindow(StartInfo* lobbyConnection){
     SDL_FreeSurface(lobbySurface);
     SDL_DestroyWindow(lobby); //Destroy window
     SDL_FreeSurface(lobbyBackground);
-    SDL_FreeSurface(readyButton);
+    SDL_FreeSurface(exitButton);
 
     SDL_Quit(); //Quit SDL subsystems
     return 0;
@@ -248,8 +253,8 @@ void parseString(char* inc, int hops, int len){
             *(inc+i) = *(inc+i+hops);
         }
     }else if(hops<0){
-        for(i=len;i>0;i++){
-            *(inc+i) = *(inc+i-hops);
+        for(i=(len-1);i>0;i--){
+            *(inc+i) = *(inc+i+hops);
         }
     }
 }
@@ -263,7 +268,7 @@ int timepoll(void* inctimer){
         if((*(timer)) > 0){
             (*(timer))--;
             printf("Time ticking: %d\n", *timer);
-        }else 
+        }
         SDL_Delay(995);
     }
     return 0;

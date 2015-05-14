@@ -1,2 +1,5 @@
 *.c~
+*.o
+*.out
 BJORNSTHEGAME/Client/gurka.out
+

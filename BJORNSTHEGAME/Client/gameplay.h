@@ -15,11 +15,18 @@
 #include <SDL2/SDL_net.h>
 #endif
 #include "bjornstartup.h"
+#include "lobby.h"
+#include "clientthreads.h"
 
-#define SPEEDx 10
+#define SPEEDx 1
+#define SPEEDy 1
+#define GRAVITY 0.0000001
 
-void gameplayWindow(Clientinfo* information);
+int gameplayWindow(ClientInfo* information);
 
+bool checkCollision( SDL_Rect a, SDL_Rect b );
+
+int sendPlayerUpdate(playerInfo playerDummy, TCPsocket* socket);
 
 #endif // GAMEPLAY_H_INCLUDED
 

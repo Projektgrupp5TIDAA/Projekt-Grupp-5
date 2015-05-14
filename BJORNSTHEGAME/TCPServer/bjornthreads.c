@@ -20,7 +20,7 @@ Projekt Grupp 5
 int Handler(void* thr){
     HandlerInfo* thread = (HandlerInfo *) thr;
     TCPsocket socket;
-    char packet[PACKETSIZE], serialnames[sizeof(nsend)];
+    char packet[PACKETSIZE], serialnames[sizeof(nsend)], tmp[PACKETSIZE] = {0};
     int i;
     nsend names;
     tinfo* clientvar;
@@ -66,12 +66,12 @@ int Handler(void* thr){
 
     /* Gets the name from the client */
     while(1){
-        if(SDLNet_TCP_Recv(socket, clientvar->player.playername, 20)){
+        if(SDLNet_TCP_Recv(socket, clientvar->playername, 20)){
             break;
         }
     }
 
-    printf("Player %s was assigned to thread %d.\n", clientvar->player.playername, clientvar->ID);
+    printf("Player %s was assigned to thread %d.\n", clientvar->playername, clientvar->ID);
 
     /* The main thread-loop */
     while(1){
@@ -87,23 +87,28 @@ int Handler(void* thr){
         if(SDLNet_TCP_Recv(socket, packet, PACKETSIZE)){
             if((strstr(packet, "EXITCONNECTION"))){
                 printf("Exit command recieved, quitting thread #%d!\n", clientvar->ID);
-                memset(clientvar->player.playername,0,strlen(clientvar->player.playername));
+                memset(clientvar->playername,0,strlen(clientvar->playername));
                 SDLNet_TCP_Close(clientvar->socket);
                 pushStack(thread->stack, clientvar);
                 return 0;
             }else{
                 switch(packet[0]){
-                    case 'D':
-                        printf("Data recieved, pushing to stack!\n");
-                        pushString(thread->dstack, packet);
+                    case 'B':
+                        printf("Bullet data recieved, pushing to stack!\n");
+                        parseString(packet, 2, sizeof(packet));
+                        sprintf(tmp, "B%d%s", clientvar->ID, packet);
+                        pushString(thread->dstack, tmp, sizeof(tmp));
                         break;
                     case 'P':
-                        printf("Playerupdate recieved, updating!\n");
-                        //updatePlayer(packet, clientvar->player);
+                        //printf("Player data recieved, updating!\n");
+                        parseString(packet, 1, sizeof(packet));
+                        memcpy(clientvar->player, &packet, sizeof(pinfo));
+                        printf("Player data: %d, %d\n", clientvar->player->pos.x, clientvar->player->pos.y);
+                        *(clientvar->newdata)=1;
                         break;
                     case 'C':
                         printf("Chat message recieved, pushing to stack!\n");
-                        pushString(thread->cstack, packet);
+                        pushString(thread->cstack, packet, sizeof(packet));
                         break;
                     case 'N':
                         printf("Name request recieved, sending!\n");

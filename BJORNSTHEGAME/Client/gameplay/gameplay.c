@@ -1,55 +1,50 @@
 #include "gameplay.h"
 
-void gameplayWindow()
+void gameplayWindow(ClientInfo* information)
 {
     int i;
     int size1=14, size2=3, size3=2;
 
+    /*Loading and declaration of all images*/
     SDL_Window* gameplay;
+    SDL_Surface* gameBackground = IMG_Load("../../Images/game/bar.jpg");;
+    SDL_Surface* ground = IMG_Load("../../Images/game/ground2.png");
+    SDL_Surface* platform1 = IMG_Load("../../Images/game/platform_hor.png");
+    SDL_Surface* platform2 = IMG_Load("../../Images/game/platform_ver.png");
+    SDL_Surface* band = IMG_Load("../../Images/game/band2.png");
+    SDL_Surface* playerSurface = IMG_Load("../../Images/game/spriteBlue.PNG");
+    SDL_Surface* bjorns = IMG_Load("../../Images/game/bjorndrapare.png");
+    SDL_Surface* ammo = IMG_Load("../../Images/game/caps.png");
+    SDL_Surface* textSurface[size2];
 
-
-    SDL_Surface* gameBackground = IMG_Load("bar.jpg");;
-    SDL_Surface* ground =IMG_Load("ground2.png");
-    SDL_Surface* platform1[size1];
-    SDL_Surface* platform2 = IMG_Load("platform_ver.png");
-    SDL_Surface* band = IMG_Load("band2.png");
-    SDL_Surface* bjorns[size3];
-    SDL_Surface* ammo[size2];
+    /*Texture declaration*/
     SDL_Renderer* gRenderer = NULL;
     SDL_Texture* player = NULL;
-    SDL_Surface* playerSurface = IMG_Load("spriteBlue.PNG");
-    SDL_Rect platforms[size1];
     SDL_Texture* bakgroundTexture;
     SDL_Texture* picture[size1];
-    SDL_Rect spriteClips[4];
-
-    SDL_Texture* caps[size2];
-    SDL_Rect capsRect[size2];
-
     SDL_Texture* bjornDrapare[size3];
-    SDL_Rect bjornDRect[size3];
-
-    SDL_Surface* textSurface[size2];
-    SDL_Rect textRect[size2];
+    SDL_Texture* caps[size2];
     SDL_Texture* myText[size2];
 
-    for(i=0; i<size2; i++)
-    {
-        ammo[i]=IMG_Load("caps.png");
-    }
+    /*Arrys of rectangles*/
+    SDL_Rect capsRect[size2];
+    SDL_Rect platforms[size1];
+    SDL_Rect bjornDRect[size3];
+    SDL_Rect spriteClips[4];
+    SDL_Rect textRect[size2];
 
-    for(i=0; i<size3; i++)
-    {
-        bjorns[i]=IMG_Load("bjorndrapare.png");
-    }
 
-    for(i=0; i<size1; i++)
-    {
-        platform1[i] = IMG_Load("platform_hor.png");
-        SDL_FillRect(platform1[i], NULL, SDL_MapRGB(platform1[i]->format, 200, 190, 200));
-    }
+    SDL_Event e;
+    SDL_RendererFlip flip = SDL_FLIP_VERTICAL;
+    bool quit = false;
+    bool onPlatform = true;
 
-     SDL_FillRect(platform2, NULL, SDL_MapRGB(platform2->format, 200, 190, 200));
+
+
+    /* Fill the platforms with colors */
+    SDL_FillRect(platform1, NULL, SDL_MapRGB(platform1->format, 200, 190, 200));
+    SDL_FillRect(platform2, NULL, SDL_MapRGB(platform2->format, 200, 190, 200));
+
 
 
     if(SDL_Init(SDL_INIT_VIDEO)<0)
@@ -60,9 +55,10 @@ void gameplayWindow()
     {
         TTF_Init();
         //Create a window
-        gameplay = SDL_CreateWindow("BJORNSGAMEPLAY", SDL_WINDOWPOS_UNDEFINED,
+        gameplay = SDL_CreateWindow("BJORNS THE GAME", 
                                     SDL_WINDOWPOS_UNDEFINED,
-                                    1920,1080,
+                                    SDL_WINDOWPOS_UNDEFINED,
+                                    1280,800,
                                     SDL_WINDOW_FULLSCREEN_DESKTOP);
         if(gameplay == NULL)
         {
@@ -70,48 +66,62 @@ void gameplayWindow()
         }
         else
         {
-            SDL_Surface* screen = SDL_GetWindowSurface(gameplay);
+            SDL_Surface* screen = SDL_GetWindowSurface(gameplay); //get the screen size
             printf("Width: %d, Height: %d\n", screen->w, screen->h);
 
+<<<<<<< HEAD
+            gRenderer=SDL_GetRenderer(gameplay);
+            if(! gRenderer){
+                printf("Could not create a renderer: %s\n", SDL_GetError());
+            }
+=======
 
 
-            gRenderer =SDL_CreateRenderer(gameplay, -1, SDL_RENDERER_ACCELERATED);
-            bakgroundTexture= SDL_CreateTextureFromSurface(gRenderer,gameBackground);
-
-
+            gRenderer = SDL_CreateRenderer(gameplay, -1, SDL_RENDERER_SOFTWARE); //Create a Render for the window
+<<<<<<< Updated upstream
+=======
+>>>>>>> origin/master
+>>>>>>> Stashed changes
+            bakgroundTexture = SDL_CreateTextureFromSurface(gRenderer,gameBackground); //Load a texture background to the render
+            
             /*text*/
             SDL_Color colorT= {170,60,255};
-            TTF_Font *font = TTF_OpenFont("StencilStd.ttf", 35);
+            TTF_Font *font = TTF_OpenFont("../../Images/game/StencilStd.ttf", 100);
             if(font == NULL)
-                {printf("FONT E NULL\n");}
+            {
+                printf("FONT E NULL\n");
+            }
 
             textSurface[0]= TTF_RenderText_Solid(font, "Ammo:", colorT);
             textSurface[1]= TTF_RenderText_Solid(font, "HP:", colorT);
-            textSurface[2]= TTF_RenderText_Solid(font, "Drunk level:", colorT);
+            textSurface[2]= TTF_RenderText_Solid(font, "Drunk:", colorT);
 
-            player = SDL_CreateTextureFromSurface(gRenderer, playerSurface);
-
+            player = SDL_CreateTextureFromSurface(gRenderer, playerSurface); //the texture of the player
+            if(! player){
+                printf("Could not create texture from surface: %s\n", SDL_GetError());
+            }
+            /*creating texture for all the images and texts */
             picture[0]= SDL_CreateTextureFromSurface(gRenderer,ground );
             picture[1]= SDL_CreateTextureFromSurface(gRenderer,band);
-            picture[2]= SDL_CreateTextureFromSurface(gRenderer,platform1[0]);
+            picture[2]= SDL_CreateTextureFromSurface(gRenderer,platform1);
             picture[3]= SDL_CreateTextureFromSurface(gRenderer,platform2);
-            picture[4]= SDL_CreateTextureFromSurface(gRenderer,platform1[1]);
-            picture[5]= SDL_CreateTextureFromSurface(gRenderer,platform1[2]);
-            picture[6]= SDL_CreateTextureFromSurface(gRenderer,platform1[3]);
-            picture[7]= SDL_CreateTextureFromSurface(gRenderer,platform1[4]);
-            picture[8]= SDL_CreateTextureFromSurface(gRenderer,platform1[5]);
-            picture[9]= SDL_CreateTextureFromSurface(gRenderer,platform1[6]);
-            picture[10]= SDL_CreateTextureFromSurface(gRenderer,platform1[7]);
-            picture[11]= SDL_CreateTextureFromSurface(gRenderer,platform1[8]);
-            picture[12]= SDL_CreateTextureFromSurface(gRenderer,platform1[9]);
-            picture[13]= SDL_CreateTextureFromSurface(gRenderer,platform1[10]);
+            picture[4]= SDL_CreateTextureFromSurface(gRenderer,platform1);
+            picture[5]= SDL_CreateTextureFromSurface(gRenderer,platform1);
+            picture[6]= SDL_CreateTextureFromSurface(gRenderer,platform1);
+            picture[7]= SDL_CreateTextureFromSurface(gRenderer,platform1);
+            picture[8]= SDL_CreateTextureFromSurface(gRenderer,platform1);
+            picture[9]= SDL_CreateTextureFromSurface(gRenderer,platform1);
+            picture[10]= SDL_CreateTextureFromSurface(gRenderer,platform1);
+            picture[11]= SDL_CreateTextureFromSurface(gRenderer,platform1);
+            picture[12]= SDL_CreateTextureFromSurface(gRenderer,platform1);
+            picture[13]= SDL_CreateTextureFromSurface(gRenderer,platform1);
 
-            caps[0]= SDL_CreateTextureFromSurface(gRenderer,ammo[0]);
-            caps[1]= SDL_CreateTextureFromSurface(gRenderer,ammo[1]);
-            caps[2]= SDL_CreateTextureFromSurface(gRenderer,ammo[2]);
+            caps[0]= SDL_CreateTextureFromSurface(gRenderer,ammo);
+            caps[1]= SDL_CreateTextureFromSurface(gRenderer,ammo);
+            caps[2]= SDL_CreateTextureFromSurface(gRenderer,ammo);
 
-            bjornDrapare[0]=SDL_CreateTextureFromSurface(gRenderer,bjorns[0]);
-            bjornDrapare[1]=SDL_CreateTextureFromSurface(gRenderer,bjorns[1]);
+            bjornDrapare[0]=SDL_CreateTextureFromSurface(gRenderer,bjorns);
+            bjornDrapare[1]=SDL_CreateTextureFromSurface(gRenderer,bjorns);
 
             myText[0]=SDL_CreateTextureFromSurface(gRenderer,textSurface[0]);
             myText[1]=SDL_CreateTextureFromSurface(gRenderer,textSurface[1]);
@@ -121,15 +131,17 @@ void gameplayWindow()
 
 
 
-            platforms[0].x = screen->w/5 -300;
-            platforms[0].y =screen ->h -65;
-            platforms[0].w = 1920;
-            platforms[0].h =70;
+            /*make a rectangle for every texture to loading images in specific position on the screen*/
 
-            platforms[1].x = screen->w/5 -300;
-            platforms[1].y =screen ->h/2 -390;
-            platforms[1].w = 1920;
-            platforms[1].h = 90;
+            platforms[0].x = 0;
+            platforms[0].y = screen->h-(screen->h*0.06);
+            platforms[0].w = screen->w;
+            platforms[0].h = screen->h*0.06;
+
+            platforms[1].x = 0;
+            platforms[1].y = 0;
+            platforms[1].w = screen->w;
+            platforms[1].h = screen->h*0.08;
 
             platforms[2].x = screen->w/3 -200;
             platforms[2].y = screen->h - 180;
@@ -192,7 +204,13 @@ void gameplayWindow()
             platforms[13].h = 30;
 
 
-            capsRect[0].x = screen ->w/2 +600;
+            for(i=0;i<3;i++){
+                capsRect[i].x = screen->w*0.9+(i*screen->w*0.032);
+                capsRect[i].y = screen->h*0.02;//screen ->h - 740;
+                capsRect[i].w = screen->w*0.03;
+                capsRect[i].h = screen->h*0.046;
+            }
+            /*capsRect[0].x = screen ->w/2 +600;
             capsRect[0].y = screen ->h - 740;
             capsRect[0].w = 60;
             capsRect[0].h = 50;
@@ -205,54 +223,51 @@ void gameplayWindow()
             capsRect[2].x = screen ->w/2 +460;
             capsRect[2].y = screen ->h - 740;
             capsRect[2].w = 60;
-            capsRect[2].h = 50;
+            capsRect[2].h = 50;*/
 
-            bjornDRect[0].x = screen  ->w/2 -110;
-            bjornDRect[0].y = screen ->h - 228;
-            bjornDRect[0].w = 60;
-            bjornDRect[0].h = 50;
+            bjornDRect[0].x = screen->w/2 -110;
+            bjornDRect[0].y = screen->h - 228;
+            bjornDRect[0].w = screen->w*0.03;//60;
+            bjornDRect[0].h = screen->h*0.046;//50;
 
             bjornDRect[1].x = screen  ->w/2 +400;
             bjornDRect[1].y = screen ->h - 512;
-            bjornDRect[1].w = 60;
-            bjornDRect[1].h = 50;
+            bjornDRect[1].w = screen->w*0.03;//60;
+            bjornDRect[1].h = screen->h*0.046;//50;
 
-            textRect[0].x= screen ->w/2 +310;
-            textRect[0].y= screen ->h - 740;
-            textRect[0].w= 120;
-            textRect[0].h= 60;
+            textRect[0].x= screen->w*0.79;//screen ->w/2 +310;
+            textRect[0].y= screen->h*0.02;//screen ->h - 740;
+            textRect[0].w= screen->w*0.1;//120;
+            textRect[0].h= screen->h*0.055;//60;
 
-            textRect[1].x= screen ->w/2 -660;
-            textRect[1].y= screen ->h - 740;
-            textRect[1].w= 90;
-            textRect[1].h= 60;
+            textRect[1].x= screen->w*0.02;//screen ->w/2 -660;
+            textRect[1].y= screen->h*0.02;//screen ->h - 740;
+            textRect[1].w= screen->w*0.06;
+            textRect[1].h= screen->h*0.055;
 
-            textRect[2].x= screen ->w/2 -450;
-            textRect[2].y= screen ->h - 740;
-            textRect[2].w= 230;
-            textRect[2].h= 60;
-
-
+            textRect[2].x= screen->w*0.14;//screen->w/2 -450;
+            textRect[2].y= screen->h*0.02;
+            textRect[2].w= screen->w*0.11;
+            textRect[2].h= screen->h*0.055;
 
 
 
 
-            SDL_Event e;
-            SDL_RendererFlip flip = SDL_FLIP_VERTICAL;
-            bool quit = false;
-            bool onPlatform = true;
-            //size and position
+
+
+
+            //size and position for the player
             SDL_Rect position;
             position.y = screen-> h/2 +110;
             position.x = screen->w/2 +120;
-            position.h = 100;
-            position.w = 110;
+            position.h = screen->h*0.11;//120;
+            position.w = screen->w*0.034;//66;
 
             //start frame and be facing to the right
             int frame = 2;
             flip = SDL_FLIP_NONE;
-            //float speed = 0;
 
+            /*position of the sprites in the image*/
             spriteClips[0].x = 0;
             spriteClips[0].y = 0;
             spriteClips[0].w = 210;
@@ -274,9 +289,9 @@ void gameplayWindow()
             spriteClips[3].h = 348;
 
 
-            while (!quit)
+            while (!quit) // while not Esc
             {
-                while (SDL_PollEvent(&e))
+                while (SDL_PollEvent(&e)) //events
                 {
                     if (e.type == SDL_QUIT)
                     {
@@ -315,7 +330,6 @@ void gameplayWindow()
                         case SDLK_RIGHT:
                             position.x += SPEEDx;
                             flip = SDL_FLIP_NONE;
-                            //speed += 1;
 
                             if(frame == 2)
                             {
@@ -346,6 +360,7 @@ void gameplayWindow()
 
                         default:
 
+
                             break;
                         }
 
@@ -360,33 +375,35 @@ void gameplayWindow()
 
 
 
-                SDL_RenderClear(gRenderer);
-                SDL_RenderCopy(gRenderer,  bakgroundTexture,NULL,NULL);
+                SDL_RenderClear(gRenderer); // Clear the entire screen to our selected color/images.
+                SDL_RenderCopy(gRenderer,  bakgroundTexture,NULL,NULL); //view the background on the render "screen"
 
 
-                for(i=0; i<size1; i++)
+                for(i=0; i<size1; i++) //copy all platforms to the render
                 {
 
                     SDL_RenderCopy(gRenderer, picture[i],NULL,&platforms[i]);
                 }
 
-                for(i=0; i<size2; i++)
+                for(i=0; i<size2; i++) //copy all ammo to the render
                 {
                     SDL_RenderCopy(gRenderer, caps[i],NULL,&capsRect[i]);
                 }
 
 
-                for(i=0; i<size3; i++)
+                for(i=0; i<size3; i++) //copy all "bjornDrapare" to the render "the screen"
                 {
                     SDL_RenderCopy(gRenderer, bjornDrapare[i],NULL,&bjornDRect[i]);
                 }
-                for(i=0;i<size2;i++){
-                      SDL_RenderCopy(gRenderer, myText[i],NULL,&textRect[i]);
+                for(i=0; i<size2; i++) // copy all text to the render "screen"
+                {
+                    SDL_RenderCopy(gRenderer, myText[i],NULL,&textRect[i]);
                 }
 
+                //copy all players
                 SDL_RenderCopyEx(gRenderer, player, &spriteClips[frame],&position, 0, NULL, flip);
 
-
+                // present the result on the render  "the screen"
                 SDL_RenderPresent(gRenderer);
 
             }
@@ -403,7 +420,7 @@ void gameplayWindow()
     SDL_DestroyWindow(gameplay);
     //Quit SDL subsystems
 
-
+    /*Destroy all textures*/
     for(i=0; i<size1; i++)
     {
         SDL_DestroyTexture(picture[i]);
@@ -414,12 +431,12 @@ void gameplayWindow()
         SDL_DestroyTexture(caps[i]);
     }
 
-     for(i=0; i<size3; i++)
+    for(i=0; i<size3; i++)
     {
         SDL_DestroyTexture(bjornDrapare[i]);
     }
 
-     for(i=0; i<size2; i++)
+    for(i=0; i<size2; i++)
     {
         SDL_DestroyTexture(myText[i]);
     }
@@ -434,4 +451,3 @@ void gameplayWindow()
     TTF_Quit();
 
 }
-

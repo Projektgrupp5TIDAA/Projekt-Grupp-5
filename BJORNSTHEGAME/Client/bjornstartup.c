@@ -1,37 +1,9 @@
 #include "bjornstartup.h"
 #include "lobby.h"
 
-int menu(ClientInfo* startup){
-    int quit = 0, mouse[2] = {0}, pointcount=0;  
+int menu(StartInfo* startup){
+    int quit = 0, mouse[2] = {0};
     char packet[PACKETSIZE];
-
-    if(startup->directConnect > 0){
-        if(startup->directConnect == 1){
-            strcpy(startup->playerName, "directConnect");
-            if (SDLNet_ResolveHost(&(startup->targethost), "127.0.0.1", 4000) == -1){
-                fprintf(stderr, "SDLNet_ResolveHost(%s %d): %s\n", "127.0.0.1", 4000, SDLNet_GetError());
-                return 1;
-            }
-            startup->socket = SDLNet_TCP_Open(&(startup->targethost)); 
-            SDLNet_TCP_Send(startup->socket, "C", 1);
-            SDL_Delay(200);
-            SDLNet_TCP_Send(startup->socket, startup->playerName, 20);
-            SDL_Delay(100);
-            return 0;
-        }else{
-            strcpy(startup->playerName, "directConnect");
-            if(SDLNet_ResolveHost(&(startup->targethost), "130.237.84.189", 4000) == -1){
-                fprintf(stderr, "SDLNet_ResolveHost(%s %d): %s\n", "130.237.84.189", 4000, SDLNet_GetError());
-                return 1;
-            }
-            startup->socket = SDLNet_TCP_Open(&(startup->targethost)); 
-            SDLNet_TCP_Send(startup->socket, "C", 1);
-            SDL_Delay(200);
-            SDLNet_TCP_Send(startup->socket, startup->playerName, 20);
-            SDL_Delay(100);
-            return 0;
-        }
-    }
 
     /* Create window and get the surface */
     SDL_Window* window = SDL_CreateWindow("BJORNS THE GAME - MENU", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, 0);
@@ -52,7 +24,6 @@ int menu(ClientInfo* startup){
     SDL_Surface* nobutton = IMG_Load("../Images/menu/NoButton.png");
     SDL_Surface* openDoor = IMG_Load("../Images/menu/dooropen.png");
     SDL_Surface* lamp = IMG_Load("../Images/menu/lampa.png");
-    SDL_Surface* point = IMG_Load("../Images/menu/point.png");
 
     /* Load colour, font and then render text-surfaces */
     SDL_Colour black={0,0,0};
@@ -74,7 +45,6 @@ int menu(ClientInfo* startup){
     SDL_Rect button3placement = {((screen->w/2) - 125), (screen->h/2 - 70), 250, 60};
     SDL_Rect exitplacement = {(screen->w - 66), (screen->h - 106), 60, 100};
     SDL_Rect tapirplacement = {0, (screen->h - 66), 100, 66};
-    SDL_Rect pointpos = {20, (screen->h - 166), 0, 0};
     SDL_Rect menutextpos = {230, 150, 0, 0};
     SDL_Rect yespos = {200, 400, 180, 64};
     SDL_Rect nopos = {420, 400, 180, 64};
@@ -88,6 +58,7 @@ int menu(ClientInfo* startup){
             if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                 Mix_PlayChannel(-1, uselt, 1);
                 SDL_BlitScaled(openDoor, NULL, screen, &exitplacement);
+                SDL_Delay(500);
                 SDL_UpdateWindowSurface(window);
                 SDL_Delay(1000);
 
@@ -105,8 +76,7 @@ int menu(ClientInfo* startup){
                 TTF_CloseFont(fontsmall);
                 Mix_FreeMusic(music);
                 Mix_FreeChunk(uselt);
-                if(!tmp)
-                    Mix_FreeChunk(tmp);
+                Mix_FreeChunk(tmp);
                 SDL_DestroyWindow(window);
 
                 return 1;
@@ -160,8 +130,7 @@ int menu(ClientInfo* startup){
                                         TTF_CloseFont(fontsmall);
                                         Mix_FreeMusic(music);
                                         Mix_FreeChunk(uselt);
-                                        if(!tmp)
-                                            Mix_FreeChunk(tmp);
+                                        Mix_FreeChunk(tmp);
                                         SDL_DestroyWindow(window); // close when done and goto lobby
                                         printf("Bjornstartup finished!\n");
                                         return 0;
@@ -182,8 +151,6 @@ int menu(ClientInfo* startup){
                 tmp=randomMusic();
                 Mix_HaltChannel(3);
                 Mix_PlayChannel(3, tmp, 0);
-                if(pointcount < 4)
-                    pointcount++;
                 SDL_Delay(100);
             }
         }
@@ -192,8 +159,6 @@ int menu(ClientInfo* startup){
                 tmp=randomMusic();
                 Mix_HaltChannel(3);
                 Mix_PlayChannel(3, tmp, 0);
-                if(pointcount < 4)
-                    pointcount++;
                 SDL_Delay(100);
             }
         }
@@ -202,8 +167,6 @@ int menu(ClientInfo* startup){
                 tmp=randomMusic();
                 Mix_HaltChannel(3);
                 Mix_PlayChannel(3, tmp, 0);
-                if(pointcount < 4)
-                    pointcount++;
                 SDL_Delay(100);
             }
         }
@@ -216,8 +179,6 @@ int menu(ClientInfo* startup){
         SDL_BlitScaled(playbutton, NULL, screen, &button3placement);
         SDL_BlitScaled(lamp, NULL , screen , &lamp1);
         SDL_BlitScaled(exitbutton, NULL, screen, &exitplacement);
-        if(pointcount > 2)
-            SDL_BlitSurface(point, NULL, screen, &pointpos);
         SDL_BlitScaled(tapir, NULL, screen, &tapirplacement);
 
         /* Update the window */

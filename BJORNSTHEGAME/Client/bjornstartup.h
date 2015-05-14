@@ -18,16 +18,15 @@
 #define PLAYERCOUNT 6
 #endif
 
-typedef struct{
+typedef struct startUpInfo{
 	TCPsocket socket;
 	IPaddress targethost;
 	char playerName[20];
-	int directConnect;
-}ClientInfo;
+}StartInfo;
 
 int getMouseBounds(int mouse[2], SDL_Rect rect);
 
-int menu(ClientInfo* startup);
+int menu(StartInfo* startup);
 
 int getName(char* name, int len, SDL_Window* window);
 

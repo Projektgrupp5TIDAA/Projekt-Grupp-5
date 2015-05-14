@@ -14,11 +14,9 @@
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_net.h>
 #endif
-#include "bjornstartup.h"
 
 #define SPEEDx 10
-
-void gameplayWindow(Clientinfo* information);
+void gameplayWindow();
 
 
 #endif // GAMEPLAY_H_INCLUDED

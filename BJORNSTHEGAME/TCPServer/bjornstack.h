@@ -21,10 +21,10 @@ int isEmptyStack(ThreadStack stack);
 int isFullStack(ThreadStack stack);
 
 /* Push the incoming string of a socket to the string-stack */
-void pushString(DataStack *stack, char *pushStr, int len);
+void pushString(DataStack *stack, char *pushStr);
 
 /* Grab the ID of the socket at the top of the stack */
-void popString(DataStack *stack, char* string, int len);
+void popString(DataStack *stack, char* string);
 
 /* Check if the stack is empty */
 int isEmptyStrStack(DataStack stack);

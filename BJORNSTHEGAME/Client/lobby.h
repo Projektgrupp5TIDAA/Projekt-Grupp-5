@@ -1,12 +1,11 @@
 #ifndef _LOBBY_H_
-#define _LOBBY_H_
 
 typedef struct{
     char ID[6];
     char names[6][20];
 }nrecv;
 
-int LobbyWindow(ClientInfo* lobbyConnection);
+int LobbyWindow(StartInfo* lobbyConnection);
 
 void parseString(char* inc, int hops, int len);
 

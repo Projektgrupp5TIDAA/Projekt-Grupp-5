@@ -17,15 +17,15 @@ void set_bit(int *num, int bit){
 }
 
 /* Parses the string 'hops' places forward */
-void parseString(char* inc, int hops, int len){
+void parseChat(char* inc, int hops, int len){
     int i;
     if(hops>0){
         for(i=0;i<len;i++){
             *(inc+i) = *(inc+i+hops);
         }
     }else if(hops<0){
-        for(i=(len-1);i>0;i--){
-            *(inc+i) = *(inc+i+hops);
+        for(i=len;i>0;i++){
+            *(inc+i) = *(inc+i-hops);
         }
     }
 }

@@ -7,7 +7,6 @@ Projekt Grupp 5
 #include <stdio.h>
 #include <string.h>
 #include "bjornstack.h"
-#include "bjornshared.h"
 
 /* Push the struct to the top of the stack */
 void pushStack(ThreadStack *stack, tinfo *pushThread){
@@ -48,29 +47,22 @@ int isFullStack(ThreadStack stack){
 }
 
 /* Push the incoming string onto the stack */
-void pushString(DataStack *stack, char* pushStr, int len){
+void pushString(DataStack *stack, char pushStr[20]){
 	if(isFullStrStack(*stack)){
 		fprintf(stderr, "Error adding to the stack: Stack is full\n");
 	}else{
-		printf("PUSHING TO THE STACK\n");
-		memcpy(stack->item[stack->population], pushStr, len);
-		//strcpy(stack->item[stack->population], pushStr);
+		strcpy(stack->item[stack->population], pushStr);
 		(stack->population)++;
-		printf("PUSHING TO THE STACK END\n");
 	}
 }
 
 /* Grab the string at the top of the stack */
-void popString(DataStack *stack, char* string, int len){
+void popString(DataStack *stack, char* string){
 	if(isEmptyStrStack(*stack)){
 		fprintf(stderr, "Error taking from stack: Stack is Empty\n");
 	}else{
-		printf("TAKING FROM THE STACK\n");
 		(stack->population)--;
-		emptyString(string, strlen(string));
-		memcpy(string, stack->item[stack->population], len);
-		printf("TAKING FROM THE STACK END\n");
-		//strcpy(string, *(stack->item));
+		strcpy(string, *(stack->item));
 	}
 }
 

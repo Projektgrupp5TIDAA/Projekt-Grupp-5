@@ -28,14 +28,19 @@ int updateHandler(void* incinfo){
 	SDL_Rect chat[20];
     char chatmessages[6][512]={{0}};
     TTF_Font* chatfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 18);
-	int i;
-
+    int i, tmp_timer =0;
+    SDL_Thread* gtimethr;
 	SDL_Surface* screen = SDL_GetWindowSurface(info->window);
 
 	/* Chat positions */
 	for(i=0;i<6;i++){
         chat[i].x=(screen->w)/3 * 2 + 5;
         chat[i].y=(screen->h)/5 * 4 - (22*(i+1));
+    }
+    
+    gtimethr = SDL_CreateThread(timeupdater, "Timeupdate", (void*)&tmp_timer);
+    if(gtimethr == NULL){
+        printf("Couldnt create the timer thread: %s\n", SDL_GetError());
     }
 
     /* The main polling-loop */
@@ -79,6 +84,11 @@ int updateHandler(void* incinfo){
                         printf("Bullet: %d, %d\n", info->bullets[i].bulletpos.x, info->bullets[i].bulletpos.y);
                     }
 					break;
+                case 'T':
+                    printf("Timerupdate recieved!\n");
+                    parseString(packet, 1, sizeof(packet));
+                    tmp_timer=atoi(packet);
+                    break;
 				default:
 					printf("Invalid packet recieved, ignoring.\n");
 					break;

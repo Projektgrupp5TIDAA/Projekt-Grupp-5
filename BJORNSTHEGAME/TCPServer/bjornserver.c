@@ -130,8 +130,8 @@ int main(int argc, char **argv){
                     if(threadvariables[i].socket != NULL)
                         SDLNet_TCP_Send(threadvariables[i].socket, "G", 1);
                 }
-                printf("Game starting in 2 sec.\n");
-                SDL_Delay(2000);
+                printf("Game starting in 4 sec.\n");
+                SDL_Delay(4000);
                 timerinfo.maintimer = GAMELENGTH;
                 printf("Sending time sync message.\n");
                 sprintf(sendpackage, "T%d", timerinfo.maintimer);

@@ -76,7 +76,7 @@ int updateHandler(void* incinfo){
                     tmpID = packet[0];
                     parseString(packet, 1, sizeof(packet));
                     for(i=0;i<12;i++){
-                    	if(info->bullets[i]->pos.x == 0 && info->bullets[i]->pos.y == 0){
+                    	if(info->bullets[i]->TTL == 0){
                     		memcpy(info->bullets[i], &packet, sizeof(*(info->bullets[i])));
                     		info->bullets[i]->ID = tmpID;
                     		printf("Bullet: %d, %d\n", info->bullets[i]->pos.x, info->bullets[i]->pos.y);
@@ -86,6 +86,10 @@ int updateHandler(void* incinfo){
                     	}
                     }
 					break;
+                case 'T':
+                    parseString(packet, 1, sizeof(packet));
+                    info->timer=atoi(packet);
+                    break;
 				default:
 					printf("Invalid packet recieved, ignoring.\n");
 					break;
@@ -99,16 +103,30 @@ int updateHandler(void* incinfo){
 	return 0;
 }
 
-int timeupdater(void * inc_time){
-    int* tmp_timer= (int*) inc_time;
+int timeupdater(void* inc_time){
+    timerInfo* timer= (timerInfo*) inc_time;
+    int i, j;
     printf("Timer thread uppdater started\n");
     SDL_Delay(1000);
-    while(1){
-        if((*(tmp_timer)) > 0){
-            (*(tmp_timer))--;
-            printf("Gameplay time: %d is ticking\n", *tmp_timer);
-        }
-        SDL_Delay(995);
+    while(!(*(timer->quit))){
+        if(*(timer->timer) > 0){
+            (*(timer->timer))--;
+
+            for(j=0;j<20;j++){
+	            for(i=0;i<12;i++){
+	                if((timer->bullets[i]->TTL) > 0){
+	                    timer->bullets[i]->pos.x += (BULLETSPEED*(timer->bullets[i]->direction));
+	                    timer->bullets[i]->TTL--;
+	                }else if(timer->bullets[i]->pos.x != 0 && timer->bullets[i]->pos.y != 0){
+	                    timer->bullets[i]->pos.x = 0;
+	                    timer->bullets[i]->pos.y = 0;
+	            	}
+	        	}
+	        	SDL_Delay(50);
+	        }
+
+            printf("Gameplay time: %d is ticking\n", *(timer->timer));
+        }else SDL_Delay(10);
     }
     return 0;
 }

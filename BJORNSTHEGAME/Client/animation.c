@@ -259,7 +259,7 @@ int animate(void* info){
             }
         }
 
-        for(i=0; i<AMMOAMOUNT; i++) //copy all ammo to the render
+        for(i=0; i<(*(animator->ammo)); i++) //copy all ammo to the render
         {
             SDL_RenderCopy(Renderer, caps[i],NULL,&animator->capsRect[i]);
         }

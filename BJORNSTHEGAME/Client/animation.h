@@ -6,7 +6,7 @@
 #define DRINKAMOUNT 2
 
 typedef struct{
-	int frame, *quit;
+	int frame, *quit, *ammo;
 	SDL_Window* window;
 	playerInfo players[PLAYERCOUNT];
     SDL_RendererFlip flip;

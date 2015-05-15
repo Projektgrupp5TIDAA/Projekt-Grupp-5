@@ -11,6 +11,7 @@ Created on 2015-05-12 by Jonathan Kåhre
 #include <SDL2/SDL_net.h>
 #endif
 #define PLAYERCOUNT 6
+#define BULLETSPEED 30
 
 /* Struct with the information needed by the client to render the players */
 typedef struct{
@@ -26,7 +27,7 @@ typedef struct{
 
 /* Struct containing information on all the players */
 typedef struct{
-	int *quit, *timer;
+	int *quit, timer;
 	SDL_Window* window;
 	TCPsocket* socket;
 	playerInfo* players;
@@ -34,8 +35,8 @@ typedef struct{
 }updaterInfo;
 
 typedef struct{
-	int* timer;
-
+	int* timer, *quit;
+	bullet* bullets[12];
 }timerInfo;
 
 int updateHandler(void* info);

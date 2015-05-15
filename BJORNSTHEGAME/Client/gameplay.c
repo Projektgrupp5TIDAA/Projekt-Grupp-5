@@ -5,13 +5,14 @@
 #define PLATFORMAMOUNT 14
 #define TEXTAMOUNT 3
 #define DRINKAMOUNT 2
-#define BULLET_TTL 10
+#define BULLET_TTL 12
 
 int gameplayWindow(ClientInfo* information)
 {
-    int i, quit=0, ammo=AMMOAMOUNT, timer=0;
-    animationInfo animator = {0, &quit, NULL, {{0, 0, {0, 0, 0, 0}}}, SDL_FLIP_NONE, {{{0,0,0,0}, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
-    updaterInfo updater = {&quit, &timer, NULL, &(information->socket), NULL};
+    int i, quit=0, ammo=AMMOAMOUNT;
+    animationInfo animator = {0, &quit, &ammo, NULL, {{0, 0, {0, 0, 0, 0}}}, SDL_FLIP_NONE, {{{0,0,0,0}, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
+    updaterInfo updater = {&quit, 0, NULL, &(information->socket), NULL};
+    timerInfo timer = {&updater.timer, &quit, {NULL}};
     SDL_Thread* updaterThread, *animatorThread, *timerThread;
     playerInfo playerDummy = {0, 0, {0, 0, 0, 0}};
     bullet bulletDummy = {{0,0,0,0}, 0, 0, 0};
@@ -35,8 +36,9 @@ int gameplayWindow(ClientInfo* information)
 
     updater.players = &(animator.players[0]);
 
-    for(i=0;i<PLAYERCOUNT;i++){
+    for(i=0;i<12;i++){
         updater.bullets[i] = &(animator.bullets[i]);
+        timer.bullets[i] = &(animator.bullets[i]);
     }
 
     playerDummy.pos.y = screen->h/4*3+60;
@@ -71,7 +73,7 @@ int gameplayWindow(ClientInfo* information)
                         quit = true;
                         break;
                     case SDLK_LEFT:
-                        bulletDummy.direction=0;
+                        bulletDummy.direction=-1;
                         playerDummy.pos.x -= SPEEDx;
                         /*for(i=0; i<PLATFORMAMOUNT; i++)
                         {
@@ -138,7 +140,7 @@ int gameplayWindow(ClientInfo* information)
                         printf("Shooting!\n");
                         if(ammo > 0){
                             bulletDummy.pos.x = playerDummy.pos.x;
-                            bulletDummy.pos.y = playerDummy.pos.y;
+                            bulletDummy.pos.y = playerDummy.pos.y+(playerDummy.pos.h/4);
                             bulletDummy.TTL = BULLET_TTL;
                             sendBulletUpdate(bulletDummy, &information->socket);
                             ammo--;

@@ -18,7 +18,7 @@
 #include "lobby.h"
 #include "clientthreads.h"
 
-#define SPEEDx 1
+#define SPEEDx 15
 #define SPEEDy 1
 #define GRAVITY 0.0000001
 

@@ -8,12 +8,12 @@
 
 int gameplayWindow(ClientInfo* information)
 {
-    int i, quit=0, ammo=0, timer=0;
-    animationInfo animator = {0, &quit, NULL, {{0, 0, {0, 0, 0, 0}}}, SDL_FLIP_NONE, {{{0,0,0,0}, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
-    updaterInfo updater = {&quit, &timer, NULL, &(information->socket), {NULL}};
-    SDL_Thread* updaterThread, *animatorThread, *timerThread;
-    playerInfo playerDummy = {0, 0, {0, 0, 0, 0}};
-    bullet bulletDummy = {{0,0,0,0}, 0, 0, 0};
+    int i, quit=0, ammo=0;
+    updaterInfo updater = {&quit, NULL, &(information->socket), {{0, 0, {0, 0, 0, 0}}}};
+    animationInfo animator = {0, &quit, NULL, {NULL}, SDL_FLIP_NONE, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
+    SDL_Thread* updaterThread, *animatorThread;
+    playerInfo playerDummy = {0,{0, 0, 0, 0}};
+    brecv bulletinfo={0,{0,0,0,0}};
     SDL_Event event;
     bool right=false, left=false, upp=false;
 
@@ -32,8 +32,7 @@ int gameplayWindow(ClientInfo* information)
 
     animator.window = updater.window;
     for(i=0;i<PLAYERCOUNT;i++){
-        updater.players[i] = &(animator.players[i]);
-        updater.bullets[i] = &(animator.bullets[i]);
+        animator.players[i] = &(updater.players[i]);
     }
 
     playerDummy.pos.y = screen->h/4*3+60;
@@ -41,16 +40,14 @@ int gameplayWindow(ClientInfo* information)
     playerDummy.pos.h = screen->h*0.11;
     playerDummy.pos.w = screen->w*0.034;
     
-    bulletDummy.pos.y = 0;
-    bulletDummy.pos.x = 0;
-    bulletDummy.pos.h = screen->h*0.13;
-    bulletDummy.pos.w = screen->w*0.050;
+    bulletinfo.bulletpos.y = screen->h/4*3+90;
+    bulletinfo.bulletpos.x = screen->w/2;
+    bulletinfo.bulletpos.h = screen->h*0.13;
+    bulletinfo.bulletpos.w = screen->w*0.050;
 
     updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
 
     animatorThread = SDL_CreateThread(animate, "Animator", (void*)&animator);
-
-    timerThread = SDL_CreateThread(timeupdater, "Timer", (void*)&timer);
 
     while(!quit){
         while (SDL_PollEvent(&event)) //events
@@ -135,16 +132,16 @@ int gameplayWindow(ClientInfo* information)
                         break;
                         
                     case SDLK_x:
-                        printf("Shooting!\n");
+                        printf("Spaming shoots\n");
                         ammo= AMMOAMOUNT-1;
                         if(ammo > 0){
                             if(right== true){
-                                bulletDummy.pos.x +=SPEEDx;
-                                sendBulletUpdate(bulletDummy, &information->socket);
+                                bulletinfo.bulletpos.x +=SPEEDx;
+                                sendBulletUpdate(bulletinfo, &information->socket);
                             }
                             else if(left == true){
-                                bulletDummy.pos.x -=SPEEDx;
-                                sendBulletUpdate(bulletDummy, &information->socket);
+                                bulletinfo.bulletpos.x -=SPEEDx;
+                                sendBulletUpdate(bulletinfo, &information->socket);
                             }
                         }
                         // reload
@@ -180,7 +177,6 @@ int gameplayWindow(ClientInfo* information)
 
     SDL_WaitThread(updaterThread, &i);
     SDL_WaitThread(animatorThread, &i);
-    SDL_WaitThread(timerThread, &i);
     SDL_Quit();
     TTF_Quit();
     return 0;
@@ -233,6 +229,7 @@ bool checkCollision( SDL_Rect a, SDL_Rect b )
 }
 
 int sendPlayerUpdate(playerInfo playerDummy, TCPsocket* socket){
+    
     char serializedplayer[sizeof(playerInfo)+2] = {0};
     memcpy(&serializedplayer, &playerDummy, sizeof(playerDummy));
     parseString(serializedplayer, -1, sizeof(serializedplayer));
@@ -245,14 +242,14 @@ int sendPlayerUpdate(playerInfo playerDummy, TCPsocket* socket){
         return 1;
 }
 
-int sendBulletUpdate(bullet bulletDummy, TCPsocket* socket){
-    char serializedbullet[sizeof(bullet)+2] = {0};
-    memcpy(&serializedbullet, &bulletDummy, sizeof(bulletDummy));
-    parseString(serializedbullet, -1, sizeof(serializedbullet));
-    printf("bullets x+y = %d, %d\n", bulletDummy.pos.x, bulletDummy.pos.y);
-    serializedbullet[0]= 'B';
+int sendBulletUpdate(brecv bulletsinfo, TCPsocket* socket){
+    char bulletstmp[sizeof(brecv)+2] = {0};
+    memcpy(&bulletstmp, &bulletsinfo, sizeof(bulletsinfo));
+    parseString(bulletstmp, -1, sizeof(bulletstmp));
+    printf("bullets x+y = %d, %d\n", bulletsinfo.bulletpos.x, bulletsinfo.bulletpos.y);
+    bulletstmp[0]= 'B';
     if(*socket != NULL){
-        SDLNet_TCP_Send(*socket, serializedbullet, sizeof(serializedbullet));
+        SDLNet_TCP_Send(*socket, bulletstmp, sizeof(bulletstmp));
         return 0;
     }else
         return 1;

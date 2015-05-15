@@ -20,9 +20,11 @@ Projekt Grupp 5
 int Handler(void* thr){
     HandlerInfo* thread = (HandlerInfo *) thr;
     TCPsocket socket;
-    char packet[PACKETSIZE], serialnames[sizeof(nsend)];
+    char packet[PACKETSIZE], serialnames[sizeof(nsend)], tmp[PACKETSIZE] = {0};
+    char bulletarray[sizeof(bsend)];
     int i;
     nsend names;
+    bsend bullets;
     tinfo* clientvar;
     printf("Thread is active!\n");
 
@@ -95,10 +97,12 @@ int Handler(void* thr){
                 switch(packet[0]){
                     case 'B':
                         printf("Bullet data recieved, pushing to stack!\n");
-                        parseString(packet, -1, sizeof(packet));
-                        packet[0] = 'B';
-                        packet[1] = clientvar->ID;
-                        pushString(thread->dstack, packet, sizeof(packet));
+                        parseString(packet, 1, sizeof(packet));
+                        memcpy(&bullets, &bulletarray, sizeof(bulletarray));
+                        /*parseString(packet, 2, sizeof(packet));
+                        sprintf(tmp, "B%d%s", clientvar->ID, packet);
+                        pushString(thread->dstack, tmp, sizeof(tmp));*/
+                        *(clientvar->newbullet)=1;
                         break;
                     case 'P':
                         //printf("Player data recieved, updating!\n");

@@ -29,7 +29,7 @@ typedef struct{
 
 /* Struct with all the information a thread will have to get when getting a slot from the stack */
 typedef struct{
-    int ID, *newdata;
+    int ID, *newdata, *newbullet;
     TCPsocket socket;
     pinfo* player;
     char playername[20];
@@ -41,6 +41,10 @@ typedef struct{
     char ID[PLAYERCOUNT];
     char names[PLAYERCOUNT][20];
 }nsend;
+
+typedef struct{
+    SDL_Rect bulletpos;
+}bsend;
 
 /* The stack containing pointers to all of the information regarding the slots on the server */
 typedef struct{

@@ -36,7 +36,6 @@ int animate(void* info){
     SDL_Surface* playerSurface = IMG_Load("../Images/game/spriteBlue.PNG");
     SDL_Surface* bjorns = IMG_Load("../Images/game/bjorndrapare.png");
     SDL_Surface* ammo = IMG_Load("../Images/game/caps.png");
-    SDL_Surface* bullet = IMG_Load("../Images/game/kapsylvertical.png");
     SDL_Surface* textsurface[TEXTAMOUNT];
 
     /*Texture declaration*/
@@ -47,7 +46,6 @@ int animate(void* info){
     SDL_Texture* bjornDrapare[DRINKAMOUNT];
     SDL_Texture* caps[AMMOAMOUNT];
     SDL_Texture* myText[TEXTAMOUNT];
-    SDL_Texture* bulletTex;
 
     SDL_Rect spriteClips[4];
 
@@ -84,7 +82,7 @@ int animate(void* info){
         printf("Couldnt create texture from surface: %s\n", SDL_GetError());
     }
     /*creating texture for all the images and texts */
-    picture[0]= SDL_CreateTextureFromSurface(Renderer,ground);
+    picture[0]= SDL_CreateTextureFromSurface(Renderer,ground );
     picture[1]= SDL_CreateTextureFromSurface(Renderer,band);
     picture[2]= SDL_CreateTextureFromSurface(Renderer,platform1);
     picture[3]= SDL_CreateTextureFromSurface(Renderer,platform2);
@@ -212,10 +210,10 @@ int animate(void* info){
 
     //size and position for the player
     for(i=0;i<PLAYERCOUNT;i++){
-        animator->players[i].pos.y = screen->h/2;
-        animator->players[i].pos.x = screen->w/2+(i*50);
-        animator->players[i].pos.h = screen->h*0.11;//120;
-        animator->players[i].pos.w = screen->w*0.034;//66;
+        animator->players[i]->pos.y = screen->h/2;
+        animator->players[i]->pos.x = screen->w/2+(i*50);
+        animator->players[i]->pos.h = screen->h*0.11;//120;
+        animator->players[i]->pos.w = screen->w*0.034;//66;
     }
 
     /*position of the sprites in the image*/
@@ -251,12 +249,6 @@ int animate(void* info){
             SDL_RenderCopy(Renderer, picture[i],NULL,&animator->platforms[i]);
         }
 
-        for(i=0; i<12 ;i++){
-            if(animator->bullets[i].pos.x != 0 && animator->bullets[i].pos.y != 0){
-                SDL_RenderCopy(Renderer, bulletTex, NULL, &animator->bullets[i].pos);
-            }
-        }
-
         for(i=0; i<AMMOAMOUNT; i++) //copy all ammo to the render
         {
             SDL_RenderCopy(Renderer, caps[i],NULL,&animator->capsRect[i]);
@@ -273,7 +265,7 @@ int animate(void* info){
 
         //copy all players
         for(i=0;i<PLAYERCOUNT;i++){
-            SDL_RenderCopyEx(Renderer, player, &spriteClips[animator->frame],&animator->players[i].pos, 0, NULL, animator->flip);
+            SDL_RenderCopyEx(Renderer, player, &spriteClips[animator->frame],&animator->players[i]->pos, 0, NULL, animator->flip);
         }
 
         // present the result on the render  "the screen"

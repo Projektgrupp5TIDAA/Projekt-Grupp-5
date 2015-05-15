@@ -7,9 +7,25 @@ int menu(ClientInfo* startup){
 
     if(startup->directConnect > 0){
         if(startup->directConnect == 1){
-            strcpy(startup->playerName, "directConnect");
             if (SDLNet_ResolveHost(&(startup->targethost), "127.0.0.1", 4000) == -1){
                 fprintf(stderr, "SDLNet_ResolveHost(%s %d): %s\n", "127.0.0.1", 4000, SDLNet_GetError());
+                SDL_Delay(2000);
+                return 1;
+            }
+            startup->socket = SDLNet_TCP_Open(&(startup->targethost)); 
+            if(startup->socket == NULL){
+                fprintf(stderr, "Could not connect to host: %s\n", SDLNet_GetError());
+                SDL_Delay(2000);
+                return 1;
+            }
+            SDLNet_TCP_Send(startup->socket, "C", 1);
+            SDL_Delay(200);
+            SDLNet_TCP_Send(startup->socket, startup->playerName, 20);
+            SDL_Delay(100);
+            return 0;
+        }else if(startup->directConnect == 2){
+            if(SDLNet_ResolveHost(&(startup->targethost), "130.237.84.189", 4000) == -1){
+                fprintf(stderr, "SDLNet_ResolveHost(%s %d): %s\n", "130.237.84.189", 4000, SDLNet_GetError());
                 return 1;
             }
             startup->socket = SDLNet_TCP_Open(&(startup->targethost)); 
@@ -19,14 +35,14 @@ int menu(ClientInfo* startup){
             SDL_Delay(100);
             return 0;
         }else{
-            strcpy(startup->playerName, "directConnect");
-            if(SDLNet_ResolveHost(&(startup->targethost), "130.237.84.189", 4000) == -1){
-                fprintf(stderr, "SDLNet_ResolveHost(%s %d): %s\n", "130.237.84.189", 4000, SDLNet_GetError());
+            if(SDLNet_ResolveHost(&(startup->targethost), startup->playerName, 4000) == -1){
+                fprintf(stderr, "SDLNet_ResolveHost(%s %d): %s\n", startup->playerName, 4000, SDLNet_GetError());
                 return 1;
             }
             startup->socket = SDLNet_TCP_Open(&(startup->targethost)); 
             SDLNet_TCP_Send(startup->socket, "C", 1);
             SDL_Delay(200);
+            strcpy(startup->playerName, "Direct");
             SDLNet_TCP_Send(startup->socket, startup->playerName, 20);
             SDL_Delay(100);
             return 0;

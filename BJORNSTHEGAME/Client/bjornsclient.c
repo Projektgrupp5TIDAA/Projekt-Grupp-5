@@ -9,8 +9,23 @@ int main(int argc, char *argv[]){
     if(argc > 1){
         if(strstr(argv[1], "local")){
             startup.directConnect = 1;
+            if(argc > 2)
+                strcpy(startup.playerName, argv[2]);
+            else
+                strcpy(startup.playerName, "Direct");
+        }else if(strstr(argv[1], "school")){
+            startup.directConnect = 2;
+            if(argc > 2)
+                strcpy(startup.playerName, argv[2]);
+            else
+                strcpy(startup.playerName, "Direct");
         }else if(strstr(argv[1], "remote")){
-            startup.directConnect = 1;
+            startup.directConnect = 3;
+            if(argc > 2)
+                strcpy(startup.playerName, argv[2]);
+            else{
+                fprintf(stderr, "Not enough input arguments. Usage is *program* remote *IP*\n");
+            }
         }else{
             printf("No valid arguments.\n");
             return 0;

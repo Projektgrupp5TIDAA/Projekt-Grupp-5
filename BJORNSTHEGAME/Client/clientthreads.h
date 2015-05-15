@@ -31,6 +31,7 @@ typedef struct{
 	TCPsocket* socket;
 	playerInfo players[PLAYERCOUNT];
     brecv* bullets;
+    int* ammo;
 }updaterInfo;
 
 int updateHandler(void* info);

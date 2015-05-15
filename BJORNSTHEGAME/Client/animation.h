@@ -14,6 +14,7 @@ typedef struct{
     SDL_Rect platforms[PLATFORMAMOUNT];
     SDL_Rect bjornDrapare[DRINKAMOUNT];
     SDL_Rect textRect[TEXTAMOUNT];
+    int* animateammo;
 }animationInfo;
 
 int animate(void* updater);

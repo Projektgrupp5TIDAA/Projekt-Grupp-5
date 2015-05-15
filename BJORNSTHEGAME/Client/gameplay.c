@@ -8,12 +8,12 @@
 
 int gameplayWindow(ClientInfo* information)
 {
-    int i, quit=0, ammo=0;
-    updaterInfo updater = {&quit, NULL, &(information->socket), {{0, 0, {0, 0, 0, 0}}}};
+    int i, quit=0, ammo=3;
+    updaterInfo updater = {&quit, NULL, &(information->socket), {{0, 0, {0, 0, 0, 0}}},&ammo};
     animationInfo animator = {0, &quit, NULL, {NULL}, SDL_FLIP_NONE, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
     SDL_Thread* updaterThread, *animatorThread;
-    playerInfo playerDummy = {0,{0, 0, 0, 0}};
-    brecv bulletinfo={0,{0,0,0,0}};
+    playerInfo playerDummy = {0,0,{0, 0, 0, 0}};
+    brecv bulletinfo={{0,0,0,0}};
     SDL_Event event;
     bool right=false, left=false, upp=false;
 
@@ -29,8 +29,10 @@ int gameplayWindow(ClientInfo* information)
         return 1;
     }
     SDL_Surface* screen = SDL_GetWindowSurface(updater.window);
-
+    
+    /* to animate on the windows and ammo */ 
     animator.window = updater.window;
+    animator.animateammo= &ammo;
     for(i=0;i<PLAYERCOUNT;i++){
         animator.players[i] = &(updater.players[i]);
     }
@@ -133,7 +135,7 @@ int gameplayWindow(ClientInfo* information)
                         
                     case SDLK_x:
                         printf("Spaming shoots\n");
-                        ammo= AMMOAMOUNT-1;
+                        ammo--;
                         if(ammo > 0){
                             if(right== true){
                                 bulletinfo.bulletpos.x +=SPEEDx;

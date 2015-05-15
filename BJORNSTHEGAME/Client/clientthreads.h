@@ -30,7 +30,7 @@ typedef struct{
 	SDL_Window* window;
 	TCPsocket* socket;
 	playerInfo players[PLAYERCOUNT];
-    brecv* bullets;
+    brecv bullets[PLAYERCOUNT];
     int* ammo;
 }updaterInfo;
 

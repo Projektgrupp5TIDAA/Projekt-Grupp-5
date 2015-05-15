@@ -35,6 +35,7 @@ int gameplayWindow(ClientInfo* information)
     animator.animateammo= &ammo;
     for(i=0;i<PLAYERCOUNT;i++){
         animator.players[i] = &(updater.players[i]);
+        animator.bullets[i]= &(updater.bullets[i]);
     }
 
     playerDummy.pos.y = screen->h/4*3+60;

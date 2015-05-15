@@ -75,7 +75,9 @@ int updateHandler(void* incinfo){
                     parseString(packet, 1, sizeof(packet));
                     memcpy(&info->bullets, &packet, sizeof(info->bullets));
                     //test
-                    printf("Bullet: %d, %d\n", info->bullets->bulletpos.x, info->bullets->bulletpos.y);
+                    for(i=0;i<PLAYERCOUNT;i++){
+                        printf("Bullet: %d, %d\n", info->bullets[i].bulletpos.x, info->bullets[i].bulletpos.y);
+                    }
 					break;
 				default:
 					printf("Invalid packet recieved, ignoring.\n");

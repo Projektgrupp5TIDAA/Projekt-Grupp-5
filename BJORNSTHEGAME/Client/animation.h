@@ -9,6 +9,7 @@ typedef struct{
 	int frame, *quit;
 	SDL_Window* window;
 	playerInfo* players[PLAYERCOUNT];
+    brecv* bullets[PLAYERCOUNT]; 
     SDL_RendererFlip flip;
     SDL_Rect capsRect[AMMOAMOUNT];
     SDL_Rect platforms[PLATFORMAMOUNT];

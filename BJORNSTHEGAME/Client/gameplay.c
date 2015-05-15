@@ -10,7 +10,7 @@ int gameplayWindow(ClientInfo* information)
 {
     int i, quit=0, ammo=3;
     updaterInfo updater = {&quit, NULL, &(information->socket), {{0, 0, {0, 0, 0, 0}}},{{0,0,0,0}},&ammo};
-        animationInfo animator = {0, &quit, NULL, {{0,0,{0,0,0,0}}},{{0,0,0,0}},SDL_FLIP_NONE, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
+        animationInfo animator = {0, &quit, NULL, {{0,0, {0,0,0,0}}},{{0,0,0,0}},SDL_FLIP_NONE, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, NULL};
     SDL_Thread* updaterThread, *animatorThread;
     playerInfo playerDummy = {0,0,{0, 0, 0, 0}};
     brecv bulletinfo={{0,0,0,0}};

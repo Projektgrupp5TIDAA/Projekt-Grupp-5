@@ -20,6 +20,4 @@ typedef struct{
 
 int animate(void* updater);
 
-void moveUP(int* test, SDL_Rect wall, SDL_Surface* s);
-
 #endif

@@ -305,17 +305,3 @@ int animate(void* info){
     SDL_DestroyRenderer(Renderer);
     return 0;
 }
-
-/* gravity fucntion 
-void moveUP(int* test, SDL_Rect wall, SDL_Surface* s){
-    
-    float my_gravity= 0.2, MaxFall_speed= 0.5, MyJump_force=5.0, CurJump_force=0.0, Delta_time;
-    
-    CurJump_force=MyJump_force;
-    *(test)+=CurJump_force * Delta_time;
-    if(CurJump_force > MaxFall_speed){
-        MyJump_force-= my_gravity * Delta_time;
-    }else{
-        CurJump_force=MaxFall_speed;
-    }
-}*/

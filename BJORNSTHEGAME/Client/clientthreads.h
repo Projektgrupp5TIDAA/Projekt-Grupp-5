@@ -20,18 +20,29 @@ typedef struct{
 
 /* Struct to recieve bulletinformation */
 typedef struct{
-    // short ammount;
-    SDL_Rect bulletpos;
-}brecv;
+    SDL_Rect pos;
+    short ID, TTL, direction;
+}bullet;
 
 /* Struct containing information on all the players */
 typedef struct{
-	int *quit;
+	int *quit, *timer;
 	SDL_Window* window;
 	TCPsocket* socket;
+<<<<<<< HEAD
+	playerInfo* players[PLAYERCOUNT];
+    bullet* bullets[12];
+=======
 	playerInfo players[PLAYERCOUNT];
-    brecv* bullets;
+    brecv bullets[PLAYERCOUNT];
+    int* ammo;
+>>>>>>> origin/master
 }updaterInfo;
+
+typedef struct{
+	int* timer;
+
+}timerInfo;
 
 int updateHandler(void* info);
 

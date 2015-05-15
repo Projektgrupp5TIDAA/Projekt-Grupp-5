@@ -24,15 +24,13 @@ int main(int argc, char **argv){
     SDL_Thread* connectionpoller, *timerthr;
     TimerInfo timerinfo = {0, 0};
     char sendpackage[200];
-    int i, j, lastpop=0, newdata=0, newbullet=0;
+    int i, j, lastpop=0, newdata=0;
     nsend namestruct;
-    bsend bulletstruct;
 
     /* Initializing the information for the stack and threads */
     for(i=0;i<PLAYERCOUNT;i++){
         threadvariables[i].ID = i;
         threadvariables[i].newdata = &newdata;
-        threadvariables[i].newbullet = &newbullet;
         threadvariables[i].player = &playersend[i];
         for(j=0;j<PLAYERCOUNT;j++){
             threadvariables[i].names[j] = threadvariables[j].playername;
@@ -167,24 +165,8 @@ int main(int argc, char **argv){
                         if(threadvariables[i].socket != NULL)
                             SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
                     }
-                }
-                newdata = 0;
-                SDL_Delay(200);
-                else if(newbullet == 1){
-                    printf("Sending the bullet position update");
-                    memcpy(&sendpackage, &bulletstruct, sizeof(bulletstruct));
-                    parseString(sendpackage, -1, sizeof(sendpackage));
-                    sendpackage[0]='B';
-                    for(i=0;i<PLAYERCOUNT;i++){
-                        
-                        if(threadvariables[i].socket != NULL)
-                            
-                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
-                    }
-                }
-                newbullet=0;
+                    newdata = 0;
                 }else{
-
                 /* If there is a message waiting to be handled it will be sent as long as no high-priority updates are waiting */
                     if(!(isEmptyStrStack(pollerinfo.cstack))){
                         popString(&pollerinfo.cstack, sendpackage, sizeof(sendpackage));
@@ -194,9 +176,19 @@ int main(int argc, char **argv){
                         }
                     }else SDL_Delay(200);
                 }
+
+                while(!(isEmptyStrStack(pollerinfo.dstack))){
+                    printf("Sending the bullet position update");
+                    popString(&pollerinfo.dstack, sendpackage, sizeof(sendpackage));
+                    for(i=0;i<PLAYERCOUNT;i++){
+                        if(threadvariables[i].socket != NULL)
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
+                    }
+                    SDL_Delay(15);
+                }
+            }
             printf("Game stopping.\n");
         }else{
-
             /* If only one player is connected to the server, the lobby-functions should still remain,
                although useless, you can chat with yourself.. 
                (also serves as a release for the stack not to be overpopulated before being able to send) */

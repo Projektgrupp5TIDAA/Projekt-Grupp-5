@@ -8,12 +8,19 @@
 typedef struct{
 	int frame, *quit;
 	SDL_Window* window;
+<<<<<<< HEAD
+	playerInfo players[PLAYERCOUNT];
+=======
 	playerInfo* players[PLAYERCOUNT];
+    brecv* bullets[PLAYERCOUNT]; 
+>>>>>>> origin/master
     SDL_RendererFlip flip;
+    bullet bullets[12];
     SDL_Rect capsRect[AMMOAMOUNT];
     SDL_Rect platforms[PLATFORMAMOUNT];
     SDL_Rect bjornDrapare[DRINKAMOUNT];
     SDL_Rect textRect[TEXTAMOUNT];
+    int* animateammo;
 }animationInfo;
 
 int animate(void* updater);

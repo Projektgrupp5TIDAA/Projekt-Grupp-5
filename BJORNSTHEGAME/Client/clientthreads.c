@@ -28,7 +28,7 @@ int updateHandler(void* incinfo){
 	SDL_Rect chat[20];
     char chatmessages[6][512]={{0}};
     TTF_Font* chatfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 18);
-	int i;
+	int i, tmpID;
 
 	SDL_Surface* screen = SDL_GetWindowSurface(info->window);
 
@@ -55,8 +55,8 @@ int updateHandler(void* incinfo){
 					printf("Playerupdate recieved!\n");
 					parseString(packet, 1, sizeof(packet));
 					memcpy(&info->players, &packet, sizeof(info->players));
-					for(i=0;i<PLAYERCOUNT;i++)
-						printf("Player %d: %d, %d\n", i, info->players[i].pos.x, info->players[i].pos.y);
+					//for(i=0;i<PLAYERCOUNT;i++)
+						//printf("Player %d: %d, %d\n", i, info->players[i].pos.x, info->players[i].pos.y);
 					break;
 				case 'C':
 					printf("Chat recieved!\n");
@@ -73,9 +73,15 @@ int updateHandler(void* incinfo){
 				case 'B':
                     printf("Bulletupdate recieved!\n");
                     parseString(packet, 1, sizeof(packet));
-                    memcpy(&info->bullets, &packet, sizeof(info->bullets));
-                    //test
-                    printf("Bullet: %d, %d\n", info->bullets->bulletpos.x, info->bullets->bulletpos.y);
+                    tmpID = packet[0];
+                    for(i=0;i<12;i++){
+                    	if(&info->bullets[i]->pos.x == 0 && &info->bullets[i]->pos.y == 0){
+                    		memcpy(&info->bullets[i], &packet, sizeof(info->bullets[i]));
+                    		info->bullets[i]->ID = tmpID;
+                    		printf("Bullet: %d, %d\n", info->bullets[i]->pos.x, info->bullets[i]->pos.y);
+                    		break;
+                    	}
+                    }
 					break;
 				default:
 					printf("Invalid packet recieved, ignoring.\n");

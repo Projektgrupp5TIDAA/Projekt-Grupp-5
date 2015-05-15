@@ -29,14 +29,8 @@ typedef struct{
 	int *quit, *timer;
 	SDL_Window* window;
 	TCPsocket* socket;
-<<<<<<< HEAD
-	playerInfo* players[PLAYERCOUNT];
+	playerInfo* players;
     bullet* bullets[12];
-=======
-	playerInfo players[PLAYERCOUNT];
-    brecv bullets[PLAYERCOUNT];
-    int* ammo;
->>>>>>> origin/master
 }updaterInfo;
 
 typedef struct{

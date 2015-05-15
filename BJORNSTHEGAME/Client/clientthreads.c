@@ -54,9 +54,9 @@ int updateHandler(void* incinfo){
 				case 'P':
 					printf("Playerupdate recieved!\n");
 					parseString(packet, 1, sizeof(packet));
-					memcpy(&info->players, &packet, sizeof(info->players));
-					//for(i=0;i<PLAYERCOUNT;i++)
-						//printf("Player %d: %d, %d\n", i, info->players[i].pos.x, info->players[i].pos.y);
+					memcpy(info->players, &packet, sizeof(playerInfo)*6);
+					/*for(i=0;i<PLAYERCOUNT;i++)
+						printf("Player %d: %d, %d\n", i, info->players[i]->pos.x, info->players[i]->pos.y);*/
 					break;
 				case 'C':
 					printf("Chat recieved!\n");
@@ -73,21 +73,17 @@ int updateHandler(void* incinfo){
 				case 'B':
                     printf("Bulletupdate recieved!\n");
                     parseString(packet, 1, sizeof(packet));
-<<<<<<< HEAD
                     tmpID = packet[0];
+                    parseString(packet, 1, sizeof(packet));
                     for(i=0;i<12;i++){
-                    	if(&info->bullets[i]->pos.x == 0 && &info->bullets[i]->pos.y == 0){
-                    		memcpy(&info->bullets[i], &packet, sizeof(info->bullets[i]));
+                    	if(info->bullets[i]->pos.x == 0 && info->bullets[i]->pos.y == 0){
+                    		memcpy(info->bullets[i], &packet, sizeof(*(info->bullets[i])));
                     		info->bullets[i]->ID = tmpID;
                     		printf("Bullet: %d, %d\n", info->bullets[i]->pos.x, info->bullets[i]->pos.y);
                     		break;
+                    	}else{
+                    		printf("Too many bullets!");
                     	}
-=======
-                    memcpy(&info->bullets, &packet, sizeof(info->bullets));
-                    //test
-                    for(i=0;i<PLAYERCOUNT;i++){
-                        printf("Bullet: %d, %d\n", info->bullets[i].bulletpos.x, info->bullets[i].bulletpos.y);
->>>>>>> origin/master
                     }
 					break;
 				default:

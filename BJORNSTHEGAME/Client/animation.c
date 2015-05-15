@@ -102,6 +102,8 @@ int animate(void* info){
     bjornDrapare[0]=SDL_CreateTextureFromSurface(Renderer,bjorns);
     bjornDrapare[1]=SDL_CreateTextureFromSurface(Renderer,bjorns);
 
+    bulletTex = SDL_CreateTextureFromSurface(Renderer, bullet);
+
     myText[0]=SDL_CreateTextureFromSurface(Renderer,textsurface[0]);
     myText[1]=SDL_CreateTextureFromSurface(Renderer,textsurface[1]);
     myText[2]=SDL_CreateTextureFromSurface(Renderer,textsurface[2]);
@@ -273,7 +275,7 @@ int animate(void* info){
 
         //copy all players
         for(i=0;i<PLAYERCOUNT;i++){
-            SDL_RenderCopyEx(Renderer, player, &spriteClips[animator->frame],&animator->players[i].pos, 0, NULL, animator->flip);
+            SDL_RenderCopyEx(Renderer, player, &spriteClips[animator->frame], &animator->players[i].pos, 0, NULL, animator->flip);
         }
 
         // present the result on the render  "the screen"

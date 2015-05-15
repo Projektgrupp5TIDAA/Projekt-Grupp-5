@@ -28,11 +28,7 @@ bool checkCollision( SDL_Rect a, SDL_Rect b );
 
 int sendPlayerUpdate(playerInfo playerDummy, TCPsocket* socket);
 
-<<<<<<< HEAD
 int sendBulletUpdate(bullet bulletDummy, TCPsocket* socket);
-=======
-int sendBulletUpdate(brecv bulletsinfo, TCPsocket* socket);
->>>>>>> origin/master
 
 #endif // GAMEPLAY_H_INCLUDED
 

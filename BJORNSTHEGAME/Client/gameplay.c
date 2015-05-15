@@ -5,26 +5,17 @@
 #define PLATFORMAMOUNT 14
 #define TEXTAMOUNT 3
 #define DRINKAMOUNT 2
+#define BULLET_TTL 10
 
 int gameplayWindow(ClientInfo* information)
 {
-<<<<<<< HEAD
-    int i, quit=0, ammo=0, timer=0;
+    int i, quit=0, ammo=AMMOAMOUNT, timer=0;
     animationInfo animator = {0, &quit, NULL, {{0, 0, {0, 0, 0, 0}}}, SDL_FLIP_NONE, {{{0,0,0,0}, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
-    updaterInfo updater = {&quit, &timer, NULL, &(information->socket), {NULL}};
+    updaterInfo updater = {&quit, &timer, NULL, &(information->socket), NULL};
     SDL_Thread* updaterThread, *animatorThread, *timerThread;
     playerInfo playerDummy = {0, 0, {0, 0, 0, 0}};
     bullet bulletDummy = {{0,0,0,0}, 0, 0, 0};
-=======
-    int i, quit=0, ammo=3;
-    updaterInfo updater = {&quit, NULL, &(information->socket), {{0, 0, {0, 0, 0, 0}}},&ammo};
-    animationInfo animator = {0, &quit, NULL, {NULL}, SDL_FLIP_NONE, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
-    SDL_Thread* updaterThread, *animatorThread;
-    playerInfo playerDummy = {0,0,{0, 0, 0, 0}};
-    brecv bulletinfo={{0,0,0,0}};
->>>>>>> origin/master
     SDL_Event event;
-    bool right=false, left=false, upp=false;
 
     //Create a window
     updater.window = SDL_CreateWindow("BJORNS THE GAME",
@@ -41,15 +32,11 @@ int gameplayWindow(ClientInfo* information)
     
     /* to animate on the windows and ammo */ 
     animator.window = updater.window;
-    animator.animateammo= &ammo;
+
+    updater.players = &(animator.players[0]);
+
     for(i=0;i<PLAYERCOUNT;i++){
-<<<<<<< HEAD
-        updater.players[i] = &(animator.players[i]);
         updater.bullets[i] = &(animator.bullets[i]);
-=======
-        animator.players[i] = &(updater.players[i]);
-        animator.bullets[i]= &(updater.bullets[i]);
->>>>>>> origin/master
     }
 
     playerDummy.pos.y = screen->h/4*3+60;
@@ -59,8 +46,8 @@ int gameplayWindow(ClientInfo* information)
     
     bulletDummy.pos.y = 0;
     bulletDummy.pos.x = 0;
-    bulletDummy.pos.h = screen->h*0.13;
-    bulletDummy.pos.w = screen->w*0.050;
+    bulletDummy.pos.h = screen->h*0.013;
+    bulletDummy.pos.w = screen->w*0.0030;
 
     updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
 
@@ -84,8 +71,7 @@ int gameplayWindow(ClientInfo* information)
                         quit = true;
                         break;
                     case SDLK_LEFT:
-                        left=true;
-                        right=false;
+                        bulletDummy.direction=0;
                         playerDummy.pos.x -= SPEEDx;
                         /*for(i=0; i<PLATFORMAMOUNT; i++)
                         {
@@ -116,9 +102,7 @@ int gameplayWindow(ClientInfo* information)
                         break;
                         
                     case SDLK_RIGHT:
-                        //playerDummy.pos.x += 3;
-                        right=true;
-                        left=false;
+                        bulletDummy.direction = 1;
                         playerDummy.pos.x += SPEEDx;
                         for(i=0; i<PLATFORMAMOUNT; i++)
                         {
@@ -151,25 +135,14 @@ int gameplayWindow(ClientInfo* information)
                         break;
                         
                     case SDLK_x:
-<<<<<<< HEAD
                         printf("Shooting!\n");
-                        ammo= AMMOAMOUNT-1;
-=======
-                        printf("Spaming shoots\n");
-                        ammo--;
->>>>>>> origin/master
                         if(ammo > 0){
-                            if(right== true){
-                                bulletDummy.pos.x +=SPEEDx;
-                                sendBulletUpdate(bulletDummy, &information->socket);
-                            }
-                            else if(left == true){
-                                bulletDummy.pos.x -=SPEEDx;
-                                sendBulletUpdate(bulletDummy, &information->socket);
-                            }
-                        }
-                        // reload
-                        else{
+                            bulletDummy.pos.x = playerDummy.pos.x;
+                            bulletDummy.pos.y = playerDummy.pos.y;
+                            bulletDummy.TTL = BULLET_TTL;
+                            sendBulletUpdate(bulletDummy, &information->socket);
+                            ammo--;
+                        }else{
                             ammo=3;
                             SDL_Delay(500);
                         }

@@ -1,20 +1,15 @@
 #ifndef _ANIMATOR_H_
 #define _ANIMATOR_H_
-#define AMMOAMOUNT 3
-#define PLATFORMAMOUNT 14
-#define TEXTAMOUNT 3
-#define DRINKAMOUNT 2
 
 typedef struct{
-	int frame, *quit, *ammo;
+	int frame, *quit, *ammo, *drunk;
 	SDL_Window* window;
-	playerInfo players[PLAYERCOUNT];
+	playerInfo *player;
+	playerInfo players[6];
     SDL_RendererFlip flip;
     bullet bullets[12];
-    SDL_Rect capsRect[AMMOAMOUNT];
-    SDL_Rect platforms[PLATFORMAMOUNT];
-    SDL_Rect bjornDrapare[DRINKAMOUNT];
-    SDL_Rect textRect[TEXTAMOUNT];
+    SDL_Rect platforms[14];
+    SDL_Rect bjornDrapare[2];
 }animationInfo;
 
 int animate(void* updater);

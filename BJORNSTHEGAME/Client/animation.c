@@ -19,7 +19,7 @@
 #include "gameplay.h"
 #define AMMOAMOUNT 3
 #define PLATFORMAMOUNT 14
-#define TEXTAMOUNT 3
+#define TEXTAMOUNT 4
 #define DRINKAMOUNT 2
 #endif
 
@@ -50,6 +50,10 @@ int animate(void* info){
     SDL_Texture* bulletTex;
 
     SDL_Rect spriteClips[4];
+    SDL_Rect bjornDrapRect[2];
+    SDL_Rect textSprite[6];
+    SDL_Rect textRect[5];
+    SDL_Rect capsRect[AMMOAMOUNT];
 
     /* Fill the platforms with colors */
     SDL_FillRect(platform1, NULL, SDL_MapRGB(platform1->format, 200, 190, 200));
@@ -77,6 +81,7 @@ int animate(void* info){
     textsurface[0]= TTF_RenderText_Solid(font, "AMMO:", colorT);
     textsurface[1]= TTF_RenderText_Solid(font, "HP:", colorT);
     textsurface[2]= TTF_RenderText_Solid(font, "Drunk:", colorT);
+    textsurface[3]= TTF_RenderText_Solid(font, "012345", colorT);
 
     player = SDL_CreateTextureFromSurface(Renderer, playerSurface); //the texture of the player
     if(! player)
@@ -107,6 +112,7 @@ int animate(void* info){
     myText[0]=SDL_CreateTextureFromSurface(Renderer,textsurface[0]);
     myText[1]=SDL_CreateTextureFromSurface(Renderer,textsurface[1]);
     myText[2]=SDL_CreateTextureFromSurface(Renderer,textsurface[2]);
+    myText[3]=SDL_CreateTextureFromSurface(Renderer,textsurface[3]);
 
     /*set position for every platform on screen*/
     animator->platforms[0].x = 0;
@@ -181,36 +187,46 @@ int animate(void* info){
 
 
     for(i=0;i<AMMOAMOUNT;i++){
-        animator->capsRect[i].x = screen->w*0.9+(i*screen->w*0.032);
-        animator->capsRect[i].y = screen->h*0.02;//screen ->h - 740;
-        animator->capsRect[i].w = screen->w*0.03;
-        animator->capsRect[i].h = screen->h*0.046;
+        capsRect[i].x = screen->w*0.9+(i*screen->w*0.032);
+        capsRect[i].y = screen->h*0.02;//screen ->h - 740;
+        capsRect[i].w = screen->w*0.03;
+        capsRect[i].h = screen->h*0.046;
     }
 
-    animator->bjornDrapare[0].x = screen->w/2 -110;
-    animator->bjornDrapare[0].y = screen->h - 228;
-    animator->bjornDrapare[0].w = screen->w*0.03;//60;
-    animator->bjornDrapare[0].h = screen->h*0.046;//50;
+    bjornDrapRect[0].x = screen->w/2 -110;
+    bjornDrapRect[0].y = screen->h - 228;
+    bjornDrapRect[0].w = screen->w*0.03;//60;
+    bjornDrapRect[0].h = screen->h*0.046;//50;
 
-    animator->bjornDrapare[1].x = screen  ->w/2 +400;
-    animator->bjornDrapare[1].y = screen ->h - 512;
-    animator->bjornDrapare[1].w = screen->w*0.03;//60;
-    animator->bjornDrapare[1].h = screen->h*0.046;//50;
+    bjornDrapRect[1].x = screen->w/2 +400;
+    bjornDrapRect[1].y = screen->h - 512;
+    bjornDrapRect[1].w = screen->w*0.03;//60;
+    bjornDrapRect[1].h = screen->h*0.046;//50;
 
-    animator->textRect[0].x= screen->w*0.79;//screen ->w/2 +310;
-    animator->textRect[0].y= screen->h*0.02;//screen ->h - 740;
-    animator->textRect[0].w= screen->w*0.1;//120;
-    animator->textRect[0].h= screen->h*0.055;//60;
+    textRect[0].x= screen->w*0.79;//screen ->w/2 +310;
+    textRect[0].y= screen->h*0.02;//screen ->h - 740;
+    textRect[0].w= screen->w*0.1;//120;
+    textRect[0].h= screen->h*0.055;//60;
 
-    animator->textRect[1].x= screen->w*0.02;//screen ->w/2 -660;
-    animator->textRect[1].y= screen->h*0.02;//screen ->h - 740;
-    animator->textRect[1].w= screen->w*0.06;
-    animator->textRect[1].h= screen->h*0.055;
+    textRect[1].x= screen->w*0.02;//screen ->w/2 -660;
+    textRect[1].y= screen->h*0.02;//screen ->h - 740;
+    textRect[1].w= screen->w*0.06;
+    textRect[1].h= screen->h*0.055;
 
-    animator->textRect[2].x= screen->w*0.14;//screen->w/2 -450;
-    animator->textRect[2].y= screen->h*0.02;
-    animator->textRect[2].w= screen->w*0.11;
-    animator->textRect[2].h= screen->h*0.055;
+    textRect[2].x= screen->w*0.14;//screen->w/2 -450;
+    textRect[2].y= screen->h*0.02;
+    textRect[2].w= screen->w*0.11;
+    textRect[2].h= screen->h*0.055;
+
+    textRect[3].x= screen->w*0.09;//screen->w/2 -450;
+    textRect[3].y= screen->h*0.02;
+    textRect[3].w= screen->w*0.02;
+    textRect[3].h= screen->h*0.055;
+
+    textRect[4].x= screen->w*0.26;//screen->w/2 -450;
+    textRect[4].y= screen->h*0.02;
+    textRect[4].w= screen->w*0.02;
+    textRect[4].h= screen->h*0.055;
 
     //size and position for the player
     for(i=0;i<PLAYERCOUNT;i++){
@@ -241,6 +257,12 @@ int animate(void* info){
     spriteClips[3].w = 210;
     spriteClips[3].h = 348;
 
+    for(i=0;i<6;i++){
+        textSprite[i].x = i*(textsurface[3]->w/6);
+        textSprite[i].y = 0;
+        textSprite[i].w = (textsurface[3]->w/6);
+        textSprite[i].h = textsurface[3]->h;
+    }
 
     while (!quit) // while not Esc
     {
@@ -249,7 +271,6 @@ int animate(void* info){
 
         for(i=0; i<PLATFORMAMOUNT; i++) //copy all platforms to the render
         {
-
             SDL_RenderCopy(Renderer, picture[i],NULL,&animator->platforms[i]);
         }
 
@@ -261,17 +282,20 @@ int animate(void* info){
 
         for(i=0; i<(*(animator->ammo)); i++) //copy all ammo to the render
         {
-            SDL_RenderCopy(Renderer, caps[i],NULL,&animator->capsRect[i]);
+            SDL_RenderCopy(Renderer, caps[i], NULL, &capsRect[i]);
         }
 
         for(i=0; i<DRINKAMOUNT; i++) //copy all "bjornDrapare" to the render "the screen"
         {
-            SDL_RenderCopy(Renderer, bjornDrapare[i],NULL,&animator->bjornDrapare[i]);
+            SDL_RenderCopy(Renderer, bjornDrapare[i], NULL, &bjornDrapRect[i]);
         }
-        for(i=0; i<AMMOAMOUNT; i++) // copy all text to the render "screen"
+        for(i=0; i<3; i++) // copy all text to the render "screen"
         {
-            SDL_RenderCopy(Renderer, myText[i],NULL,&animator->textRect[i]);
+            SDL_RenderCopy(Renderer, myText[i], NULL, &textRect[i]);
         }
+
+        SDL_RenderCopy(Renderer, myText[3], &textSprite[(animator->player->health)], &textRect[3]);
+        SDL_RenderCopy(Renderer, myText[3], &textSprite[*(animator->drunk)], &textRect[4]);
 
         //copy all players
         for(i=0;i<PLAYERCOUNT;i++){

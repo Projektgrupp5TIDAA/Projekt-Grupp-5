@@ -9,12 +9,12 @@
 
 int gameplayWindow(ClientInfo* information)
 {
-    int i, quit=0, ammo=AMMOAMOUNT;
-    animationInfo animator = {0, &quit, &ammo, NULL, {{0, 0, {0, 0, 0, 0}}}, SDL_FLIP_NONE, {{{0,0,0,0}, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
+    int i, quit=0, ammo=AMMOAMOUNT, drunk=0;
+    animationInfo animator = {0, &quit, &ammo, &drunk, NULL, NULL, {{0, 0, {0, 0, 0, 0}}}, SDL_FLIP_NONE, {{{0,0,0,0}, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
     updaterInfo updater = {&quit, 0, NULL, &(information->socket), NULL};
     timerInfo timer = {&updater.timer, &quit, {NULL}};
     SDL_Thread* updaterThread, *animatorThread, *timerThread;
-    playerInfo playerDummy = {0, 0, {0, 0, 0, 0}};
+    playerInfo playerDummy = {5, 0, {0, 0, 0, 0}};
     bullet bulletDummy = {{0,0,0,0}, 0, 0, 0};
     SDL_Event event;
 
@@ -33,6 +33,7 @@ int gameplayWindow(ClientInfo* information)
     
     /* to animate on the windows and ammo */ 
     animator.window = updater.window;
+    animator.player = &playerDummy;
 
     updater.players = &(animator.players[0]);
 

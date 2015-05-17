@@ -15,14 +15,14 @@ Created on 2015-05-12 by Jonathan Kåhre
 
 /* Struct with the information needed by the client to render the players */
 typedef struct{
-    short health, kills;
+    short health, deaths;
     SDL_Rect pos;
 }playerInfo;
 
 /* Struct to recieve bulletinformation */
 typedef struct{
     SDL_Rect pos;
-    short ID, TTL, direction;
+    short ID, TTL, direction, dmg;
 }bullet;
 
 /* Struct containing information on all the players */

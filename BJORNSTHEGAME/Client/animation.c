@@ -40,7 +40,7 @@ int animate(void* info){
     SDL_Surface* textsurface[TEXTAMOUNT];
 
     /*Texture declaration*/
-    SDL_Renderer* Renderer = NULL;
+    SDL_Renderer* Rend = NULL;
     SDL_Texture* player = NULL;
     SDL_Texture* bakgroundTexture;
     SDL_Texture* picture[PLATFORMAMOUNT];
@@ -62,13 +62,13 @@ int animate(void* info){
     SDL_Surface* screen = SDL_GetWindowSurface(animator->window); //get the screen size
     printf("Width: %d, Height: %d\n", screen->w, screen->h);
 
-    Renderer=SDL_GetRenderer(animator->window);
-    if(!Renderer)
-        Renderer = SDL_CreateRenderer(animator->window, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
-    if(!Renderer)
+    Rend=SDL_GetRenderer(animator->window);
+    if(!Rend)
+        Rend = SDL_CreateRenderer(animator->window, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
+    if(!Rend)
         printf("Couldn't start the render: %s\n", SDL_GetError());
     
-    bakgroundTexture = SDL_CreateTextureFromSurface(Renderer,gameBackground); //Load texture with image "bar.jpg" and Renderer
+    bakgroundTexture = SDL_CreateTextureFromSurface(Rend,gameBackground); //Load texture with image "bar.jpg" and Rend
     
     /*text*/
     SDL_Color colorT= {170,60,255};
@@ -83,36 +83,36 @@ int animate(void* info){
     textsurface[2]= TTF_RenderText_Solid(font, "Drunk:", colorT);
     textsurface[3]= TTF_RenderText_Solid(font, "012345", colorT);
 
-    player = SDL_CreateTextureFromSurface(Renderer, playerSurface); //the texture of the player
+    player = SDL_CreateTextureFromSurface(Rend, playerSurface); //the texture of the player
     if(! player)
     {
         printf("Couldnt create texture from surface: %s\n", SDL_GetError());
     }
     /*creating texture for all the images and texts */
-    picture[0]= SDL_CreateTextureFromSurface(Renderer,ground);
-    picture[1]= SDL_CreateTextureFromSurface(Renderer,band);
-    picture[2]= SDL_CreateTextureFromSurface(Renderer,platform1);
-    picture[3]= SDL_CreateTextureFromSurface(Renderer,platform2);
+    picture[0]= SDL_CreateTextureFromSurface(Rend,ground);
+    picture[1]= SDL_CreateTextureFromSurface(Rend,band);
+    picture[2]= SDL_CreateTextureFromSurface(Rend,platform1);
+    picture[3]= SDL_CreateTextureFromSurface(Rend,platform2);
     
     int loopcounter;
     for (loopcounter = 4; loopcounter < PLATFORMAMOUNT; ++loopcounter)
     {
-        picture[loopcounter]= SDL_CreateTextureFromSurface(Renderer,platform1);
+        picture[loopcounter]= SDL_CreateTextureFromSurface(Rend,platform1);
     }
 
-    caps[0]= SDL_CreateTextureFromSurface(Renderer,ammo);
-    caps[1]= SDL_CreateTextureFromSurface(Renderer,ammo);
-    caps[2]= SDL_CreateTextureFromSurface(Renderer,ammo);
+    caps[0]= SDL_CreateTextureFromSurface(Rend,ammo);
+    caps[1]= SDL_CreateTextureFromSurface(Rend,ammo);
+    caps[2]= SDL_CreateTextureFromSurface(Rend,ammo);
 
-    bjornDrapare[0]=SDL_CreateTextureFromSurface(Renderer,bjorns);
-    bjornDrapare[1]=SDL_CreateTextureFromSurface(Renderer,bjorns);
+    bjornDrapare[0]=SDL_CreateTextureFromSurface(Rend,bjorns);
+    bjornDrapare[1]=SDL_CreateTextureFromSurface(Rend,bjorns);
 
-    bulletTex = SDL_CreateTextureFromSurface(Renderer, bullet);
+    bulletTex = SDL_CreateTextureFromSurface(Rend, bullet);
 
-    myText[0]=SDL_CreateTextureFromSurface(Renderer,textsurface[0]);
-    myText[1]=SDL_CreateTextureFromSurface(Renderer,textsurface[1]);
-    myText[2]=SDL_CreateTextureFromSurface(Renderer,textsurface[2]);
-    myText[3]=SDL_CreateTextureFromSurface(Renderer,textsurface[3]);
+    myText[0]=SDL_CreateTextureFromSurface(Rend,textsurface[0]);
+    myText[1]=SDL_CreateTextureFromSurface(Rend,textsurface[1]);
+    myText[2]=SDL_CreateTextureFromSurface(Rend,textsurface[2]);
+    myText[3]=SDL_CreateTextureFromSurface(Rend,textsurface[3]);
 
     /*set position for every platform on screen*/
     animator->platforms[0].x = 0;
@@ -266,44 +266,44 @@ int animate(void* info){
 
     while (!quit) // while not Esc
     {
-        SDL_RenderClear(Renderer); // Clear the entire screen to our selected color/images.
-        SDL_RenderCopy(Renderer,  bakgroundTexture,NULL,NULL); //view the background on the render "screen"
+        SDL_RenderClear(Rend); // Clear the entire screen to our selected color/images.
+        SDL_RenderCopy(Rend,  bakgroundTexture,NULL,NULL); //view the background on the render "screen"
 
         for(i=0; i<PLATFORMAMOUNT; i++) //copy all platforms to the render
         {
-            SDL_RenderCopy(Renderer, picture[i],NULL,&animator->platforms[i]);
+            SDL_RenderCopy(Rend, picture[i],NULL,&animator->platforms[i]);
         }
 
         for(i=0; i<12 ;i++){
             if(animator->bullets[i].pos.x != 0 && animator->bullets[i].pos.y != 0){
-                SDL_RenderCopy(Renderer, bulletTex, NULL, &animator->bullets[i].pos);
+                SDL_RenderCopy(Rend, bulletTex, NULL, &animator->bullets[i].pos);
             }
         }
 
         for(i=0; i<(*(animator->ammo)); i++) //copy all ammo to the render
         {
-            SDL_RenderCopy(Renderer, caps[i], NULL, &capsRect[i]);
+            SDL_RenderCopy(Rend, caps[i], NULL, &capsRect[i]);
         }
 
         for(i=0; i<DRINKAMOUNT; i++) //copy all "bjornDrapare" to the render "the screen"
         {
-            SDL_RenderCopy(Renderer, bjornDrapare[i], NULL, &bjornDrapRect[i]);
+            SDL_RenderCopy(Rend, bjornDrapare[i], NULL, &bjornDrapRect[i]);
         }
         for(i=0; i<3; i++) // copy all text to the render "screen"
         {
-            SDL_RenderCopy(Renderer, myText[i], NULL, &textRect[i]);
+            SDL_RenderCopy(Rend, myText[i], NULL, &textRect[i]);
         }
 
-        SDL_RenderCopy(Renderer, myText[3], &textSprite[(animator->player->health)], &textRect[3]);
-        SDL_RenderCopy(Renderer, myText[3], &textSprite[*(animator->drunk)], &textRect[4]);
+        SDL_RenderCopy(Rend, myText[3], &textSprite[(animator->player->health)], &textRect[3]);
+        SDL_RenderCopy(Rend, myText[3], &textSprite[*(animator->drunk)], &textRect[4]);
 
         //copy all players
         for(i=0;i<PLAYERCOUNT;i++){
-            SDL_RenderCopyEx(Renderer, player, &spriteClips[animator->frame], &animator->players[i].pos, 0, NULL, animator->flip);
+            SDL_RenderCopyEx(Rend, player, &spriteClips[animator->frame], &animator->players[i].pos, 0, NULL, animator->flip);
         }
 
         // present the result on the render  "the screen"
-        SDL_RenderPresent(Renderer);
+        SDL_RenderPresent(Rend);
     }
 
 
@@ -336,7 +336,7 @@ int animate(void* info){
 
     SDL_DestroyTexture(player);
     //  SDL_DestroyWindow(bakgroundTexture);
-    SDL_DestroyRenderer(Renderer);
+    SDL_DestroyRenderer(Rend);
     return 0;
 }
 

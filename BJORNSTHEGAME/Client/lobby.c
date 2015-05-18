@@ -197,7 +197,7 @@ int LobbyWindow(ClientInfo* lobbyConnection){
             emptyString(packet, sizeof(packet));
             readKeyboardToWindow(chatfont, typing[1], temp, 32, lobby, lobbyBackground);
             sprintf(packet, "C%s says:\n   %s", lobbyConnection->playerName, temp);
-            SDLNet_TCP_Send(lobbyConnection->socket, packet, strlen(packet));
+            SDLNet_TCP_Send(lobbyConnection->socket, packet, strlen(packet)+1);
         }
 
         /* Applies all pictures and text to the window */

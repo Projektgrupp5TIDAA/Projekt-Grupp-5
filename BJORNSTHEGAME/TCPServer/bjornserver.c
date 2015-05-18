@@ -80,7 +80,7 @@ int main(int argc, char **argv){
             sprintf(sendpackage, "T%d", timerinfo.maintimer);
             for(i=0;i<PLAYERCOUNT;i++){
                 if(threadvariables[i].socket != NULL)
-                    SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
+                    SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage)+1);
             }
 
             /* Keeps the lobby active as long as there is players connected to the server */
@@ -91,7 +91,7 @@ int main(int argc, char **argv){
                     popString(&pollerinfo.cstack, sendpackage, sizeof(sendpackage));
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket !=NULL)
-                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage)+1);
                     }
                     SDL_Delay(200);
                 }else SDL_Delay(200);
@@ -110,13 +110,13 @@ int main(int argc, char **argv){
                     sendpackage[0] = 'N';
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket != NULL)
-                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage)+1);
                     }
                     SDL_Delay(1100);
                     sprintf(sendpackage, "T%d", timerinfo.maintimer);
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket != NULL)
-                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage)+1);
                     }
                     lastpop = pollerinfo.stack.population;
                 }
@@ -128,7 +128,7 @@ int main(int argc, char **argv){
             if(pollerinfo.stack.population < 5){
                 for(i=0;i<PLAYERCOUNT;i++){
                     if(threadvariables[i].socket != NULL)
-                        SDLNet_TCP_Send(threadvariables[i].socket, "G", 1);
+                        SDLNet_TCP_Send(threadvariables[i].socket, "G", 2);
                 }
                 printf("Game starting in 4 sec.\n");
                 SDL_Delay(4000);
@@ -137,7 +137,7 @@ int main(int argc, char **argv){
                 sprintf(sendpackage, "T%d", timerinfo.maintimer);
                 for(i=0;i<PLAYERCOUNT;i++){
                     if(threadvariables[i].socket != NULL)
-                        SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
+                        SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage)+1);
                 }
                 SDL_Delay(200);
                 timerinfo.powerup = 0;
@@ -149,7 +149,7 @@ int main(int argc, char **argv){
                 sprintf(sendpackage, "T%d", timerinfo.maintimer);
                 for(i=0;i<PLAYERCOUNT;i++){
                     if(threadvariables[i].socket != NULL)
-                        SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
+                        SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage)+1);
                 }
             }
 
@@ -163,7 +163,7 @@ int main(int argc, char **argv){
                     sendpackage[0] = 'P';
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket != NULL)
-                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage)+1);
                     }
                     newdata = 0;
                 }else{
@@ -172,7 +172,7 @@ int main(int argc, char **argv){
                         popString(&pollerinfo.cstack, sendpackage, sizeof(sendpackage));
                         for(i=0;i<PLAYERCOUNT;i++){
                             if(threadvariables[i].socket != NULL)
-                                SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
+                                SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage)+1);
                         }
                     }else SDL_Delay(200);
                 }
@@ -182,7 +182,7 @@ int main(int argc, char **argv){
                     popString(&pollerinfo.dstack, sendpackage, sizeof(sendpackage));
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket != NULL)
-                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage)+1);
                     }
                     SDL_Delay(15);
                 }
@@ -197,7 +197,7 @@ int main(int argc, char **argv){
                     popString(&pollerinfo.cstack, sendpackage, sizeof(sendpackage));
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket != NULL)
-                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage)+1);
                     }
                 SDL_Delay(200);
             }else SDL_Delay(200);
@@ -214,7 +214,7 @@ int main(int argc, char **argv){
                 sendpackage[0] = 'N';
                 for(i=0;i<PLAYERCOUNT;i++){
                     if(threadvariables[i].socket != NULL)
-                        SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage));
+                        SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage)+1);
                 }
                 lastpop = pollerinfo.stack.population;
             }

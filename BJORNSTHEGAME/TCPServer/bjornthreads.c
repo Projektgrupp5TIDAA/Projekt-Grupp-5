@@ -38,7 +38,7 @@ int Handler(void* thr){
             /* If the incoming request is an information-probing request the server will send the necessary information */
             printf("Information request recieved, sending.\n");
             if(isEmptyStack(*(thread->stack))){
-                SDLNet_TCP_Send(socket, "F", 1);
+                SDLNet_TCP_Send(socket, "F", 2);
             }else{
                 sprintf(packet, "%s - %d/%d", SERVERNAME, (PLAYERCOUNT - (thread->stack->population)), PLAYERCOUNT);
                 SDLNet_TCP_Send(socket, packet, PACKETSIZE);
@@ -50,9 +50,8 @@ int Handler(void* thr){
             /* If the incoming request is a connection-request the server will, if possible assign an open slot */
             printf("Connection request recieved, assigning.\n");
             if(isEmptyStack(*(thread->stack)))
-                SDLNet_TCP_Send(socket, "F", 1);
+                SDLNet_TCP_Send(socket, "F", 2);
             else{
-                SDLNet_TCP_Send(socket, "A", 1);
                 clientvar = popStack(thread->stack);
                 clientvar->socket = socket;
             }
@@ -60,13 +59,13 @@ int Handler(void* thr){
         default:
             /* If the request is not recognized the server will return error */
             printf("ERROR: Bad request recieved.\n");
-            SDLNet_TCP_Send(socket, "ERROR: Bad request.", 40);
+            SDLNet_TCP_Send(socket, "ERROR: Bad request.", 20);
             SDLNet_TCP_Close(socket);
             return 1;
     }
 
     /* Gets the name from the client */
-    SDLNet_TCP_Send(socket, "A", 1);
+    SDLNet_TCP_Send(socket, "A", 2);
     SDLNet_TCP_Recv(socket, clientvar->playername, 20);
 
     printf("Player %s was assigned to thread %d.\n", clientvar->playername, clientvar->ID);
@@ -116,7 +115,7 @@ int Handler(void* thr){
                             strcpy(names.names[i], clientvar->names[i]);
                         }
                         memcpy(&serialnames, &names, sizeof(names));
-                        SDLNet_TCP_Send(socket, serialnames, sizeof(serialnames));
+                        SDLNet_TCP_Send(socket, serialnames, sizeof(serialnames)+1);
                         break;
                 }
             }

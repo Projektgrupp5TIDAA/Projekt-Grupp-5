@@ -18,11 +18,13 @@ int menu(ClientInfo* startup){
                 SDL_Delay(2000);
                 return 1;
             }
-            SDLNet_TCP_Send(startup->socket, "C", 1);
+            if(SDLNet_TCP_Send(startup->socket, "C", 2) != 2){
+                printf("Could not send connection request.\n");
+            }
             SDL_Delay(400);
             SDLNet_TCP_Recv(startup->socket, packet, 1);
             if(packet[0] == 'A')
-                SDLNet_TCP_Send(startup->socket, startup->playerName, strlen(startup->playerName));
+                SDLNet_TCP_Send(startup->socket, startup->playerName, strlen(startup->playerName)+1);
             else{
                 printf("Server is full!\n");
                 SDL_Delay(1000);
@@ -36,11 +38,13 @@ int menu(ClientInfo* startup){
                 return 1;
             }
             startup->socket = SDLNet_TCP_Open(&(startup->targethost)); 
-            SDLNet_TCP_Send(startup->socket, "C", 1);
+            SDL_Delay(500);
+            if(SDLNet_TCP_Send(startup->socket, "C", 2) != 2)
+                printf("Could not send connection request.\n");
             SDL_Delay(400);
             SDLNet_TCP_Recv(startup->socket, packet, 1);
             if(packet[0] == 'A')
-                SDLNet_TCP_Send(startup->socket, startup->playerName, strlen(startup->playerName));
+                SDLNet_TCP_Send(startup->socket, startup->playerName, strlen(startup->playerName)+1);
             else{
                 printf("Server is full!\n");
                 SDL_Delay(1000);
@@ -54,12 +58,14 @@ int menu(ClientInfo* startup){
                 return 1;
             }
             startup->socket = SDLNet_TCP_Open(&(startup->targethost)); 
-            SDLNet_TCP_Send(startup->socket, "C", 1);
+            if(SDLNet_TCP_Send(startup->socket, "C", 2) != 2){
+                printf("Could not send connection request.\n");
+            }
             SDL_Delay(400);
             strcpy(startup->playerName, "Direct");
             SDLNet_TCP_Recv(startup->socket, packet, 1);
             if(packet[0] == 'A')
-                SDLNet_TCP_Send(startup->socket, startup->playerName, strlen(startup->playerName));
+                SDLNet_TCP_Send(startup->socket, startup->playerName, strlen(startup->playerName)+1);
             else{
                 printf("Server is full!\n");
                 SDL_Delay(1000);
@@ -157,7 +163,7 @@ int menu(ClientInfo* startup){
                 }else{
                     startup->socket = SDLNet_TCP_Open(&(startup->targethost)); // open socket with the targethost
                     if(startup->socket != NULL){
-                        if(!(SDLNet_TCP_Send(startup->socket, "I", 1))){ //socket, data, length
+                        if(!(SDLNet_TCP_Send(startup->socket, "I", 1+1))){ //socket, data, length
                             printf("Could not connect to host: %s\n", SDLNet_GetError());
                         }else{
                             while(1){
@@ -179,9 +185,9 @@ int menu(ClientInfo* startup){
                                     if(SDL_GetMouseState(NULL,NULL)& SDL_BUTTON(SDL_BUTTON_LEFT)){
                                         startup->socket = SDLNet_TCP_Open(&(startup->targethost));
                                         if(startup->socket == NULL) return 1;
-                                        SDLNet_TCP_Send(startup->socket, "C", 1);
+                                        SDLNet_TCP_Send(startup->socket, "C", 1+1);
                                         SDL_Delay(200);
-                                        SDLNet_TCP_Send(startup->socket, startup->playerName, 20);
+                                        SDLNet_TCP_Send(startup->socket, startup->playerName, 20+1);
                                         SDL_Delay(100);
 
                                         /* Free the used resources and go onto the lobby */

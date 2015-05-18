@@ -52,6 +52,7 @@ int Handler(void* thr){
             if(isEmptyStack(*(thread->stack)))
                 SDLNet_TCP_Send(socket, "F", 1);
             else{
+                SDLNet_TCP_Send(socket, "A", 1);
                 clientvar = popStack(thread->stack);
                 clientvar->socket = socket;
             }
@@ -65,11 +66,8 @@ int Handler(void* thr){
     }
 
     /* Gets the name from the client */
-    while(1){
-        if(SDLNet_TCP_Recv(socket, clientvar->playername, 20)){
-            break;
-        }
-    }
+    SDLNet_TCP_Send(socket, "A", 1);
+    SDLNet_TCP_Recv(socket, clientvar->playername, 20);
 
     printf("Player %s was assigned to thread %d.\n", clientvar->playername, clientvar->ID);
 

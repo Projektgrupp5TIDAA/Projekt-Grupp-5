@@ -19,8 +19,15 @@ int menu(ClientInfo* startup){
                 return 1;
             }
             SDLNet_TCP_Send(startup->socket, "C", 1);
-            SDL_Delay(200);
-            SDLNet_TCP_Send(startup->socket, startup->playerName, 20);
+            SDL_Delay(400);
+            SDLNet_TCP_Recv(startup->socket, packet, 1);
+            if(packet[0] == 'A')
+                SDLNet_TCP_Send(startup->socket, startup->playerName, strlen(startup->playerName));
+            else{
+                printf("Server is full!\n");
+                SDL_Delay(1000);
+                return 1;
+            }
             SDL_Delay(100);
             return 0;
         }else if(startup->directConnect == 2){
@@ -30,8 +37,15 @@ int menu(ClientInfo* startup){
             }
             startup->socket = SDLNet_TCP_Open(&(startup->targethost)); 
             SDLNet_TCP_Send(startup->socket, "C", 1);
-            SDL_Delay(200);
-            SDLNet_TCP_Send(startup->socket, startup->playerName, 20);
+            SDL_Delay(400);
+            SDLNet_TCP_Recv(startup->socket, packet, 1);
+            if(packet[0] == 'A')
+                SDLNet_TCP_Send(startup->socket, startup->playerName, strlen(startup->playerName));
+            else{
+                printf("Server is full!\n");
+                SDL_Delay(1000);
+                return 1;
+            }
             SDL_Delay(100);
             return 0;
         }else{
@@ -41,9 +55,16 @@ int menu(ClientInfo* startup){
             }
             startup->socket = SDLNet_TCP_Open(&(startup->targethost)); 
             SDLNet_TCP_Send(startup->socket, "C", 1);
-            SDL_Delay(200);
+            SDL_Delay(400);
             strcpy(startup->playerName, "Direct");
-            SDLNet_TCP_Send(startup->socket, startup->playerName, 20);
+            SDLNet_TCP_Recv(startup->socket, packet, 1);
+            if(packet[0] == 'A')
+                SDLNet_TCP_Send(startup->socket, startup->playerName, strlen(startup->playerName));
+            else{
+                printf("Server is full!\n");
+                SDL_Delay(1000);
+                return 1;
+            }
             SDL_Delay(100);
             return 0;
         }

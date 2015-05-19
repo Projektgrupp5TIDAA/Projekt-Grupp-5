@@ -285,6 +285,7 @@ int animate(void* info){
 
     while (!quit) // while not Esc
     {
+        SDL_PumpEvents();
         SDL_RenderClear(Rend); // Clear the entire screen to our selected color/images.
         SDL_RenderCopy(Rend,  bakgroundTexture,NULL,NULL); //view the background on the render "screen"
 

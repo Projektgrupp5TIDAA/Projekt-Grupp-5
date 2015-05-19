@@ -1,5 +1,22 @@
-#include "gameplay.h"
+
+#include <stdio.h>
+#include <SDL2/SDL.h>
+#include <stdbool.h>
+#ifdef __APPLE__
+#include <SDL2_ttf/SDL_ttf.h>
+#include <SDL2_image/SDL_image.h>
+#include <SDL2_mixer/SDL_mixer.h>
+#include <SDL2_net/SDL_net.h>
+#else
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_net.h>
+#endif
+#include "bjornstartup.h"
+#include "lobby.h"
 #include "clientthreads.h"
+#include "gameplay.h"
 #include "animation.h"
 #define AMMOAMOUNT 3
 #define PLATFORMAMOUNT 14
@@ -18,6 +35,8 @@ int gameplayWindow(ClientInfo* information)
     bullet bulletDummy = {{0,0,0,0}, 0, 0, 0};
     SDL_Event event;
     
+    SDL_Init(SDL_INIT_EVERYTHING);
+
     /* to animate on the windows and ammo */
     animator.player = &playerDummy;
 

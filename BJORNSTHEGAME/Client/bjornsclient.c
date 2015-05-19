@@ -54,6 +54,7 @@ int main(int argc, char *argv[]){
 
     /* Clean up */
     printf("Going to the gameplay!\n");
+    SDL_Quit();
     gameplayWindow(&startup);
 
     if((startup.socket) != NULL)

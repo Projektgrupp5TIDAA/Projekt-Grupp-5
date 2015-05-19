@@ -136,7 +136,7 @@ int LobbyWindow(ClientInfo* lobbyConnection){
         }
     }
 
-    timethr = SDL_CreateThread(timepoll, "Time", (void*)&timer);
+    timethr = SDL_CreateThread(timepoll, "Time", (void*)&timerinfo);
     if(timethr == NULL){
         fprintf(stderr, "Could not create the timer thread: %s\n", SDL_GetError());
         return 1;
@@ -179,7 +179,7 @@ int LobbyWindow(ClientInfo* lobbyConnection){
                     endLobby = 1;
                     break;
                 default:
-                    printf("Invalid package recieved!\n");
+                    printf("Invalid package recieved: %s\n", packet);
                     break;
             }
         }
@@ -266,7 +266,7 @@ int timepoll(void* inctimer){
     lbytmr* timer = (lbytmr*) inctimer;
     printf("Timer thread started!\n");
     SDL_Delay(1000);
-    while(!(*(timer->quit))){
+    while((*(timer->quit)) != 0){
         if((*(timer->timer)) > 0){
             (*(timer->timer))--;
             printf("Time ticking: %d\n", *(timer->timer));

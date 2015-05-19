@@ -120,6 +120,20 @@ int animate(void* info){
     myText[2]=SDL_CreateTextureFromSurface(Rend,textsurface[2]);
     myText[3]=SDL_CreateTextureFromSurface(Rend,textsurface[3]);
 
+    /* Free the used surfaces since we won't use them anymore */
+    SDL_FreeSurface(gameBackground);
+    SDL_FreeSurface(ground);
+    SDL_FreeSurface(platform1);
+    SDL_FreeSurface(platform2);
+    SDL_FreeSurface(band);
+    SDL_FreeSurface(playerSurface);
+    SDL_FreeSurface(bjorns);
+    SDL_FreeSurface(ammo);
+    SDL_FreeSurface(bullet);
+    for(i=0;i<TEXTAMOUNT;i++){
+        SDL_FreeSurface(textsurface[i]);
+    }
+
     /*set position for every platform on screen*/
     animator->platforms[0].x = 0;
     animator->platforms[0].y = screen->h-(screen->h*0.06);
@@ -294,6 +308,7 @@ int animate(void* info){
         {
             SDL_RenderCopy(Rend, bjornDrapare, NULL, &bjornDrapRect[i]);
         }
+        
         for(i=0; i<3; i++) // copy all text to the render "screen"
         {
             SDL_RenderCopy(Rend, myText[i], NULL, &textRect[i]);
@@ -332,7 +347,7 @@ int animate(void* info){
     SDL_DestroyTexture(player);
     SDL_DestroyRenderer(Rend);
     SDL_DestroyWindow(animator->window);
-    //  SDL_DestroyWindow(bakgroundTexture);
+
     return 0;
 }
 

@@ -46,8 +46,8 @@ int gameplayWindow(ClientInfo* information)
     animatorThread = SDL_CreateThread(animate, "Animator", (void*)&animator);
     SDL_Delay(500);
     SDL_Surface* screen = SDL_GetWindowSurface(animator.window);
-    /*updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
-    timerThread = SDL_CreateThread(timeupdater, "Timer", (void*)&timer);*/
+    updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
+    timerThread = SDL_CreateThread(timeupdater, "Timer", (void*)&timer);
 
     playerDummy.pos.y = screen->h/4*3+60;
     playerDummy.pos.x = screen->w/2;
@@ -64,7 +64,7 @@ int gameplayWindow(ClientInfo* information)
         {
             if (event.type == SDL_QUIT)
             {
-                quit = true;
+                quit = 1;
             }
             if(event.type == SDL_KEYDOWN)
             {
@@ -72,7 +72,7 @@ int gameplayWindow(ClientInfo* information)
                 switch(event.key.keysym.sym)
                 {
                     case SDLK_ESCAPE:
-                        quit = true;
+                        quit = 1;
                         break;
                     case SDLK_LEFT:
                         bulletDummy.direction=-1;
@@ -148,17 +148,17 @@ int gameplayWindow(ClientInfo* information)
                             ammo--;
                         }else{
                             ammo=3;
-                            SDL_Delay(500);
+                            SDL_Delay(2000);
                         }
                         break;
                     case SDLK_SPACE:
                         playerDummy.pos.y -= SPEEDy+ 200;
                         for(i=0; i<PLATFORMAMOUNT; i++){
                             if(checkCollision(playerDummy.pos,animator.platforms[i]))
-                                    {
-                                        playerDummy.pos.y +=GRAVITY;
-                                    }
-                                }
+                            {
+                                playerDummy.pos.y +=GRAVITY;
+                            }
+                        }
                         sendPlayerUpdate(playerDummy, &information->socket);
                         playerDummy.pos.y += GRAVITY;
                         for(i=0; i<PLATFORMAMOUNT; i++){
@@ -170,9 +170,9 @@ int gameplayWindow(ClientInfo* information)
                         break;
                     default:
                         break;
-                }
-            SDL_Delay(5);            
+                }        
             }
+            SDL_Delay(5);    
         }
     }
 

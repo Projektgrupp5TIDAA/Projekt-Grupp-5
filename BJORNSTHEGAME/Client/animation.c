@@ -67,9 +67,9 @@ int animate(void* info){
         Rend = SDL_CreateRenderer(animator->window, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
     if(!Rend)
         printf("Couldn't start the render: %s\n", SDL_GetError());
-    
+
     bakgroundTexture = SDL_CreateTextureFromSurface(Rend,gameBackground); //Load texture with image "bar.jpg" and Rend
-    
+
     /*text*/
     SDL_Color colorT= {170,60,255};
     TTF_Font *font = TTF_OpenFont("../Images/game/StencilStd.ttf", 100);
@@ -93,7 +93,7 @@ int animate(void* info){
     picture[1]= SDL_CreateTextureFromSurface(Rend,band);
     picture[2]= SDL_CreateTextureFromSurface(Rend,platform1);
     picture[3]= SDL_CreateTextureFromSurface(Rend,platform2);
-    
+
     int loopcounter;
     for (loopcounter = 4; loopcounter < PLATFORMAMOUNT; ++loopcounter)
     {
@@ -170,7 +170,7 @@ int animate(void* info){
     animator->platforms[10].w = 170;
     animator->platforms[10].h = 30;
 
-    animator->platforms[11].x = screen ->w/3 +300;
+    animator->platforms[11].x = screen ->w/3 +350;
     animator->platforms[11].y = screen -> h/2 -140;
     animator->platforms[11].w = 170;
     animator->platforms[11].h = 30;
@@ -340,11 +340,11 @@ int animate(void* info){
     return 0;
 }
 
-/* gravity fucntion 
+/* gravity fucntion
 void moveUP(int* test, SDL_Rect wall, SDL_Surface* s){
-    
+
     float my_gravity= 0.2, MaxFall_speed= 0.5, MyJump_force=5.0, CurJump_force=0.0, Delta_time;
-    
+
     CurJump_force=MyJump_force;
     *(test)+=CurJump_force * Delta_time;
     if(CurJump_force > MaxFall_speed){

@@ -30,8 +30,8 @@ int gameplayWindow(ClientInfo* information)
         return 1;
     }
     SDL_Surface* screen = SDL_GetWindowSurface(updater.window);
-    
-    /* to animate on the windows and ammo */ 
+
+    /* to animate on the windows and ammo */
     animator.window = updater.window;
     animator.player = &playerDummy;
 
@@ -44,9 +44,9 @@ int gameplayWindow(ClientInfo* information)
 
     playerDummy.pos.y = screen->h/4*3+60;
     playerDummy.pos.x = screen->w/2;
-    playerDummy.pos.h = screen->h*0.11;
-    playerDummy.pos.w = screen->w*0.034;
-    
+      playerDummy.pos.h = screen->h*0.08;
+    playerDummy.pos.w = screen->w*0.030;
+
     bulletDummy.pos.y = 0;
     bulletDummy.pos.x = 0;
     bulletDummy.pos.h = screen->h*0.013;
@@ -103,7 +103,7 @@ int gameplayWindow(ClientInfo* information)
                         }
                         sendPlayerUpdate(playerDummy, &information->socket);
                         break;
-                        
+
                     case SDLK_RIGHT:
                         bulletDummy.direction = 1;
                         playerDummy.pos.x += SPEEDx;
@@ -136,7 +136,7 @@ int gameplayWindow(ClientInfo* information)
                         }
                         sendPlayerUpdate(playerDummy, &information->socket);
                         break;
-                        
+
                     case SDLK_x:
                         printf("Shooting!\n");
                         if(ammo > 0){

@@ -58,7 +58,7 @@ int updateHandler(void* incinfo){
 					/*for(i=0;i<PLAYERCOUNT;i++)
 						printf("Player %d: %d, %d\n", i, info->players[i]->pos.x, info->players[i]->pos.y);*/
 					break;
-				case 'C':
+				/*case 'C':
 					printf("Chat recieved!\n");
 					parseString(packet,1,strlen(packet));
                     for(i=5;i>0;i--){
@@ -69,7 +69,7 @@ int updateHandler(void* incinfo){
                     strcpy(chatmessages[0], message);
                     emptyString(message, strlen(message));
                     strcpy(chatmessages[1], packet);
-					break;
+					break;*/
 				case 'B':
                     printf("Bulletupdate recieved!\n");
                     parseString(packet, 1, sizeof(packet));
@@ -95,11 +95,7 @@ int updateHandler(void* incinfo){
 					break;
 			}
 		}else SDL_Delay(50);
-		for(i=0;i<5;i++){
-            textToScreen(chatfont, chat[i], info->window, chatmessages[i]);
-        }
 	}
-
 	return 0;
 }
 

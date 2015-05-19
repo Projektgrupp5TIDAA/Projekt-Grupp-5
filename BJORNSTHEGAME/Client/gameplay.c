@@ -33,7 +33,6 @@ int gameplayWindow(ClientInfo* information)
     SDL_Surface* screen = SDL_GetWindowSurface(updater.window);
 
     /* to animate on the windows and ammo */
-    animator.window = updater.window;
     animator.player = &playerDummy;
 
     updater.players = &(animator.players[0]);
@@ -48,9 +47,8 @@ int gameplayWindow(ClientInfo* information)
     SDL_Delay(500);
     SDL_Surface* screen = SDL_GetWindowSurface(animator.window);
     updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
-
-
     timerThread = SDL_CreateThread(timeupdater, "Timer", (void*)&timer);
+
     printf("timerThread is actually working\n");
     playerDummy.pos.y = screen->h/4*3+60;
     playerDummy.pos.x = screen->w/2;

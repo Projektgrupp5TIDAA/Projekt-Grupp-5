@@ -28,7 +28,6 @@ typedef struct{
 /* Struct containing information on all the players */
 typedef struct{
 	int *quit, timer;
-	SDL_Window* window;
 	TCPsocket* socket;
 	playerInfo* players;
     bullet* bullets[12];

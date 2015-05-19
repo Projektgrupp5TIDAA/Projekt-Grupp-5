@@ -71,13 +71,13 @@ int LobbyWindow(ClientInfo* lobbyConnection){
 
 
     //CHECK IF SDL IS NOT WORKING
-    if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+    /*if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
     {
         printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
     }
 
     else
-    {
+    {*/
         //Create window
         lobby = SDL_CreateWindow(   "BJORNSLOBBY",
                                     SDL_WINDOWPOS_UNDEFINED,
@@ -134,7 +134,7 @@ int LobbyWindow(ClientInfo* lobbyConnection){
                 typing[0].y=(lobbySurface->h)/5 * 4 + 16;
             }
         }
-    }
+    //}
 
     timethr = SDL_CreateThread(timepoll, "Time", (void*)&timerinfo);
     if(timethr == NULL){
@@ -227,6 +227,7 @@ int LobbyWindow(ClientInfo* lobbyConnection){
         SDL_Delay(20);
     }
     printf("Shut down in progress\n");
+    SDL_WaitThread(timethr);
     SDL_DestroyWindow(lobby); //Destroy window
     SDL_FreeSurface(lobbyBackground);
     SDL_FreeSurface(exitButton);
@@ -266,7 +267,7 @@ int timepoll(void* inctimer){
     lbytmr* timer = (lbytmr*) inctimer;
     printf("Timer thread started!\n");
     SDL_Delay(1000);
-    while((*(timer->quit)) != 0){
+    while(!(*(timer->quit))){
         if((*(timer->timer)) > 0){
             (*(timer->timer))--;
             printf("Time ticking: %d\n", *(timer->timer));

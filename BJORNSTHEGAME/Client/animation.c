@@ -26,6 +26,7 @@
 int animate(void* info){
     animationInfo* animator = (animationInfo*) info;
     int i, quit=0;
+
     animator->window = SDL_CreateWindow("BJORNS THE GAME",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
@@ -36,6 +37,7 @@ int animate(void* info){
         printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
         return 1;
     }
+
     /*Loading and declaration of all images*/
     SDL_Surface* gameBackground = IMG_Load("../Images/game/bar.jpg");;
     SDL_Surface* ground = IMG_Load("../Images/game/ground2.png");
@@ -54,7 +56,7 @@ int animate(void* info){
     SDL_Texture* bakgroundTexture;
     SDL_Texture* picture[PLATFORMAMOUNT];
     SDL_Texture* bjornDrapare[DRINKAMOUNT];
-    SDL_Texture* caps[AMMOAMOUNT];
+    SDL_Texture* caps[AMMOAMOUNT];  
     SDL_Texture* myText[TEXTAMOUNT];
     SDL_Texture* bulletTex;
 

@@ -73,8 +73,6 @@ int animate(void* info){
     SDL_Surface* screen = SDL_GetWindowSurface(animator->window); //get the screen size
     printf("Width: %d, Height: %d\n", screen->w, screen->h);
 
-    //SDL_DestroyRenderer(animator->window);
-    //printf("destroy lyckades\n");
     Rend=SDL_GetRenderer(animator->window);
     if(!Rend)
         Rend = SDL_CreateRenderer(animator->window, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
@@ -270,7 +268,7 @@ int animate(void* info){
         textSprite[i].w = (textsurface[3]->w/6);
         textSprite[i].h = textsurface[3]->h;
     }
-printf("before the !quit loop\n");
+
     while (!quit) // while not Esc
     {
         SDL_RenderClear(Rend); // Clear the entire screen to our selected color/images.
@@ -315,7 +313,6 @@ printf("before the !quit loop\n");
 
 
     //Destroy window
-    SDL_DestroyWindow(animator->window);
     //Quit SDL subsystems
 
     /*Destroy all textures*/
@@ -333,8 +330,9 @@ printf("before the !quit loop\n");
     SDL_DestroyTexture(caps);
     SDL_DestroyTexture(bjornDrapare);
     SDL_DestroyTexture(player);
-    //  SDL_DestroyWindow(bakgroundTexture);
     SDL_DestroyRenderer(Rend);
+    SDL_DestroyWindow(animator->window);
+    //  SDL_DestroyWindow(bakgroundTexture);
     return 0;
 }
 

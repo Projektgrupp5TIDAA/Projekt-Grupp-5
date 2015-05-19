@@ -89,11 +89,11 @@ int updateHandler(void* incinfo){
 }
 
 int timeupdater(void* inc_time){
-    timerInfo* timer= (timerInfo*) inc_time;
+    timerInfo* timer = (timerInfo*) inc_time;
     int i, j;
     printf("Timer thread uppdater started\n");
     SDL_Delay(1000);
-    while((*(timer->quit))!=1){
+    while((*(timer->quit)) != 1){
         if(*(timer->timer) > 0){
             (*(timer->timer))--;
 
@@ -112,8 +112,8 @@ int timeupdater(void* inc_time){
 	        }
 
             printf("Gameplay time: %d is ticking\n", *(timer->timer));
-        }else SDL_Delay(10); printf("timern inte satt\n");
+        }else SDL_Delay(10);
     }
-    printf("timeupdater klar\n");
+    printf("Timeupdater klar\n");
     return 0;
 }

@@ -52,11 +52,11 @@ void pushString(DataStack *stack, char* pushStr, int len){
 	if(isFullStrStack(*stack)){
 		fprintf(stderr, "Error adding to the stack: Stack is full\n");
 	}else{
-		printf("PUSHING TO THE STACK\n");
+		//printf("PUSHING TO THE STACK\n");
 		memcpy(stack->item[stack->population], pushStr, len);
 		//strcpy(stack->item[stack->population], pushStr);
 		(stack->population)++;
-		printf("PUSHING TO THE STACK END\n");
+		//printf("PUSHING TO THE STACK END\n");
 	}
 }
 
@@ -65,11 +65,11 @@ void popString(DataStack *stack, char* string, int len){
 	if(isEmptyStrStack(*stack)){
 		fprintf(stderr, "Error taking from stack: Stack is Empty\n");
 	}else{
-		printf("TAKING FROM THE STACK\n");
+		//printf("TAKING FROM THE STACK\n");
 		(stack->population)--;
 		emptyString(string, strlen(string));
 		memcpy(string, stack->item[stack->population], len);
-		printf("TAKING FROM THE STACK END\n");
+		//printf("TAKING FROM THE STACK END\n");
 		//strcpy(string, *(stack->item));
 	}
 }

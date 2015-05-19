@@ -91,7 +91,7 @@ int Handler(void* thr){
             }else{
                 switch(packet[0]){
                     case 'B':
-                        printf("Bullet data recieved, pushing to stack!\n");
+                        //printf("Bullet data recieved, pushing to stack!\n");
                         parseString(packet, -1, sizeof(packet));
                         packet[0] = 'B';
                         packet[1] = clientvar->ID;
@@ -101,15 +101,15 @@ int Handler(void* thr){
                         //printf("Player data recieved, updating!\n");
                         parseString(packet, 1, sizeof(packet));
                         memcpy(clientvar->player, &packet, sizeof(pinfo));
-                        printf("Player data: %d, %d\n", clientvar->player->pos.x, clientvar->player->pos.y);
+                        //printf("Player data: %d, %d\n", clientvar->player->pos.x, clientvar->player->pos.y);
                         *(clientvar->newdata)=1;
                         break;
                     case 'C':
-                        printf("Chat message recieved, pushing to stack!\n");
+                        //printf("Chat message recieved, pushing to stack!\n");
                         pushString(thread->cstack, packet, sizeof(packet));
                         break;
                     case 'N':
-                        printf("Name request recieved, sending!\n");
+                        //printf("Name request recieved, sending!\n");
                         for(i=0;i<PLAYERCOUNT;i++){
                             names.ID[i] = i;
                             strcpy(names.names[i], clientvar->names[i]);
@@ -177,7 +177,7 @@ int timer(void* information){
 
             /* The powerup-timer, checks all the powerups to see if they are active or not, if they are inactive
                they will be assigned a time on the game-timer that will trigger them once the timer hits that value */
-            printf("Ticking. Timer: %d, Powerups: %d\n", (info->maintimer), info->powerup);
+            //printf("Ticking. Timer: %d, Powerups: %d\n", (info->maintimer), info->powerup);
             for(i=0;i<10;i++){
                 if(!(is_set(info->powerup, i+1))){
                     if((info->maintimer) == timerset[i]){

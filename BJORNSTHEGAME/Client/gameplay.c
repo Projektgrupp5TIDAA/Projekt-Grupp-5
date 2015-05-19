@@ -51,7 +51,7 @@ int gameplayWindow(ClientInfo* information)
             if (event.type == SDL_QUIT)
             {
                 quit = 1;
-            }
+            }else
             if(event.type == SDL_KEYDOWN)
             {
                 //Select surfaces based on key press
@@ -63,13 +63,13 @@ int gameplayWindow(ClientInfo* information)
                     case SDLK_LEFT:
                         bulletDummy.direction=-1;
                         playerDummy.pos.x -= SPEEDx;
-                        /*for(i=0; i<PLATFORMAMOUNT; i++)
+                        for(i=0; i<PLATFORMAMOUNT; i++)
                         {
                             if(( playerDummy.pos.x < 0 ) || ( playerDummy.pos.x + playerDummy.pos.w >screen ->w ) ||checkCollision(playerDummy.pos,animator.platforms[i])==true)
                             {
                                 playerDummy.pos.x+= SPEEDx;
                             }
-                        }*/
+                        }
                         animator.flip = SDL_FLIP_HORIZONTAL;
 
                         if(animator.frame == 2)
@@ -132,10 +132,8 @@ int gameplayWindow(ClientInfo* information)
                             bulletDummy.TTL = BULLET_TTL;
                             sendBulletUpdate(bulletDummy, &information->socket);
                             ammo--;
-                            SDL_Delay(50);
                         }else{
                             ammo=3;
-                            SDL_Delay(2000);
                         }
                         break;
                     case SDLK_SPACE:
@@ -160,7 +158,7 @@ int gameplayWindow(ClientInfo* information)
                         SDL_Delay(8);//For dani
                         break;
                 }        
-            }
+            }else printf("Hejsan, hit kommer man om man drar musen!\n");
         }
     }
 

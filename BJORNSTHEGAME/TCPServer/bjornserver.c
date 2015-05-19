@@ -156,7 +156,7 @@ int main(int argc, char **argv){
             /* Keeps the game active as long as there is players connected to the server */
             while(timerinfo.maintimer > 0 && (pollerinfo.stack.population < 5)){
                 if(newdata == 1){
-                    printf("Sending player update message!\n");
+                    //printf("Sending player update message!\n");
                     memcpy(&sendpackage, &playersend, sizeof(playersend));
                     //popString(&pollerinfo.dstack, sendpackage, sizeof(sendpackage));
                     parseString(sendpackage, -1, sizeof(sendpackage));
@@ -177,8 +177,8 @@ int main(int argc, char **argv){
                     }else SDL_Delay(200);
                 }
 
-                while(!(isEmptyStrStack(pollerinfo.dstack))){
-                    printf("Sending the bullet position update");
+                if(!(isEmptyStrStack(pollerinfo.dstack))){
+                    //printf("Sending the bullet position update");
                     popString(&pollerinfo.dstack, sendpackage, sizeof(sendpackage));
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket != NULL)

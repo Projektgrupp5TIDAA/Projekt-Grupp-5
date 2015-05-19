@@ -55,8 +55,8 @@ int animate(void* info){
     SDL_Texture* player = NULL;
     SDL_Texture* bakgroundTexture;
     SDL_Texture* picture[PLATFORMAMOUNT];
-    SDL_Texture* bjornDrapare[DRINKAMOUNT];
-    SDL_Texture* caps[AMMOAMOUNT];  
+    SDL_Texture* bjornDrapare=NULL;
+    SDL_Texture* caps=NULL;
     SDL_Texture* myText[TEXTAMOUNT];
     SDL_Texture* bulletTex;
 
@@ -113,13 +113,8 @@ int animate(void* info){
         picture[loopcounter]= SDL_CreateTextureFromSurface(Rend,platform1);
     }
 
-    caps[0]= SDL_CreateTextureFromSurface(Rend,ammo);
-    caps[1]= SDL_CreateTextureFromSurface(Rend,ammo);
-    caps[2]= SDL_CreateTextureFromSurface(Rend,ammo);
-
-    bjornDrapare[0]=SDL_CreateTextureFromSurface(Rend,bjorns);
-    bjornDrapare[1]=SDL_CreateTextureFromSurface(Rend,bjorns);
-
+    caps= SDL_CreateTextureFromSurface(Rend,ammo);
+    bjornDrapare=SDL_CreateTextureFromSurface(Rend,bjorns);
     bulletTex = SDL_CreateTextureFromSurface(Rend, bullet);
 
     myText[0]=SDL_CreateTextureFromSurface(Rend,textsurface[0]);
@@ -294,12 +289,12 @@ printf("before the !quit loop\n");
 
         for(i=0; i<(*(animator->ammo)); i++) //copy all ammo to the render
         {
-            SDL_RenderCopy(Rend, caps[i], NULL, &capsRect[i]);
+            SDL_RenderCopy(Rend, caps, NULL, &capsRect[i]);
         }
 
         for(i=0; i<DRINKAMOUNT; i++) //copy all "bjornDrapare" to the render "the screen"
         {
-            SDL_RenderCopy(Rend, bjornDrapare[i], NULL, &bjornDrapRect[i]);
+            SDL_RenderCopy(Rend, bjornDrapare, NULL, &bjornDrapRect[i]);
         }
         for(i=0; i<3; i++) // copy all text to the render "screen"
         {
@@ -329,22 +324,14 @@ printf("before the !quit loop\n");
         SDL_DestroyTexture(picture[i]);
     }
 
-    for(i=0; i<AMMOAMOUNT; i++)
-    {
-        SDL_DestroyTexture(caps[i]);
-    }
-
-    for(i=0; i<DRINKAMOUNT; i++)
-    {
-        SDL_DestroyTexture(bjornDrapare[i]);
-    }
 
     for(i=0; i<TEXTAMOUNT; i++)
     {
         SDL_DestroyTexture(myText[i]);
     }
 
-
+    SDL_DestroyTexture(caps);
+    SDL_DestroyTexture(bjornDrapare);
     SDL_DestroyTexture(player);
     //  SDL_DestroyWindow(bakgroundTexture);
     SDL_DestroyRenderer(Rend);

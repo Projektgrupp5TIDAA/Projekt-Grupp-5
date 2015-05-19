@@ -28,6 +28,7 @@ int LobbyWindow(ClientInfo* lobbyConnection){
     TTF_Font* chatfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 18);
     TTF_Font* timerfont= TTF_OpenFont("../Images/menu/StencilStd.ttf", 70);
     SDL_Window* lobby;
+    lbytmr timerinfo;
     const Uint8* keys;
 
     //surface for window
@@ -64,6 +65,8 @@ int LobbyWindow(ClientInfo* lobbyConnection){
     int mousePosition[2] = {0, 0};
     //gameloop
     int endLobby = 0;
+    timerinfo.quit = &endLobby;
+    timerinfo.timer = &timer;
     //*****************************************************
 
 
@@ -224,7 +227,6 @@ int LobbyWindow(ClientInfo* lobbyConnection){
         SDL_Delay(20);
     }
     printf("Shut down in progress\n");
-    SDL_FreeSurface(lobbySurface);
     SDL_DestroyWindow(lobby); //Destroy window
     SDL_FreeSurface(lobbyBackground);
     SDL_FreeSurface(exitButton);
@@ -261,13 +263,13 @@ void parseString(char* inc, int hops, int len){
 
 /* Timer thread, uses delay to count down an int */
 int timepoll(void* inctimer){
-    int* timer = (int*) inctimer;
+    lbytmr* timer = (lbytmr*) inctimer;
     printf("Timer thread started!\n");
     SDL_Delay(1000);
-    while(1){
-        if((*(timer)) > 0){
-            (*(timer))--;
-            printf("Time ticking: %d\n", *timer);
+    while(!(*(timer->quit))){
+        if((*(timer->timer)) > 0){
+            (*(timer->timer))--;
+            printf("Time ticking: %d\n", *(timer->timer));
         }
         SDL_Delay(995);
     }

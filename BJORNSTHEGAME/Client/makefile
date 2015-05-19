@@ -10,7 +10,7 @@ ifeq ($(OS),Windows_NT)
 else
 	UNAME_TARGET := $(shell uname -s)
 	ifeq ($(UNAME_TARGET),Linux)
-		CFLAGS=-lSDL2 -lSDL2_net -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lSDL2_image -lSDL2_mixer -lSDL2_ttf
+		CFLAGS=-g -lSDL2 -lSDL2_net -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 	objectlist = bjornsclient.o bjornstartup.o lobby.o gameplay.o clientthreads.o animation.o
 	endif
 	ifeq ($(UNAME_TARGET),Darwin)

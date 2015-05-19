@@ -6,6 +6,10 @@ typedef struct{
     char names[6][20];
 }nrecv;
 
+typedef struct{
+	int *timer, *quit;
+}lbytmr;
+
 int LobbyWindow(ClientInfo* lobbyConnection);
 
 void parseString(char* inc, int hops, int len);

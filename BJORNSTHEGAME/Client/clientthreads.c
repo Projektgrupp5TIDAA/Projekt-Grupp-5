@@ -24,19 +24,8 @@ int updateHandler(void* incinfo){
 	printf("Update poller running.\n");
 	SDLNet_SocketSet activity = SDLNet_AllocSocketSet(1);
 	SDLNet_AddSocket(activity, *(info->socket));
-	char packet[512], *message;
-	SDL_Rect chat[20];
-    char chatmessages[6][512]={{0}};
-    TTF_Font* chatfont= TTF_OpenFont("../Images/menu/coolvetica.ttf", 18);
+	char packet[512];
 	int i, tmpID;
-
-	SDL_Surface* screen = SDL_GetWindowSurface(info->window);
-
-	/* Chat positions 
-	for(i=0;i<6;i++){
-        chat[i].x=(screen->w)/3 * 2 + 5;
-        chat[i].y=(screen->h)/5 * 4 - (22*(i+1));
-    }
 
     /* The main polling-loop */
 	while(1){

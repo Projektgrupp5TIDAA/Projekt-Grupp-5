@@ -11,7 +11,7 @@ int gameplayWindow(ClientInfo* information)
 {
     int i, quit=0, ammo=AMMOAMOUNT, drunk=0;
     animationInfo animator = {0, &quit, &ammo, &drunk, NULL, NULL, {{0, 0, {0, 0, 0, 0}}}, SDL_FLIP_NONE, {{{0,0,0,0}, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
-    updaterInfo updater = {&quit, 0, NULL, &(information->socket), NULL};
+    updaterInfo updater = {&quit, 0, &(information->socket), NULL};
     timerInfo timer = {&updater.timer, &quit, {NULL}};
     SDL_Thread* updaterThread, *animatorThread, *timerThread;
     playerInfo playerDummy = {5, 0, {0, 0, 0, 0}};
@@ -30,7 +30,7 @@ int gameplayWindow(ClientInfo* information)
         return 1;
     }
     //SDL_CreateWindowAndRenderer(1280, 800, 0, updater.window)
-    SDL_Surface* screen = SDL_GetWindowSurface(updater.window);
+    SDL_Surface* screen = SDL_GetWindowSurface(updater.window);*/
 
     /* to animate on the windows and ammo */
     animator.player = &playerDummy;

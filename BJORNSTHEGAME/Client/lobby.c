@@ -227,7 +227,7 @@ int LobbyWindow(ClientInfo* lobbyConnection){
         SDL_Delay(20);
     }
     printf("Shut down in progress\n");
-    SDL_WaitThread(timethr);
+    SDL_WaitThread(timethr, &i);
     SDL_DestroyWindow(lobby); //Destroy window
     SDL_FreeSurface(lobbyBackground);
     SDL_FreeSurface(exitButton);

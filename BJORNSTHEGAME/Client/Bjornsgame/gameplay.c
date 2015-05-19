@@ -11,14 +11,28 @@ int gameplayWindow(ClientInfo* information)
 {
     int i, quit=0, ammo=AMMOAMOUNT, drunk=0;
     animationInfo animator = {0, &quit, &ammo, &drunk, NULL, NULL, {{0, 0, {0, 0, 0, 0}}}, SDL_FLIP_NONE, {{{0,0,0,0}, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
-    updaterInfo updater = {&quit, 0, &(information->socket), NULL};
+    updaterInfo updater = {&quit, 0, NULL, &(information->socket), NULL};
     timerInfo timer = {&updater.timer, &quit, {NULL}};
     SDL_Thread* updaterThread, *animatorThread, *timerThread;
     playerInfo playerDummy = {5, 0, {0, 0, 0, 0}};
     bullet bulletDummy = {{0,0,0,0}, 0, 0, 0};
     SDL_Event event;
+
+    //Create a window
+    updater.window = SDL_CreateWindow("BJORNS THE GAME",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        1280,800,
+        0);//SDL_WINDOW_FULLSCREEN_DESKTOP);
+    if(updater.window == NULL)
+    {
+        printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+        return 1;
+    }
+    SDL_Surface* screen = SDL_GetWindowSurface(updater.window);
     
-    /* to animate on the windows and ammo */
+    /* to animate on the windows and ammo */ 
+    animator.window = updater.window;
     animator.player = &playerDummy;
 
     updater.players = &(animator.players[0]);
@@ -28,29 +42,28 @@ int gameplayWindow(ClientInfo* information)
         timer.bullets[i] = &(animator.bullets[i]);
     }
 
-
-    animatorThread = SDL_CreateThread(animate, "Animator", (void*)&animator);
-    SDL_Delay(500);
-    SDL_Surface* screen = SDL_GetWindowSurface(animator.window);
-    updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
-    timerThread = SDL_CreateThread(timeupdater, "Timer", (void*)&timer);
-
     playerDummy.pos.y = screen->h/4*3+60;
     playerDummy.pos.x = screen->w/2;
-    playerDummy.pos.h = screen->h*0.08;
-    playerDummy.pos.w = screen->w*0.030;
-
+    playerDummy.pos.h = screen->h*0.11;
+    playerDummy.pos.w = screen->w*0.034;
+    
     bulletDummy.pos.y = 0;
     bulletDummy.pos.x = 0;
     bulletDummy.pos.h = screen->h*0.013;
     bulletDummy.pos.w = screen->w*0.0030;
+
+    updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
+
+    animatorThread = SDL_CreateThread(animate, "Animator", (void*)&animator);
+
+    timerThread = SDL_CreateThread(timeupdater, "Timer", (void*)&timer);
 
     while(!quit){
         while (SDL_PollEvent(&event)) //events
         {
             if (event.type == SDL_QUIT)
             {
-                quit = 1;
+                quit = true;
             }
             if(event.type == SDL_KEYDOWN)
             {
@@ -58,7 +71,7 @@ int gameplayWindow(ClientInfo* information)
                 switch(event.key.keysym.sym)
                 {
                     case SDLK_ESCAPE:
-                        quit = 1;
+                        quit = true;
                         break;
                     case SDLK_LEFT:
                         bulletDummy.direction=-1;
@@ -90,7 +103,7 @@ int gameplayWindow(ClientInfo* information)
                         }
                         sendPlayerUpdate(playerDummy, &information->socket);
                         break;
-
+                        
                     case SDLK_RIGHT:
                         bulletDummy.direction = 1;
                         playerDummy.pos.x += SPEEDx;
@@ -123,7 +136,7 @@ int gameplayWindow(ClientInfo* information)
                         }
                         sendPlayerUpdate(playerDummy, &information->socket);
                         break;
-
+                        
                     case SDLK_x:
                         printf("Shooting!\n");
                         if(ammo > 0){
@@ -132,20 +145,19 @@ int gameplayWindow(ClientInfo* information)
                             bulletDummy.TTL = BULLET_TTL;
                             sendBulletUpdate(bulletDummy, &information->socket);
                             ammo--;
-                            SDL_Delay(50);
                         }else{
                             ammo=3;
-                            SDL_Delay(2000);
+                            SDL_Delay(500);
                         }
                         break;
                     case SDLK_SPACE:
                         playerDummy.pos.y -= SPEEDy+ 200;
                         for(i=0; i<PLATFORMAMOUNT; i++){
                             if(checkCollision(playerDummy.pos,animator.platforms[i]))
-                            {
-                                playerDummy.pos.y +=GRAVITY;
-                            }
-                        }
+                                    {
+                                        playerDummy.pos.y +=GRAVITY;
+                                    }
+                                }
                         sendPlayerUpdate(playerDummy, &information->socket);
                         playerDummy.pos.y += GRAVITY;
                         for(i=0; i<PLATFORMAMOUNT; i++){
@@ -156,10 +168,9 @@ int gameplayWindow(ClientInfo* information)
                         sendPlayerUpdate(playerDummy, &information->socket);
                         break;
                     default:
-                        printf("Wrong key! :D\n");
-                        SDL_Delay(8);//For dani
                         break;
-                }        
+                }
+
             }
         }
     }
@@ -167,6 +178,8 @@ int gameplayWindow(ClientInfo* information)
     SDL_WaitThread(updaterThread, &i);
     SDL_WaitThread(animatorThread, &i);
     SDL_WaitThread(timerThread, &i);
+    SDL_Quit();
+    TTF_Quit();
     return 0;
 
 }
@@ -220,7 +233,7 @@ int sendPlayerUpdate(playerInfo playerDummy, TCPsocket* socket){
     char serializedplayer[sizeof(playerInfo)+2] = {0};
     memcpy(&serializedplayer, &playerDummy, sizeof(playerDummy));
     parseString(serializedplayer, -1, sizeof(serializedplayer));
-    //printf("PlayerDummy x+y = %d, %d\n", playerDummy.pos.x, playerDummy.pos.y);
+    printf("PlayerDummy x+y = %d, %d\n", playerDummy.pos.x, playerDummy.pos.y);
     serializedplayer[0] = 'P';
     if(*socket != NULL){
         SDLNet_TCP_Send(*socket, serializedplayer, sizeof(serializedplayer));
@@ -233,7 +246,7 @@ int sendBulletUpdate(bullet bulletDummy, TCPsocket* socket){
     char serializedbullet[sizeof(bullet)+2] = {0};
     memcpy(&serializedbullet, &bulletDummy, sizeof(bulletDummy));
     parseString(serializedbullet, -1, sizeof(serializedbullet));
-    //printf("bullets x+y = %d, %d\n", bulletDummy.pos.x, bulletDummy.pos.y);
+    printf("bullets x+y = %d, %d\n", bulletDummy.pos.x, bulletDummy.pos.y);
     serializedbullet[0]= 'B';
     if(*socket != NULL){
         SDLNet_TCP_Send(*socket, serializedbullet, sizeof(serializedbullet));

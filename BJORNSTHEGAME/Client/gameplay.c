@@ -19,7 +19,7 @@ int gameplayWindow(ClientInfo* information)
     SDL_Event event;
 
     //Create a window
-    updater.window = SDL_CreateWindow("BJORNS THE GAME",
+    /*updater.window = SDL_CreateWindow("BJORNS THE GAME",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         1280,800,
@@ -29,6 +29,7 @@ int gameplayWindow(ClientInfo* information)
         printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
         return 1;
     }
+    //SDL_CreateWindowAndRenderer(1280, 800, 0, updater.window)
     SDL_Surface* screen = SDL_GetWindowSurface(updater.window);
 
     /* to animate on the windows and ammo */
@@ -42,6 +43,15 @@ int gameplayWindow(ClientInfo* information)
         timer.bullets[i] = &(animator.bullets[i]);
     }
 
+
+    animatorThread = SDL_CreateThread(animate, "Animator", (void*)&animator);
+    SDL_Delay(500);
+    SDL_Surface* screen = SDL_GetWindowSurface(animator.window);
+    updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
+
+
+    timerThread = SDL_CreateThread(timeupdater, "Timer", (void*)&timer);
+    printf("timerThread is actually working\n");
     playerDummy.pos.y = screen->h/4*3+60;
     playerDummy.pos.x = screen->w/2;
       playerDummy.pos.h = screen->h*0.08;
@@ -51,12 +61,7 @@ int gameplayWindow(ClientInfo* information)
     bulletDummy.pos.x = 0;
     bulletDummy.pos.h = screen->h*0.013;
     bulletDummy.pos.w = screen->w*0.0030;
-
-    updaterThread = SDL_CreateThread(updateHandler, "Updater", (void*)&updater);
-
-    animatorThread = SDL_CreateThread(animate, "Animator", (void*)&animator);
-
-    timerThread = SDL_CreateThread(timeupdater, "Timer", (void*)&timer);
+    printf("dummies set\n");
 
     while(!quit){
         while (SDL_PollEvent(&event)) //events
@@ -102,6 +107,7 @@ int gameplayWindow(ClientInfo* information)
                             animator.frame = 2;
                         }
                         sendPlayerUpdate(playerDummy, &information->socket);
+                        printf("youre fucked\n");
                         break;
 
                     case SDLK_RIGHT:
@@ -135,6 +141,7 @@ int gameplayWindow(ClientInfo* information)
                             animator.frame = 2;
                         }
                         sendPlayerUpdate(playerDummy, &information->socket);
+                        printf("youre fucked again\n");
                         break;
 
                     case SDLK_x:
@@ -170,10 +177,11 @@ int gameplayWindow(ClientInfo* information)
                     default:
                         break;
                 }
-
+            SDL_Delay(5);            
             }
         }
     }
+    printf("youre safe\n");
 
     SDL_WaitThread(updaterThread, &i);
     SDL_WaitThread(animatorThread, &i);

@@ -32,7 +32,7 @@ int updateHandler(void* incinfo){
 
 	SDL_Surface* screen = SDL_GetWindowSurface(info->window);
 
-	/* Chat positions */
+	/* Chat positions 
 	for(i=0;i<6;i++){
         chat[i].x=(screen->w)/3 * 2 + 5;
         chat[i].y=(screen->h)/5 * 4 - (22*(i+1));
@@ -108,7 +108,7 @@ int timeupdater(void* inc_time){
     int i, j;
     printf("Timer thread uppdater started\n");
     SDL_Delay(1000);
-    while(!(*(timer->quit))){
+    while((*(timer->quit))!=0){
         if(*(timer->timer) > 0){
             (*(timer->timer))--;
 
@@ -126,7 +126,8 @@ int timeupdater(void* inc_time){
 	        }
 
             printf("Gameplay time: %d is ticking\n", *(timer->timer));
-        }else SDL_Delay(10);
+        }else SDL_Delay(10); printf("timern inte satt\n");
     }
+    printf("timeupdater klar\n");
     return 0;
 }

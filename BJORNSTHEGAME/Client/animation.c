@@ -26,7 +26,16 @@
 int animate(void* info){
     animationInfo* animator = (animationInfo*) info;
     int i, quit=0;
-
+    animator->window = SDL_CreateWindow("BJORNS THE GAME",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        1280,800,
+        0);//SDL_WINDOW_FULLSCREEN_DESKTOP);
+    if(animator->window == NULL)
+    {
+        printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+        return 1;
+    }
     /*Loading and declaration of all images*/
     SDL_Surface* gameBackground = IMG_Load("../Images/game/bar.jpg");;
     SDL_Surface* ground = IMG_Load("../Images/game/ground2.png");
@@ -62,6 +71,8 @@ int animate(void* info){
     SDL_Surface* screen = SDL_GetWindowSurface(animator->window); //get the screen size
     printf("Width: %d, Height: %d\n", screen->w, screen->h);
 
+    //SDL_DestroyRenderer(animator->window);
+    //printf("destroy lyckades\n");
     Rend=SDL_GetRenderer(animator->window);
     if(!Rend)
         Rend = SDL_CreateRenderer(animator->window, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
@@ -185,7 +196,6 @@ int animate(void* info){
     animator->platforms[13].w = 170;
     animator->platforms[13].h = 30;
 
-
     for(i=0;i<AMMOAMOUNT;i++){
         capsRect[i].x = screen->w*0.9+(i*screen->w*0.032);
         capsRect[i].y = screen->h*0.02;//screen ->h - 740;
@@ -263,7 +273,7 @@ int animate(void* info){
         textSprite[i].w = (textsurface[3]->w/6);
         textSprite[i].h = textsurface[3]->h;
     }
-
+printf("before the !quit loop\n");
     while (!quit) // while not Esc
     {
         SDL_RenderClear(Rend); // Clear the entire screen to our selected color/images.
@@ -296,7 +306,6 @@ int animate(void* info){
 
         SDL_RenderCopy(Rend, myText[3], &textSprite[(animator->player->health)], &textRect[3]);
         SDL_RenderCopy(Rend, myText[3], &textSprite[*(animator->drunk)], &textRect[4]);
-
         //copy all players
         for(i=0;i<PLAYERCOUNT;i++){
             SDL_RenderCopyEx(Rend, player, &spriteClips[animator->frame], &animator->players[i].pos, 0, NULL, animator->flip);

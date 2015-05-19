@@ -102,7 +102,8 @@ int timeupdater(void* inc_time){
 	                if((timer->bullets[i]->TTL) > 0){
 	                    timer->bullets[i]->pos.x += (BULLETSPEED*(timer->bullets[i]->direction));
 	                    timer->bullets[i]->TTL--;
-	                }else if(timer->bullets[i]->pos.x != 0 && timer->bullets[i]->pos.y != 0){
+	                }
+	                else if(timer->bullets[i]->pos.x != 0 && timer->bullets[i]->pos.y != 0){
 	                    timer->bullets[i]->pos.x = 0;
 	                    timer->bullets[i]->pos.y = 0;
 	            	}

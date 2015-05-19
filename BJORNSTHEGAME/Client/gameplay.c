@@ -17,21 +17,7 @@ int gameplayWindow(ClientInfo* information)
     playerInfo playerDummy = {5, 0, {0, 0, 0, 0}};
     bullet bulletDummy = {{0,0,0,0}, 0, 0, 0};
     SDL_Event event;
-
-    //Create a window
-    /*updater.window = SDL_CreateWindow("BJORNS THE GAME",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        1280,800,
-        0);//SDL_WINDOW_FULLSCREEN_DESKTOP);
-    if(updater.window == NULL)
-    {
-        printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-        return 1;
-    }
-    //SDL_CreateWindowAndRenderer(1280, 800, 0, updater.window)
-    SDL_Surface* screen = SDL_GetWindowSurface(updater.window);*/
-
+    
     /* to animate on the windows and ammo */
     animator.player = &playerDummy;
 

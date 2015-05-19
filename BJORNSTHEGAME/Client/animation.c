@@ -308,7 +308,7 @@ int animate(void* info){
         {
             SDL_RenderCopy(Rend, bjornDrapare, NULL, &bjornDrapRect[i]);
         }
-        
+
         for(i=0; i<3; i++) // copy all text to the render "screen"
         {
             SDL_RenderCopy(Rend, myText[i], NULL, &textRect[i]);
@@ -323,6 +323,7 @@ int animate(void* info){
 
         // present the result on the render  "the screen"
         SDL_RenderPresent(Rend);
+        SDL_Delay(1000/60);
     }
 
 

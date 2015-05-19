@@ -93,7 +93,7 @@ int timeupdater(void* inc_time){
     int i, j;
     printf("Timer thread uppdater started\n");
     SDL_Delay(1000);
-    while((*(timer->quit))!=0){
+    while((*(timer->quit))!=1){
         if(*(timer->timer) > 0){
             (*(timer->timer))--;
 

@@ -58,8 +58,10 @@ int main(int argc, char *argv[]){
 
     if((startup.socket) != NULL)
         SDLNet_TCP_Send(startup.socket, "EXITCONNECTION", 16);
+
     SDL_Quit();
     TTF_Quit();
     SDLNet_Quit();
+    
     return 0;
 }

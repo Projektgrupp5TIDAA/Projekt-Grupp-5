@@ -146,6 +146,7 @@ int gameplayWindow(ClientInfo* information)
                             bulletDummy.TTL = BULLET_TTL;
                             sendBulletUpdate(bulletDummy, &information->socket);
                             ammo--;
+                            SDL_Delay(500);
                         }else{
                             ammo=3;
                             SDL_Delay(2000);
@@ -169,18 +170,17 @@ int gameplayWindow(ClientInfo* information)
                         sendPlayerUpdate(playerDummy, &information->socket);
                         break;
                     default:
+                        printf("Wrong key! :D\n");
+                        SDL_Delay(8);//For dani
                         break;
                 }        
             }
-            SDL_Delay(5);    
         }
     }
 
     SDL_WaitThread(updaterThread, &i);
     SDL_WaitThread(animatorThread, &i);
     SDL_WaitThread(timerThread, &i);
-    SDL_Quit();
-    TTF_Quit();
     return 0;
 
 }

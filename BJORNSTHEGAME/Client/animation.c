@@ -45,7 +45,8 @@ int animate(void* info){
     SDL_Surface* platform2 = IMG_Load("../Images/game/platform_ver.png");
     SDL_Surface* band = IMG_Load("../Images/game/band2.png");
     SDL_Surface* playerSurface = IMG_Load("../Images/game/spriteBlue.PNG");
-    SDL_Surface* bjorns = IMG_Load("../Images/game/bjorndrapare.png");
+    SDL_Surface* bjorns = IMG_Load("../Images/game/bjorndrapare2.png");
+    SDL_Surface* bjornsTom = IMG_Load("../Images/game/bjorndraparetom2.png");
     SDL_Surface* ammo = IMG_Load("../Images/game/caps.png");
     SDL_Surface* bullet = IMG_Load("../Images/game/kapsylvertical.png");
     SDL_Surface* textsurface[TEXTAMOUNT];
@@ -56,6 +57,7 @@ int animate(void* info){
     SDL_Texture* bakgroundTexture;
     SDL_Texture* picture[PLATFORMAMOUNT];
     SDL_Texture* bjornDrapare=NULL;
+    SDL_Texture* bjornDTom=NULL;
     SDL_Texture* caps=NULL;
     SDL_Texture* myText[TEXTAMOUNT];
     SDL_Texture* bulletTex;
@@ -114,6 +116,7 @@ int animate(void* info){
     caps= SDL_CreateTextureFromSurface(Rend,ammo);
     bjornDrapare=SDL_CreateTextureFromSurface(Rend,bjorns);
     bulletTex = SDL_CreateTextureFromSurface(Rend, bullet);
+    bjornDTom=SDL_CreateTextureFromSurface(Rend,bjornsTom);
 
     myText[0]=SDL_CreateTextureFromSurface(Rend,textsurface[0]);
     myText[1]=SDL_CreateTextureFromSurface(Rend,textsurface[1]);
@@ -130,6 +133,7 @@ int animate(void* info){
     SDL_FreeSurface(bjorns);
     SDL_FreeSurface(ammo);
     SDL_FreeSurface(bullet);
+    SDL_FreeSurface(bjornsTom);
     for(i=0;i<TEXTAMOUNT;i++){
         SDL_FreeSurface(textsurface[i]);
     }
@@ -310,6 +314,16 @@ int animate(void* info){
             SDL_RenderCopy(Rend, bjornDrapare, NULL, &bjornDrapRect[i]);
         }
 
+        for(i=0;i<PLAYERCOUNT;i++){
+        if(checkCollision(animator->player[i].pos, bjornDrapRect[i])){
+
+            SDL_RenderCopy(Rend,bjornDTom, NULL, &bjornDrapRect[i]);
+
+        }
+
+        }
+
+
         for(i=0; i<3; i++) // copy all text to the render "screen"
         {
             SDL_RenderCopy(Rend, myText[i], NULL, &textRect[i]);
@@ -346,6 +360,7 @@ int animate(void* info){
 
     SDL_DestroyTexture(caps);
     SDL_DestroyTexture(bjornDrapare);
+    SDL_DestroyTexture(bjornDTom);
     SDL_DestroyTexture(player);
     SDL_DestroyRenderer(Rend);
     SDL_DestroyWindow(animator->window);

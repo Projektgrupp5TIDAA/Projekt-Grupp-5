@@ -2,12 +2,13 @@
 Includes all functions for threads having to do with the server
 Created on 2015-05-12 by Jonathan Kåhre
 */
-
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include "clientthreads.h"
 #include "bjornstartup.h"
 #include "lobby.h"
+#include "gameplay.h"
 #include <SDL2/SDL.h>
 #ifdef __APPLE__
 #include <SDL2_net/SDL_net.h>
@@ -94,10 +95,21 @@ int timeupdater(void* inc_time){
     printf("Timer thread uppdater started\n");
     SDL_Delay(1000);
     while((*(timer->quit)) != 1){
+
         if(*(timer->timer) > 0){
             (*(timer->timer))--;
 
-            for(j=0;j<20;j++){
+            for(j=0;j<20;j++)
+            	{
+            		for(i=0; i<14; i++)
+                	{
+                    	if(!checkgravity(timer->animator->player->pos , timer->animator->platforms[i]))
+                        {
+                       		timer->animator->player->pos.y +=1;
+                       		sendPlayerUpdate(*(timer->animator->player), timer->socket);
+                       	}
+                	}
+
 	            for(i=0;i<12;i++){
 	                if((timer->bullets[i]->TTL) > 0){
 	                    timer->bullets[i]->pos.x += (BULLETSPEED*(timer->bullets[i]->direction));
@@ -107,6 +119,8 @@ int timeupdater(void* inc_time){
 	                    timer->bullets[i]->pos.x = 0;
 	                    timer->bullets[i]->pos.y = 0;
 	            	}
+	        		
+
 	        	}
 	        	SDL_Delay(50);
 	        }
@@ -116,4 +130,49 @@ int timeupdater(void* inc_time){
     }
     printf("Timeupdater klar\n");
     return 0;
+}
+
+bool checkgravity( SDL_Rect a, SDL_Rect b )
+{
+    //The sides of the rectangles
+    int leftA, leftB;
+    int rightA, rightB;
+    int topA, topB;
+    int bottomA, bottomB;
+
+    //Calculate the sides of rect A
+    leftA = a.x;
+    rightA = a.x + a.w;
+    topA = a.y;
+    bottomA = a.y + a.h + 1;
+
+    //Calculate the sides of rect B
+    leftB = b.x;
+    rightB = b.x + b.w;
+    topB = b.y;
+    bottomB = b.y + b.h;
+
+    //If any of the sides from A are outside of B
+    if( bottomA <= topB )
+    {
+        return false;
+    }
+
+    if( topA >= bottomB )
+    {
+        return false;
+    }
+
+    if( rightA <= leftB )
+    {
+        return false;
+    }
+
+    if( leftA >= rightB )
+    {
+        return false;
+    }
+
+    //If none of the sides from A are outside B
+    return true;
 }

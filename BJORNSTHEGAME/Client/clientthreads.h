@@ -12,6 +12,9 @@ Created on 2015-05-12 by Jonathan Kåhre
 #endif
 #define PLAYERCOUNT 6
 #define BULLETSPEED 30
+#include "animation.h"
+#include <stdbool.h>
+
 
 /* Struct with the information needed by the client to render the players */
 typedef struct{
@@ -34,12 +37,29 @@ typedef struct{
 }updaterInfo;
 
 typedef struct{
+	int frame, *quit, *ammo, *drunk;
+	SDL_Window* window;
+	playerInfo *player;
+	playerInfo players[6];
+    SDL_RendererFlip flip;
+    bullet bullets[12];
+    SDL_Rect platforms[14];
+    SDL_Rect bjornDrapare[2];
+}animationInfo;
+
+typedef struct{
 	int* timer, *quit;
 	bullet* bullets[12];
+	animationInfo *animator;
+	TCPsocket *socket;
 }timerInfo;
 
 int updateHandler(void* info);
 
 int timeupdater(void* inc_time);
+
+bool checkgravity( SDL_Rect a, SDL_Rect b );
+
+
 
 #endif

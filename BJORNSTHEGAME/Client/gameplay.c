@@ -28,7 +28,7 @@ int gameplayWindow(ClientInfo* information)
     int i, quit=0, ammo=AMMOAMOUNT, drunk=0;
     animationInfo animator = {0, &quit, &ammo, &drunk, NULL, NULL, {{0, 0, {0, 0, 0, 0}}}, SDL_FLIP_NONE, {{{0,0,0,0}, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
     updaterInfo updater = {&quit, 0, &(information->socket), NULL};
-    timerInfo timer = {&updater.timer, &quit, {NULL}};
+    timerInfo timer = {&updater.timer, &quit, {NULL}, &animator, &information->socket};
     SDL_Thread* updaterThread, *animatorThread, *timerThread;
     playerInfo playerDummy = {5, 0, {0, 0, 0, 0}};
     bullet bulletDummy = {{0,0,0,0}, 0, 0, 0};
@@ -62,14 +62,16 @@ int gameplayWindow(ClientInfo* information)
     bulletDummy.pos.x = 0;
     bulletDummy.pos.h = screen->h*0.013;
     bulletDummy.pos.w = screen->w*0.0030;
-
+    int kolla = 0;
     while(!quit){
-        while (SDL_PollEvent(&event)) //events
+        
+        while(SDL_PollEvent(&event)) //events 
         {
             if (event.type == SDL_QUIT)
             {
                 quit = 1;
             }else
+
             if(event.type == SDL_KEYDOWN)
             {
                 //Select surfaces based on key press
@@ -163,6 +165,7 @@ int gameplayWindow(ClientInfo* information)
                             }
                         }
                         sendPlayerUpdate(playerDummy, &information->socket);
+                        SDL_Delay(500);
                     /*    playerDummy.pos.y += GRAVITY;
                         for(i=0; i<PLATFORMAMOUNT; i++){
                             if(checkCollision(playerDummy.pos, animator.platforms[i] )== true){
@@ -170,6 +173,7 @@ int gameplayWindow(ClientInfo* information)
                             }
                         }
                         sendPlayerUpdate(playerDummy, &information->socket);*/
+                        printf("jump!\n");
                         break;
                     default:
                         printf("Wrong key! :D\n");
@@ -178,6 +182,10 @@ int gameplayWindow(ClientInfo* information)
                 }
             }else printf("Hejsan, hit kommer man om man drar musen!\n");
         }
+        SDL_Delay(1000/60);
+        SDL_PumpEvents();
+        SDL_FlushEvent(SDL_KEYDOWN);
+        SDL_FlushEvent(SDL_KEYUP);
     }
 
     SDL_WaitThread(updaterThread, &i);

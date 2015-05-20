@@ -12,6 +12,7 @@ Created on 2015-05-12 by Jonathan Kåhre
 #endif
 #define PLAYERCOUNT 6
 #define BULLETSPEED 30
+#define GRAVITY 4
 #include "animation.h"
 #include <stdbool.h>
 

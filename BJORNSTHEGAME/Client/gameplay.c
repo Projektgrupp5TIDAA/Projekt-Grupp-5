@@ -22,6 +22,8 @@
 #define TEXTAMOUNT 3
 #define DRINKAMOUNT 2
 #define BULLET_TTL 12
+#define SPEEDx 15
+#define SPEEDy 101
 
 int gameplayWindow(ClientInfo* information)
 {
@@ -62,9 +64,7 @@ int gameplayWindow(ClientInfo* information)
     bulletDummy.pos.x = 0;
     bulletDummy.pos.h = screen->h*0.013;
     bulletDummy.pos.w = screen->w*0.0030;
-    int kolla = 0;
     while(!quit){
-        
         while(SDL_PollEvent(&event)) //events 
         {
             if (event.type == SDL_QUIT)
@@ -180,12 +180,8 @@ int gameplayWindow(ClientInfo* information)
                         SDL_Delay(8);//For dani
                         break;
                 }
-            }else printf("Hejsan, hit kommer man om man drar musen!\n");
+            }
         }
-        SDL_Delay(1000/60);
-        SDL_PumpEvents();
-        SDL_FlushEvent(SDL_KEYDOWN);
-        SDL_FlushEvent(SDL_KEYUP);
     }
 
     SDL_WaitThread(updaterThread, &i);

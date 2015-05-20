@@ -91,7 +91,7 @@ int updateHandler(void* incinfo){
 
 int timeupdater(void* inc_time){
     timerInfo* timer = (timerInfo*) inc_time;
-    int i, j;
+    int i, j, fall=1;
     printf("Timer thread uppdater started\n");
     SDL_Delay(1000);
     while((*(timer->quit)) != 1){
@@ -103,12 +103,16 @@ int timeupdater(void* inc_time){
             	{
             		for(i=0; i<14; i++)
                 	{
-                    	if(!checkgravity(timer->animator->player->pos , timer->animator->platforms[i]))
+                    	if(checkgravity(timer->animator->player->pos , timer->animator->platforms[i]))
                         {
-                       		timer->animator->player->pos.y +=1;
-                       		sendPlayerUpdate(*(timer->animator->player), timer->socket);
+                       		fall = 0;
                        	}
                 	}
+                	if(fall == 1){
+                      	timer->animator->player->pos.y += GRAVITY;
+                     	sendPlayerUpdate(*(timer->animator->player), timer->socket);
+                    }else
+                    	fall = 1;
 
 	            for(i=0;i<12;i++){
 	                if((timer->bullets[i]->TTL) > 0){
@@ -144,7 +148,7 @@ bool checkgravity( SDL_Rect a, SDL_Rect b )
     leftA = a.x;
     rightA = a.x + a.w;
     topA = a.y;
-    bottomA = a.y + a.h + 1;
+    bottomA = a.y + a.h + GRAVITY;
 
     //Calculate the sides of rect B
     leftB = b.x;

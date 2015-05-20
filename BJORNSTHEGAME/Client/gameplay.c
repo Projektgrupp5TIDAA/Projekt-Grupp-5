@@ -34,7 +34,7 @@ int gameplayWindow(ClientInfo* information)
     playerInfo playerDummy = {5, 0, {0, 0, 0, 0}};
     bullet bulletDummy = {{0,0,0,0}, 0, 0, 0};
     SDL_Event event;
-    
+
     SDL_Init(SDL_INIT_EVERYTHING);
 
     /* to animate on the windows and ammo */
@@ -156,27 +156,27 @@ int gameplayWindow(ClientInfo* information)
                         }
                         break;
                     case SDLK_SPACE:
-                        playerDummy.pos.y -= SPEEDy+ 200;
+                       playerDummy.pos.y -= SPEEDy;
                         for(i=0; i<PLATFORMAMOUNT; i++){
                             if(checkCollision(playerDummy.pos,animator.platforms[i]))
                             {
-                                playerDummy.pos.y +=GRAVITY;
+                                playerDummy.pos.y +=SPEEDy;
                             }
                         }
                         sendPlayerUpdate(playerDummy, &information->socket);
-                        playerDummy.pos.y += GRAVITY;
+                    /*    playerDummy.pos.y += GRAVITY;
                         for(i=0; i<PLATFORMAMOUNT; i++){
                             if(checkCollision(playerDummy.pos, animator.platforms[i] )== true){
                                 playerDummy.pos.y += GRAVITY;
                             }
                         }
-                        sendPlayerUpdate(playerDummy, &information->socket);
+                        sendPlayerUpdate(playerDummy, &information->socket);*/
                         break;
                     default:
                         printf("Wrong key! :D\n");
                         SDL_Delay(8);//For dani
                         break;
-                }        
+                }
             }else printf("Hejsan, hit kommer man om man drar musen!\n");
         }
     }

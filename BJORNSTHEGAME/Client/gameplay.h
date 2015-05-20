@@ -11,7 +11,7 @@
 
 int gameplayWindow(ClientInfo* information);
 
-bool checkCollision( SDL_Rect a, SDL_Rect b );
+int checkCollision( SDL_Rect a, SDL_Rect b );
 
 int sendPlayerUpdate(playerInfo playerDummy, TCPsocket* socket);
 

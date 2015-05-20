@@ -1,7 +1,6 @@
 
 #include <stdio.h>
 #include <SDL2/SDL.h>
-#include <stdbool.h>
 #ifdef __APPLE__
 #include <SDL2_ttf/SDL_ttf.h>
 #include <SDL2_image/SDL_image.h>
@@ -188,49 +187,32 @@ int gameplayWindow(ClientInfo* information)
 
 }
 
-bool checkCollision( SDL_Rect a, SDL_Rect b )
+/* Function to check collisions between rectangles, inspired by the rectangle collision from Lazyfoo */
+int checkCollision(SDL_Rect a, SDL_Rect b)
 {
-    //The sides of the rectangles
-    int leftA, leftB;
-    int rightA, rightB;
-    int topA, topB;
-    int bottomA, bottomB;
-
-    //Calculate the sides of rect A
-    leftA = a.x;
-    rightA = a.x + a.w;
-    topA = a.y;
-    bottomA = a.y + a.h;
-
-    //Calculate the sides of rect B
-    leftB = b.x;
-    rightB = b.x + b.w;
-    topB = b.y;
-    bottomB = b.y + b.h;
-
     //If any of the sides from A are outside of B
-    if( bottomA <= topB )
+    if((a.y + a.h) <= b.y)
     {
-        return false;
+        return 0;
     }
 
-    if( topA >= bottomB )
+    if(a.y >= (b.y + b.h))
     {
-        return false;
+        return 0;
     }
 
-    if( rightA <= leftB )
+    if((a.x+a.w) <= b.x)
     {
-        return false;
+        return 0;
     }
 
-    if( leftA >= rightB )
+    if(a.x >= (b.x+b.w))
     {
-        return false;
+        return 0;
     }
 
     //If none of the sides from A are outside B
-    return true;
+    return 1;
 }
 
 int sendPlayerUpdate(playerInfo playerDummy, TCPsocket* socket){

@@ -196,7 +196,7 @@ int checkCollision(SDL_Rect a, SDL_Rect b)
         return 0;
     }
 
-    if(a.y >= (b.y + b.h))
+    if((b.y + b.h) <= a.y)
     {
         return 0;
     }
@@ -206,7 +206,7 @@ int checkCollision(SDL_Rect a, SDL_Rect b)
         return 0;
     }
 
-    if(a.x >= (b.x+b.w))
+    if((b.x+b.w) <= a.x)
     {
         return 0;
     }

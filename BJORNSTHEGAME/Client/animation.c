@@ -222,12 +222,12 @@ int animate(void* info){
     bjornDrapRect[0].h = screen->h*0.046;//50;
 
     bjornDrapRect[1].x = screen->w/2 +400;
-    bjornDrapRect[1].y = screen->h - 499;
+    bjornDrapRect[1].y = screen->h - 492;
     bjornDrapRect[1].w = screen->w*0.03;//60;
     bjornDrapRect[1].h = screen->h*0.046;//50;
 
     bjornDrapRect[2].x = screen->w/2 -280;
-    bjornDrapRect[2].y = screen->h - 489;
+    bjornDrapRect[2].y = screen->h - 482;
     bjornDrapRect[2].w = screen->w*0.03;//60;
     bjornDrapRect[2].h = screen->h*0.046;//50;
 

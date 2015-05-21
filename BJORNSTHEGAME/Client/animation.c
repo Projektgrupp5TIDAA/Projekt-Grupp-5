@@ -26,7 +26,7 @@
 
 int animate(void* info){
     animationInfo* animator = (animationInfo*) info;
-    int i, quit=0;
+    int i;
     SDL_RendererFlip bflip = SDL_FLIP_NONE;
 
     animator->window = SDL_CreateWindow("BJORNS THE GAME",
@@ -304,7 +304,7 @@ int animate(void* info){
         textSprite[i].h = textsurface[3]->h;
     }
 
-    while (!quit) // while not Esc
+    while (!(*(animator->quit))) // while not Esc
     {
         SDL_PumpEvents();
         SDL_RenderClear(Rend); // Clear the entire screen to our selected color/images.
@@ -383,6 +383,8 @@ int animate(void* info){
     }
     SDL_DestroyRenderer(Rend);
     SDL_DestroyWindow(animator->window);
+
+    printf("Animation-thread exiting!\n");
 
     return 0;
 }

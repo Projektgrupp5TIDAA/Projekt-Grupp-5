@@ -32,7 +32,7 @@ int updateHandler(void* incinfo){
 	int i, tmpID;
 
     /* The main polling-loop */
-	while(1){
+	while(!(*(info->quit))){
 		SDLNet_CheckSockets(activity, 30);
 
 		/* Checks the socket for activity and if it finds it it will either
@@ -89,6 +89,7 @@ int updateHandler(void* incinfo){
 			}
 		}else SDL_Delay(50);
 	}
+	printf("Updater thread exiting!\n");
 	return 0;
 }
 
@@ -148,7 +149,7 @@ int timeupdater(void* inc_time){
             printf("Gameplay time: %d is ticking\n", *(timer->timer));
         }else SDL_Delay(10);
     }
-    printf("Timeupdater klar\n");
+    printf("Timeupdater exited!\n");
     return 0;
 }
 

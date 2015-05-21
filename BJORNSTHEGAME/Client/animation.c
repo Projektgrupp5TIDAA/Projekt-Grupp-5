@@ -20,7 +20,7 @@
 #define AMMOAMOUNT 3
 #define PLATFORMAMOUNT 14
 #define TEXTAMOUNT 4
-#define DRINKAMOUNT 2
+#define DRINKAMOUNT 3
 #endif
 
 int animate(void* info){
@@ -63,7 +63,7 @@ int animate(void* info){
     SDL_Texture* bulletTex;
 
     SDL_Rect spriteClips[4];
-    SDL_Rect bjornDrapRect[2];
+    SDL_Rect bjornDrapRect[DRINKAMOUNT];
     SDL_Rect textSprite[6];
     SDL_Rect textRect[5];
     SDL_Rect capsRect[AMMOAMOUNT];
@@ -217,14 +217,19 @@ int animate(void* info){
     }
 
     bjornDrapRect[0].x = screen->w/2 -110;
-    bjornDrapRect[0].y = screen->h - 228;
+    bjornDrapRect[0].y = screen->h - 215;
     bjornDrapRect[0].w = screen->w*0.03;//60;
     bjornDrapRect[0].h = screen->h*0.046;//50;
 
     bjornDrapRect[1].x = screen->w/2 +400;
-    bjornDrapRect[1].y = screen->h - 512;
+    bjornDrapRect[1].y = screen->h - 499;
     bjornDrapRect[1].w = screen->w*0.03;//60;
     bjornDrapRect[1].h = screen->h*0.046;//50;
+
+    bjornDrapRect[2].x = screen->w/2 -280;
+    bjornDrapRect[2].y = screen->h - 489;
+    bjornDrapRect[2].w = screen->w*0.03;//60;
+    bjornDrapRect[2].h = screen->h*0.046;//50;
 
     textRect[0].x= screen->w*0.79;//screen ->w/2 +310;
     textRect[0].y= screen->h*0.02;//screen ->h - 740;

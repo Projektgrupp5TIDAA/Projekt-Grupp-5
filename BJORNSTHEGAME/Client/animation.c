@@ -146,6 +146,7 @@ int animate(void* info){
     SDL_FreeSurface(ammo);
     SDL_FreeSurface(bullet);
     SDL_FreeSurface(bjornsTom);
+    SDL_FreeSurface(rip);
     for(i=0;i<6;i++){
         SDL_FreeSurface(playerSurface[i]);
     }

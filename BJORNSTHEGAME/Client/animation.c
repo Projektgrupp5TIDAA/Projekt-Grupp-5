@@ -324,13 +324,11 @@ int animate(void* info){
             SDL_RenderCopy(Rend, caps, NULL, &capsRect[i]);
         }
 
-        for(i=0; i<DRINKAMOUNT; i++) //copy all "bjornDrapare" to the render "the screen"
+         for(i=0; i<DRINKAMOUNT; i++) //copy all "bjornDrapare" to the render "the screen"
         {
             SDL_RenderCopy(Rend, bjornDrapare, NULL, &bjornDrapRect[i]);
-        }
 
-        for(i=0;i<PLAYERCOUNT;i++){
-            if(checkCollision(animator->player[i].pos, bjornDrapRect[i])){
+             if(checkCollision(animator->player->pos, bjornDrapRect[i])){
                 SDL_RenderCopy(Rend,bjornDTom, NULL, &bjornDrapRect[i]);
             }
         }
@@ -343,7 +341,7 @@ int animate(void* info){
 
         SDL_RenderCopy(Rend, myText[3], &textSprite[(animator->player->health)], &textRect[3]);
         SDL_RenderCopy(Rend, myText[3], &textSprite[*(animator->drunk)], &textRect[4]);
-        
+
         //copy all players
         for(i=0;i<PLAYERCOUNT;i++){
             SDL_RenderCopyEx(Rend, player[i], &spriteClips[animator->frame], &animator->players[i].pos, 0, NULL, animator->flip);

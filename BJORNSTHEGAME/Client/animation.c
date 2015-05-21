@@ -21,7 +21,7 @@
 #define PLATFORMAMOUNT 14
 #define TEXTAMOUNT 4
 #define DRINKAMOUNT 3
-#define PLAYERCOUNT 6 
+#define PLAYERCOUNT 6
 #endif
 
 int animate(void* info){
@@ -270,7 +270,7 @@ int animate(void* info){
 
     //size and position for the player
     for(i=0;i<PLAYERCOUNT;i++){
-        animator->players[i].pos.y = screen->h/2;
+        animator->players[i].pos.y = screen->h;
         animator->players[i].pos.x = screen->w/2+(i*50);
         animator->players[i].pos.h = screen->h*0.11;//120;
         animator->players[i].pos.w = screen->w*0.034;//66;

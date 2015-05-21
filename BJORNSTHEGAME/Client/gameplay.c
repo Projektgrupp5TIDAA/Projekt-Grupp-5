@@ -152,9 +152,11 @@ int gameplayWindow(ClientInfo* information)
                             bulletDummy.TTL = BULLET_TTL;
                             sendBulletUpdate(bulletDummy, &information->socket);
                             ammo--;
-                        }else{
-                            ammo=3;
                         }
+                        break;
+                    case SDLK_r:
+                        printf("Reloading\n");
+                        ammo =3;
                         break;
                     case SDLK_SPACE:
                         for(j=0;j<6;j++){

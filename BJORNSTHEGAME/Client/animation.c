@@ -21,6 +21,7 @@
 #define PLATFORMAMOUNT 14
 #define TEXTAMOUNT 4
 #define DRINKAMOUNT 3
+#define PLAYERCOUNT 6 
 #endif
 
 int animate(void* info){

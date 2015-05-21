@@ -51,6 +51,7 @@ int animate(void* info){
     SDL_Surface* ammo = IMG_Load("../Images/game/caps.png");
     SDL_Surface* bullet = IMG_Load("../Images/game/kapsylvertical.png");
     SDL_Surface* textsurface[TEXTAMOUNT];
+    SDL_Surface* rip= IMG_Load("../Images/game/rip.png");
 
     SDL_Surface* playerSurface[6];
     playerSurface[5] = IMG_Load("../Images/game/spriteGreen.png");
@@ -71,6 +72,7 @@ int animate(void* info){
     SDL_Texture* caps=NULL;
     SDL_Texture* myText[TEXTAMOUNT];
     SDL_Texture* bulletTex;
+    SDL_Texture* rip_texture=NULL;
 
     SDL_Rect spriteClips[4];
     SDL_Rect bjornDrapRect[DRINKAMOUNT];
@@ -97,6 +99,7 @@ int animate(void* info){
     }
 
     bakgroundTexture = SDL_CreateTextureFromSurface(Rend,gameBackground); //Load texture with image "bar.jpg" and Rend
+    rip_texture = SDL_CreateTextureFromSurface(Rend, rip);
 
     /*text*/
     SDL_Color colorT= {170,60,255};
@@ -351,6 +354,9 @@ int animate(void* info){
         //copy all players
         for(i=0;i<PLAYERCOUNT;i++){
             SDL_RenderCopyEx(Rend, player[i], &spriteClips[animator->frame], &animator->players[i].pos, 0, NULL, animator->flip);
+            if(animator->player->deaths == 1){
+                SDL_RenderCopy(Rend,rip_texture, NULL,&animator->player->pos);
+            }
         }
 
         // present the result on the render  "the screen"
@@ -378,6 +384,7 @@ int animate(void* info){
     SDL_DestroyTexture(caps);
     SDL_DestroyTexture(bjornDrapare);
     SDL_DestroyTexture(bjornDTom);
+    SDL_DestroyTexture(rip_texture);
     for(i=0;i<6;i++){
         SDL_DestroyTexture(player[i]);
     }

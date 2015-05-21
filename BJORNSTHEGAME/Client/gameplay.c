@@ -64,6 +64,7 @@ int gameplayWindow(ClientInfo* information)
     bulletDummy.pos.x = 0;
     bulletDummy.pos.h = screen->h*0.013;
     bulletDummy.pos.w = screen->w*0.0030;
+
     while(!quit){
         while(SDL_PollEvent(&event)) //events 
         {
@@ -147,7 +148,11 @@ int gameplayWindow(ClientInfo* information)
                     case SDLK_x:
                         printf("Shooting!\n");
                         if(ammo > 0){
-                            bulletDummy.pos.x = playerDummy.pos.x;
+                            if(animator.flip == SDL_FLIP_NONE){
+                                bulletDummy.pos.x = playerDummy.pos.x + playerDummy.pos.w;
+                            }else{
+                                bulletDummy.pos.x = playerDummy.pos.x;
+                            }
                             bulletDummy.pos.y = playerDummy.pos.y+(playerDummy.pos.h/4);
                             bulletDummy.TTL = BULLET_TTL;
                             sendBulletUpdate(bulletDummy, &information->socket);

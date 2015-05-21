@@ -26,6 +26,7 @@
 int animate(void* info){
     animationInfo* animator = (animationInfo*) info;
     int i, quit=0;
+    SDL_RendererFlip bflip = SDL_FLIP_NONE;
 
     animator->window = SDL_CreateWindow("BJORNS THE GAME",
         SDL_WINDOWPOS_UNDEFINED,
@@ -314,8 +315,13 @@ int animate(void* info){
         }
 
         for(i=0; i<12 ;i++){
-            if(animator->bullets[i].pos.x != 0 && animator->bullets[i].pos.y != 0){
-                SDL_RenderCopy(Rend, bulletTex, NULL, &animator->bullets[i].pos);
+            if(animator->bullets[i].TTL != 0){
+                if(animator->bullets[i].direction<0){
+                    bflip = SDL_FLIP_NONE;
+                }else
+                    bflip = SDL_FLIP_HORIZONTAL;
+                //SDL_RenderCopy(Rend, bulletTex, NULL, &animator->bullets[i].pos);
+                SDL_RenderCopyEx(Rend, bulletTex, NULL, &animator->bullets[i].pos, 0, NULL, bflip);
             }
         }
 
@@ -381,16 +387,3 @@ int animate(void* info){
     return 0;
 }
 
-/* gravity fucntion
-void moveUP(int* test, SDL_Rect wall, SDL_Surface* s){
-
-    float my_gravity= 0.2, MaxFall_speed= 0.5, MyJump_force=5.0, CurJump_force=0.0, Delta_time;
-
-    CurJump_force=MyJump_force;
-    *(test)+=CurJump_force * Delta_time;
-    if(CurJump_force > MaxFall_speed){
-        MyJump_force-= my_gravity * Delta_time;
-    }else{
-        CurJump_force=MaxFall_speed;
-    }
-}*/

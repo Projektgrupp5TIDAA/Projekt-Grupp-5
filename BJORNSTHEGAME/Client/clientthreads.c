@@ -17,6 +17,9 @@ Created on 2015-05-12 by Jonathan Kåhre
 #include <SDL2/SDL_net.h>
 #include <SDL2/SDL_ttf.h>
 #endif
+#define PLAYERCOUNT 6
+#define BULLETSPEED 30
+#define GRAVITY 4
 
 
 /* Function for handling all incoming information updates from the server */
@@ -91,7 +94,7 @@ int updateHandler(void* incinfo){
 
 int timeupdater(void* inc_time){
     timerInfo* timer = (timerInfo*) inc_time;
-    int i, j, fall=1;
+    int i, j, k, fall=1;
     printf("Timer thread uppdater started\n");
     SDL_Delay(1000);
     while((*(timer->quit)) != 1){
@@ -117,7 +120,20 @@ int timeupdater(void* inc_time){
 	            for(i=0;i<12;i++){
 	                if((timer->bullets[i]->TTL) > 0){
 	                    timer->bullets[i]->pos.x += (BULLETSPEED*(timer->bullets[i]->direction));
-	                    timer->bullets[i]->TTL--;
+	                    if(checkCollision(timer->bullets[i]->pos, timer->animator->player->pos)){
+	                    	if(timer->animator->player->health > 0){
+	                    		timer->animator->player->health--;
+	                    		timer->bullets[i]->TTL = 0;
+	                    	}
+	                    }else
+	                    for(k=0;k<14;k++){
+	                    	if(checkCollision(timer->bullets[i]->pos, timer->animator->platforms[k]))
+	                    		timer->bullets[i]->TTL = 0;
+	                    	if(checkCollision(timer->bullets[i]->pos, timer->animator->platforms[k/2-1]))
+	                    		timer->bullets[i]->TTL = 0;
+	                    }	                    
+	                    if(timer->bullets[i]->TTL > 0)
+	                    	timer->bullets[i]->TTL--;
 	                }
 	                else if(timer->bullets[i]->pos.x != 0 && timer->bullets[i]->pos.y != 0){
 	                    timer->bullets[i]->pos.x = 0;

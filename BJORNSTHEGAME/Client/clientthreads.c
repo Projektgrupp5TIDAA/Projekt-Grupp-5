@@ -125,16 +125,19 @@ int timeupdater(void* inc_time){
 	                    	if(timer->animator->player->health > 0){
 	                    		timer->animator->player->health--;
 	                    		timer->bullets[i]->TTL = 0;
+                                if(timer->animator->player->health == 0){
+                                    timer->animator->player->deaths++;
+                                    sendPlayerUpdate(*(timer->animator->player), timer->socket);
+                                }
 	                    	}
-                            else
-                                timer->animator->player->deaths = 1;
-	                    }else
-	                    for(k=0;k<14;k++){
-	                    	if(checkCollision(timer->bullets[i]->pos, timer->animator->platforms[k]))
-	                    		timer->bullets[i]->TTL = 0;
-	                    	if(checkCollision(timer->bullets[i]->pos, timer->animator->platforms[k/2-1]))
-	                    		timer->bullets[i]->TTL = 0;
-	                    }	                    
+	                    }else{
+	                        for(k=0;k<14;k++){
+	                    	    if(checkCollision(timer->bullets[i]->pos, timer->animator->platforms[k]))
+	                    	        timer->bullets[i]->TTL = 0;
+	                    	    if(checkCollision(timer->bullets[i]->pos, timer->animator->players[k/2-1].pos) && timer->animator->players[k/2-1].health > 0)
+	                    		    timer->bullets[i]->TTL = 0;
+                            }
+                        }	                    
 	                    if(timer->bullets[i]->TTL > 0)
 	                    	timer->bullets[i]->TTL--;
 	                }

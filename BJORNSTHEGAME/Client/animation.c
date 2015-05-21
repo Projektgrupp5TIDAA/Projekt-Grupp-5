@@ -354,9 +354,10 @@ int animate(void* info){
 
         //copy all players
         for(i=0;i<PLAYERCOUNT;i++){
-            SDL_RenderCopyEx(Rend, player[i], &spriteClips[animator->frame], &animator->players[i].pos, 0, NULL, animator->flip);
-            if(animator->player->deaths == 1){
-                SDL_RenderCopy(Rend,rip_texture, NULL,&animator->player->pos);
+            if(animator->players[i].health < 1){
+                SDL_RenderCopy(Rend, rip_texture, NULL, &animator->players[i].pos);
+            }else{
+                SDL_RenderCopyEx(Rend, player[i], &spriteClips[animator->frame], &animator->players[i].pos, 0, NULL, animator->flip);
             }
         }
 

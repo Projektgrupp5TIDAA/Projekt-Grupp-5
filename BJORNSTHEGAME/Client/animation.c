@@ -151,7 +151,7 @@ int animate(void* info){
     }
 
     /*set position for every platform on screen*/
-    animator->platforms[0].x = 0;
+     animator->platforms[0].x = 0;
     animator->platforms[0].y = screen->h-(screen->h*0.06);
     animator->platforms[0].w = screen->w;
     animator->platforms[0].h = screen->h*0.06;
@@ -167,18 +167,18 @@ int animate(void* info){
     animator->platforms[2].h = 40;
 
     animator->platforms[3].x = screen->w/3 +30;
-    animator->platforms[3].y = screen->h -590;
+    animator->platforms[3].y = screen->h -460;;
     animator->platforms[3].w = 45;
-    animator->platforms[3].h = 410;
+    animator->platforms[3].h = 320;
 
-    animator->platforms[4].x = screen ->w/3 -130;
-    animator->platforms[4].y = screen  ->h - 610;
+    animator->platforms[4].x = screen ->w/3 -115;
+    animator->platforms[4].y = screen  ->h - 560;
     animator->platforms[4].w = 350;
-    animator->platforms[4].h = 40;
+    animator->platforms[4].h = 15;
 
     animator->platforms[5].x = screen->w/3 -460;
     animator->platforms[5].y = screen->h/2 -100;
-    animator->platforms[5].w = 150;
+    animator->platforms[5].w = 250;
     animator->platforms[5].h = 30;
 
     animator->platforms[6].x = screen->w/3 -460;
@@ -191,19 +191,19 @@ int animate(void* info){
     animator->platforms[7].w = 400;
     animator->platforms[7].h = 60;
 
-    animator->platforms[8].x = screen->w/3 -139;
+    animator->platforms[8].x = screen->w/3 -70;
     animator->platforms[8].y = screen -> h/2 -70;
-    animator->platforms[8].w = 170;
+    animator->platforms[8].w = 100;
     animator->platforms[8].h = 30;
 
     animator->platforms[9].x = screen->w/3 -139;
-    animator->platforms[9].y = screen -> h/2 +90;
+    animator->platforms[9].y = screen -> h/2 +60;
     animator->platforms[9].w = 170;
     animator->platforms[9].h = 30;
 
     animator->platforms[10].x = screen ->w/3 +75;
     animator->platforms[10].y = screen -> h/2 -70;
-    animator->platforms[10].w = 170;
+    animator->platforms[10].w = 100;
     animator->platforms[10].h = 30;
 
     animator->platforms[11].x = screen ->w/3 +350;
@@ -217,7 +217,7 @@ int animate(void* info){
     animator->platforms[12].h = 40;
 
     animator->platforms[13].x = screen ->w/3 +73;
-    animator->platforms[13].y = screen -> h/2 +30;
+    animator->platforms[13].y = screen -> h/2 +60;
     animator->platforms[13].w = 170;
     animator->platforms[13].h = 30;
 
@@ -238,7 +238,7 @@ int animate(void* info){
     bjornDrapRect[1].w = screen->w*0.03;//60;
     bjornDrapRect[1].h = screen->h*0.046;//50;
 
-    bjornDrapRect[2].x = screen->w/2 -280;
+    bjornDrapRect[2].x = screen->w/2 -260;
     bjornDrapRect[2].y = screen->h - 482;
     bjornDrapRect[2].w = screen->w*0.03;//60;
     bjornDrapRect[2].h = screen->h*0.046;//50;

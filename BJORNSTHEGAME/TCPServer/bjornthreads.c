@@ -6,6 +6,7 @@ Projekt Grupp 5
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #ifdef __APPLE__
 #include <SDL2_net/SDL_net.h>
@@ -78,7 +79,8 @@ int Handler(void* thr){
             2. A player-update-message with the message-prefix 'P' which is handled internally by the thread by directly updating the player-data.
             3. A chat-message with the message-prefix 'C' which is put on the chat-stack and will be redistributed to the clients.(With less priority than Data)
             4. A name-request-message with the message-prefix 'N' which is immidiately responded to with all the active names on the server in the form of a serialized struct.
-            5. A EXITCONNECTION message, which quits the thread and closes the connection.
+            5. A powerup-update prefixed with 'D' which updates the active powerups.
+            6. An EXITCONNECTION message, which quits the thread and closes the connection.
         */
         emptyString(packet, sizeof(packet));
         if(SDLNet_TCP_Recv(socket, packet, PACKETSIZE)){
@@ -116,6 +118,11 @@ int Handler(void* thr){
                         }
                         memcpy(&serialnames, &names, sizeof(names));
                         SDLNet_TCP_Send(socket, serialnames, sizeof(serialnames)+1);
+                        break;
+                    case 'D':
+                        parseString(packet, 1, sizeof(packet));
+                        *(clientvar->powerup) = atoi(packet);
+                        printf("Recieved %d!\n", *(clientvar->powerup));
                         break;
                 }
             }
@@ -168,7 +175,7 @@ int timer(void* information){
     short timerset[10], i;
     printf("Timer thread running!\n");
     SDL_Delay(1000);
-    for(i=0;i<10;i++)
+    for(i=0;i<3;i++)
         timerset[i] = GAMELENGTH+1;
     while(1){
 
@@ -178,7 +185,7 @@ int timer(void* information){
             /* The powerup-timer, checks all the powerups to see if they are active or not, if they are inactive
                they will be assigned a time on the game-timer that will trigger them once the timer hits that value */
             //printf("Ticking. Timer: %d, Powerups: %d\n", (info->maintimer), info->powerup);
-            for(i=0;i<10;i++){
+            for(i=0;i<3;i++){
                 if(!(is_set(info->powerup, i+1))){
                     if((info->maintimer) == timerset[i]){
                         set_bit(&(info->powerup), i);
@@ -194,6 +201,10 @@ int timer(void* information){
 
             /* And then the game-timer ticks down */
             ((info->maintimer))--;
+        }else{
+            for(i=0;i<3;i++)
+                if(timerset[i] < GAMELENGTH+1)
+                    timerset[i] = GAMELENGTH+1;
         }
         SDL_Delay(1000);
     }

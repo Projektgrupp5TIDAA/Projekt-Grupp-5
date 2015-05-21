@@ -29,7 +29,7 @@ typedef struct{
 
 /* Struct with all the information a thread will have to get when getting a slot from the stack */
 typedef struct{
-    int ID, *newdata;
+    int ID, *powerup, *newdata;
     TCPsocket socket;
     pinfo* player;
     char playername[20];

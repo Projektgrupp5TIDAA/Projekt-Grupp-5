@@ -13,5 +13,7 @@ int sendPlayerUpdate(playerInfo playerDummy, TCPsocket* socket);
 
 int sendBulletUpdate(bullet bulletDummy, TCPsocket* socket);
 
+int sendPowerUpdate(int powerup, TCPsocket* socket);
+
 #endif // GAMEPLAY_H_INCLUDED
 

@@ -18,13 +18,13 @@ Projekt Grupp 5
 #include "bjornshared.h"
 
 int main(int argc, char **argv){
-    tinfo threadvariables[PLAYERCOUNT] = {{0, NULL, NULL, NULL, {0}, {NULL}}};
+    tinfo threadvariables[PLAYERCOUNT] = {{0, NULL, NULL, NULL, NULL, {0}, {NULL}}};
     pinfo playersend[PLAYERCOUNT] = {{5, 0, {0}}};
     PollInfo pollerinfo = {0, {0, NULL, {NULL}}, {0, {{0}}}, {0, {{0}}}};
     SDL_Thread* connectionpoller, *timerthr;
     TimerInfo timerinfo = {0, 0};
     char sendpackage[200];
-    int i, j, lastpop=0, newdata=0;
+    int i, j, lastpop=0, newdata=0, powerupcheck=0;
     nsend namestruct;
 
     /* Initializing the information for the stack and threads */
@@ -32,6 +32,7 @@ int main(int argc, char **argv){
         threadvariables[i].ID = i;
         threadvariables[i].newdata = &newdata;
         threadvariables[i].player = &playersend[i];
+        threadvariables[i].powerup = &timerinfo.powerup;
         for(j=0;j<PLAYERCOUNT;j++){
             threadvariables[i].names[j] = threadvariables[j].playername;
         }
@@ -185,6 +186,15 @@ int main(int argc, char **argv){
                             SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage)+1);
                     }
                     SDL_Delay(15);
+                }
+                if(timerinfo.powerup != powerupcheck){
+                    printf("Sending power update!\n");
+                    sprintf(sendpackage, "D%d", timerinfo.powerup);
+                    for(i=0;i<PLAYERCOUNT;i++){
+                        if(threadvariables[i].socket != NULL)
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage)+1);
+                    }
+                    powerupcheck = timerinfo.powerup;
                 }
             }
             printf("Game stopping.\n");

@@ -28,21 +28,21 @@ typedef struct{
 
 /* Struct containing information on all the players */
 typedef struct{
-	int *quit, timer;
+	int *quit, *powerup, timer;
 	TCPsocket* socket;
 	playerInfo* players;
     bullet* bullets[12];
 }updaterInfo;
 
 typedef struct{
-	int frame, *quit, *ammo, *drunk;
+	int frame, *quit, *ammo, *drunk, *powerup;
 	SDL_Window* window;
 	playerInfo *player;
 	playerInfo players[6];
     SDL_RendererFlip flip;
     bullet bullets[12];
     SDL_Rect platforms[14];
-    SDL_Rect bjornDrapare[2];
+    SDL_Rect bjornDrapRect[3];
 }animationInfo;
 
 typedef struct{
@@ -56,8 +56,12 @@ int updateHandler(void* info);
 
 int timeupdater(void* inc_time);
 
-bool checkgravity( SDL_Rect a, SDL_Rect b );
+bool checkgravity(SDL_Rect a, SDL_Rect b, int modifier);
 
+int is_set(int comp, int bit);
 
+void set_bit(int *num, int bit);
+
+void clr_bit(int *num, int bit);
 
 #endif

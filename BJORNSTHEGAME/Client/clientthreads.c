@@ -5,6 +5,7 @@ Created on 2015-05-12 by Jonathan Kåhre
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "clientthreads.h"
 #include "bjornstartup.h"
 #include "lobby.h"
@@ -83,6 +84,10 @@ int updateHandler(void* incinfo){
                     parseString(packet, 1, sizeof(packet));
                     info->timer=atoi(packet);
                     break;
+                case 'D':
+                    parseString(packet, 1, sizeof(packet));
+                    *(info->powerup) = atoi(packet);
+                    break;
 				default:
 					printf("Invalid packet recieved, ignoring.\n");
 					break;
@@ -96,6 +101,7 @@ int updateHandler(void* incinfo){
 int timeupdater(void* inc_time){
     timerInfo* timer = (timerInfo*) inc_time;
     int i, j, k, fall=1;
+    float acceleration = 0.5;
     printf("Timer thread uppdater started\n");
     SDL_Delay(1000);
     while((*(timer->quit)) != 1){
@@ -104,28 +110,34 @@ int timeupdater(void* inc_time){
             (*(timer->timer))--;
 
             for(j=0;j<20;j++)
-            	{
-            		for(i=0; i<14; i++)
-                	{
-                    	if(checkgravity(timer->animator->player->pos , timer->animator->platforms[i]))
+            {
+                for(k=0;k<2;k++){
+                	for(i=0; i<14; i++)
+                    {
+                        if(checkgravity(timer->animator->player->pos, timer->animator->platforms[i], GRAVITY*acceleration))
                         {
-                       		fall = 0;
-                       	}
-                	}
-                	if(fall == 1){
-                      	timer->animator->player->pos.y += GRAVITY;
-                     	sendPlayerUpdate(*(timer->animator->player), timer->socket);
+                           	fall = 0;
+                            acceleration = 0.5;
+                        }
+                    }
+                    if(fall == 1){
+                        timer->animator->player->pos.y += GRAVITY*acceleration;
+                        sendPlayerUpdate(*(timer->animator->player), timer->socket);
+                        acceleration+=0.125;
                     }else
-                    	fall = 1;
+                        fall = 1;
+                    SDL_Delay(25);
+                }
 
 	            for(i=0;i<12;i++){
 	                if((timer->bullets[i]->TTL) > 0){
 	                    timer->bullets[i]->pos.x += (BULLETSPEED*(timer->bullets[i]->direction));
 	                    if(checkCollision(timer->bullets[i]->pos, timer->animator->player->pos)){
 	                    	if(timer->animator->player->health > 0){
-	                    		timer->animator->player->health--;
+	                    		timer->animator->player->health -= timer->bullets[i]->dmg;
 	                    		timer->bullets[i]->TTL = 0;
-                                if(timer->animator->player->health == 0){
+                                if(timer->animator->player->health < 1){
+                                    timer->animator->player->health = 0;
                                     timer->animator->player->deaths++;
                                     sendPlayerUpdate(*(timer->animator->player), timer->socket);
                                 }
@@ -148,7 +160,6 @@ int timeupdater(void* inc_time){
 	        		
 
 	        	}
-	        	SDL_Delay(50);
 	        }
 
             printf("Gameplay time: %d is ticking\n", *(timer->timer));
@@ -158,7 +169,7 @@ int timeupdater(void* inc_time){
     return 0;
 }
 
-bool checkgravity( SDL_Rect a, SDL_Rect b )
+bool checkgravity(SDL_Rect a, SDL_Rect b, int modifier)
 {
     //The sides of the rectangles
     int leftA, leftB;
@@ -170,7 +181,7 @@ bool checkgravity( SDL_Rect a, SDL_Rect b )
     leftA = a.x;
     rightA = a.x + a.w;
     topA = a.y;
-    bottomA = a.y + a.h + GRAVITY;
+    bottomA = a.y + a.h + modifier;
 
     //Calculate the sides of rect B
     leftB = b.x;
@@ -201,4 +212,20 @@ bool checkgravity( SDL_Rect a, SDL_Rect b )
 
     //If none of the sides from A are outside B
     return true;
+}
+
+/* Check if the bit at place 'bit' is set in int 'comp' */
+int is_set(int comp, int bit){
+    return (comp & 1<<bit);
+}
+
+/* Set the bit at place 'bit' of 'num' */
+void set_bit(int *num, int bit){
+    *num = *num | 1<<bit;
+}
+
+/* Clear the bit at place 'bit' of 'num' */
+void clr_bit(int *num, int bit){
+    if(is_set(*num, bit) > 0)
+        *num = *num - (pow(2, bit));
 }

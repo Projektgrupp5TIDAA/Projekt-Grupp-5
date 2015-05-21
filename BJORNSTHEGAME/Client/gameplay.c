@@ -23,13 +23,13 @@
 #define DRINKAMOUNT 2
 #define BULLET_TTL 12
 #define SPEEDx 15
-#define SPEEDy 150
+#define SPEEDy 200
 
 int gameplayWindow(ClientInfo* information)
 {
-    int i, j, quit=0, ammo=AMMOAMOUNT, drunk=0;
-    animationInfo animator = {0, &quit, &ammo, &drunk, NULL, NULL, {{0, 0, {0, 0, 0, 0}}}, SDL_FLIP_NONE, {{{0,0,0,0}, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
-    updaterInfo updater = {&quit, 0, &(information->socket), NULL};
+    int i, j, quit=0, ammo=AMMOAMOUNT, drunk=0, powerup=0, onground=0;
+    animationInfo animator = {0, &quit, &ammo, &drunk, &powerup, NULL, NULL, {{0, 0, {0, 0, 0, 0}}}, SDL_FLIP_NONE, {{{0,0,0,0}, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
+    updaterInfo updater = {&quit, &powerup, 0, &(information->socket), NULL};
     timerInfo timer = {&updater.timer, &quit, {NULL}, &animator, &information->socket};
     SDL_Thread* updaterThread, *animatorThread, *timerThread;
     playerInfo playerDummy = {5, 0, {0, 0, 0, 0}};
@@ -92,6 +92,17 @@ int gameplayWindow(ClientInfo* information)
                                     playerDummy.pos.x+= SPEEDx;
                                 }
                             }
+
+                            for(i=0;i<3;i++)
+                                if(checkCollision(playerDummy.pos, animator.bjornDrapRect[i])){
+                                    printf("ISSET = %d\n", is_set(powerup, i));
+                                    if(is_set(powerup, i) > 0 && drunk < 5){
+                                        drunk++;
+                                        clr_bit(&powerup, i);
+                                        sendPowerUpdate(powerup, &information->socket);
+                                    }
+                                }
+
                             animator.flip = SDL_FLIP_HORIZONTAL;
 
                             if(animator.frame == 2)
@@ -118,13 +129,21 @@ int gameplayWindow(ClientInfo* information)
                             playerDummy.pos.x += SPEEDx;
                             for(i=0; i<PLATFORMAMOUNT; i++)
                             {
-                                if((playerDummy.pos.x < 0 ) || (playerDummy.pos.x + playerDummy.pos.w >screen ->w )||checkCollision(playerDummy.pos,animator.platforms[i])==true)
+                                if((playerDummy.pos.x < 0 ) || (playerDummy.pos.x + playerDummy.pos.w > screen->w )||checkCollision(playerDummy.pos,animator.platforms[i])==true)
                                 {
-
                                     playerDummy.pos.x -= SPEEDx;
-
                                 }
                             }
+
+                            for(i=0;i<3;i++)
+                                if(checkCollision(playerDummy.pos, animator.bjornDrapRect[i])){
+                                    if(is_set(powerup, i) > 0 && drunk < 5){
+                                        drunk++;
+                                        clr_bit(&powerup, i);
+                                        sendPowerUpdate(powerup, &information->socket);
+                                    }
+                                }
+
                             animator.flip = SDL_FLIP_NONE;
 
                             if(animator.frame == 2)
@@ -155,6 +174,7 @@ int gameplayWindow(ClientInfo* information)
                                 }
                                 bulletDummy.pos.y = playerDummy.pos.y+(playerDummy.pos.h/4);
                                 bulletDummy.TTL = BULLET_TTL;
+                                bulletDummy.dmg = drunk+1;
                                 sendBulletUpdate(bulletDummy, &information->socket);
                                 ammo--;
                             }
@@ -164,21 +184,37 @@ int gameplayWindow(ClientInfo* information)
                             ammo =3;
                             break;
                         case SDLK_SPACE:
-                            for(j=0;j<6;j++){
-                                playerDummy.pos.y -= SPEEDy/6;
-                                for(i=0; i<PLATFORMAMOUNT; i++){
-                                    if(checkCollision(playerDummy.pos,animator.platforms[i]))
-                                    {
-                                        playerDummy.pos.y +=SPEEDy/6;
-                                        sendPlayerUpdate(playerDummy, &information->socket);
-                                        j=6;
+                            for(i=0;i<PLATFORMAMOUNT;i++)
+                                if(checkgravity(playerDummy.pos, animator.platforms[i], 3))
+                                    onground = 1;
+                            if(onground == 1){
+                                for(j=0;j<5;j++){
+                                    playerDummy.pos.y -= SPEEDy/5;
+                                    for(i=0; i<PLATFORMAMOUNT; i++){
+                                        if(checkCollision(playerDummy.pos,animator.platforms[i]))
+                                        {
+                                            playerDummy.pos.y +=SPEEDy/5;
+                                            sendPlayerUpdate(playerDummy, &information->socket);
+                                            j=5;
+                                        }
+                                    }
+                                    sendPlayerUpdate(playerDummy, &information->socket);
+                                    SDL_Delay(54);
+                                }
+                            }
+
+                            for(i=0;i<3;i++)
+                                if(checkCollision(playerDummy.pos, animator.bjornDrapRect[i])){
+                                    if(is_set(powerup, i) > 0 && drunk < 5){
+                                        drunk++;
+                                        clr_bit(&powerup, i);
+                                        sendPowerUpdate(powerup, &information->socket);
                                     }
                                 }
-                                sendPlayerUpdate(playerDummy, &information->socket);
-                                SDL_Delay(46);
-                            }
+
                             sendPlayerUpdate(playerDummy, &information->socket);
                             printf("jump!\n");
+                            onground = 0;
                             break;
                         default:
                             printf("Wrong key! :D\n");
@@ -247,6 +283,17 @@ int sendBulletUpdate(bullet bulletDummy, TCPsocket* socket){
     serializedbullet[0]= 'B';
     if(*socket != NULL){
         SDLNet_TCP_Send(*socket, serializedbullet, sizeof(serializedbullet));
+        return 0;
+    }else
+        return 1;
+}
+
+int sendPowerUpdate(int powerup, TCPsocket* socket){
+    char packet[sizeof(int)+1];
+    sprintf(packet, "D%d", powerup);
+    printf("Sending %d!\n", powerup);
+    if(*socket != NULL){
+        SDLNet_TCP_Send(*socket, packet, sizeof(packet)+1);
         return 0;
     }else
         return 1;

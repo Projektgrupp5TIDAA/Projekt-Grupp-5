@@ -75,7 +75,6 @@ int animate(void* info){
     SDL_Texture* rip_texture=NULL;
 
     SDL_Rect spriteClips[4];
-    SDL_Rect bjornDrapRect[DRINKAMOUNT];
     SDL_Rect textSprite[6];
     SDL_Rect textRect[5];
     SDL_Rect capsRect[AMMOAMOUNT];
@@ -232,20 +231,20 @@ int animate(void* info){
         capsRect[i].h = screen->h*0.046;
     }
 
-    bjornDrapRect[0].x = screen->w/2 -110;
-    bjornDrapRect[0].y = screen->h - 215;
-    bjornDrapRect[0].w = screen->w*0.03;//60;
-    bjornDrapRect[0].h = screen->h*0.046;//50;
+    animator->bjornDrapRect[0].x = screen->w/2 -110;
+    animator->bjornDrapRect[0].y = screen->h - 215;
+    animator->bjornDrapRect[0].w = screen->w*0.03;//60;
+    animator->bjornDrapRect[0].h = screen->h*0.046;//50;
 
-    bjornDrapRect[1].x = screen->w/2 +400;
-    bjornDrapRect[1].y = screen->h - 492;
-    bjornDrapRect[1].w = screen->w*0.03;//60;
-    bjornDrapRect[1].h = screen->h*0.046;//50;
+    animator->bjornDrapRect[1].x = screen->w/2 +400;
+    animator->bjornDrapRect[1].y = screen->h - 492;
+    animator->bjornDrapRect[1].w = screen->w*0.03;//60;
+    animator->bjornDrapRect[1].h = screen->h*0.046;//50;
 
-    bjornDrapRect[2].x = screen->w/2 -260;
-    bjornDrapRect[2].y = screen->h - 482;
-    bjornDrapRect[2].w = screen->w*0.03;//60;
-    bjornDrapRect[2].h = screen->h*0.046;//50;
+    animator->bjornDrapRect[2].x = screen->w/2 -260;
+    animator->bjornDrapRect[2].y = screen->h - 482;
+    animator->bjornDrapRect[2].w = screen->w*0.03;//60;
+    animator->bjornDrapRect[2].h = screen->h*0.046;//50;
 
     textRect[0].x= screen->w*0.79;//screen ->w/2 +310;
     textRect[0].y= screen->h*0.02;//screen ->h - 740;
@@ -334,13 +333,12 @@ int animate(void* info){
             SDL_RenderCopy(Rend, caps, NULL, &capsRect[i]);
         }
 
-         for(i=0; i<DRINKAMOUNT; i++) //copy all "bjornDrapare" to the render "the screen"
+        for(i=0; i<DRINKAMOUNT; i++) //copy all "bjornDrapare" to the render "the screen"
         {
-            SDL_RenderCopy(Rend, bjornDrapare, NULL, &bjornDrapRect[i]);
-
-             if(checkCollision(animator->player->pos, bjornDrapRect[i])){
-                SDL_RenderCopy(Rend,bjornDTom, NULL, &bjornDrapRect[i]);
-            }
+            if(!is_set(*(animator->powerup), i))
+                SDL_RenderCopy(Rend, bjornDTom, NULL, &animator->bjornDrapRect[i]);
+            else
+                SDL_RenderCopy(Rend, bjornDrapare, NULL, &animator->bjornDrapRect[i]);
         }
 
 
@@ -397,4 +395,3 @@ int animate(void* info){
 
     return 0;
 }
-

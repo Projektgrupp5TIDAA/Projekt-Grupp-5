@@ -126,6 +126,8 @@ int timeupdater(void* inc_time){
 	                    		timer->animator->player->health--;
 	                    		timer->bullets[i]->TTL = 0;
 	                    	}
+                            else
+                                timer->animator->player->deaths = 1;
 	                    }else
 	                    for(k=0;k<14;k++){
 	                    	if(checkCollision(timer->bullets[i]->pos, timer->animator->platforms[k]))

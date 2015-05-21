@@ -75,122 +75,116 @@ int gameplayWindow(ClientInfo* information)
 
             if(event.type == SDL_KEYDOWN)
             {
-                //Select surfaces based on key press
-                switch(event.key.keysym.sym)
-                {
-                    case SDLK_ESCAPE:
-                        quit = 1;
-                        break;
-
-                    case SDLK_LEFT:
-                        bulletDummy.direction=-1;
-                        playerDummy.pos.x -= SPEEDx;
-                        for(i=0; i<PLATFORMAMOUNT; i++)
-                        {
-                            if(( playerDummy.pos.x < 0 ) || ( playerDummy.pos.x + playerDummy.pos.w >screen ->w ) ||checkCollision(playerDummy.pos,animator.platforms[i])==true)
+                if(animator.player->deaths == 0){
+                    switch(event.key.keysym.sym)
+                    {
+                        case SDLK_ESCAPE:
+                            quit = 1;
+                            break;
+                            
+                        case SDLK_LEFT:
+                            bulletDummy.direction=-1;
+                            playerDummy.pos.x -= SPEEDx;
+                            for(i=0; i<PLATFORMAMOUNT; i++)
                             {
-                                playerDummy.pos.x+= SPEEDx;
-                            }
-                        }
-                        animator.flip = SDL_FLIP_HORIZONTAL;
-
-                        if(animator.frame == 2)
-                        {
-                            animator.frame = 0;
-                        }
-                        else if(animator.frame == 0)
-                        {
-                            animator.frame = 3;
-                        }
-                        else if(animator.frame == 3)
-                        {
-                            animator.frame = 1;
-                        }
-                        else
-                        {
-                            animator.frame = 2;
-                        }
-                        sendPlayerUpdate(playerDummy, &information->socket);
-                        break;
-
-                    case SDLK_RIGHT:
-                        bulletDummy.direction = 1;
-                        playerDummy.pos.x += SPEEDx;
-                        for(i=0; i<PLATFORMAMOUNT; i++)
-                        {
-                            if((playerDummy.pos.x < 0 ) || (playerDummy.pos.x + playerDummy.pos.w >screen ->w )||checkCollision(playerDummy.pos,animator.platforms[i])==true)
-                            {
-
-                                playerDummy.pos.x -= SPEEDx;
-
-                            }
-                        }
-                        animator.flip = SDL_FLIP_NONE;
-
-                        if(animator.frame == 2)
-                        {
-                            animator.frame = 0;
-                        }
-                        else if(animator.frame == 0)
-                        {
-                            animator.frame = 3;
-                        }
-                        else if(animator.frame == 3)
-                        {
-                            animator.frame = 1;
-                        }
-                        else
-                        {
-                            animator.frame = 2;
-                        }
-                        sendPlayerUpdate(playerDummy, &information->socket);
-                        break;
-                    case SDLK_x:
-                        printf("Shooting!\n");
-                        if(ammo > 0){
-                            if(animator.flip == SDL_FLIP_NONE){
-                                bulletDummy.pos.x = playerDummy.pos.x + playerDummy.pos.w;
-                            }else{
-                                bulletDummy.pos.x = playerDummy.pos.x;
-                            }
-                            bulletDummy.pos.y = playerDummy.pos.y+(playerDummy.pos.h/4);
-                            bulletDummy.TTL = BULLET_TTL;
-                            sendBulletUpdate(bulletDummy, &information->socket);
-                            ammo--;
-                        }
-                        break;
-                    case SDLK_r:
-                        printf("Reloading\n");
-                        ammo =3;
-                        break;
-                    case SDLK_SPACE:
-                        for(j=0;j<6;j++){
-                            playerDummy.pos.y -= SPEEDy/6;
-                            for(i=0; i<PLATFORMAMOUNT; i++){
-                                if(checkCollision(playerDummy.pos,animator.platforms[i]))
+                                if(( playerDummy.pos.x < 0 ) || ( playerDummy.pos.x + playerDummy.pos.w >screen ->w ) ||checkCollision(playerDummy.pos,animator.platforms[i])==true)
                                 {
-                                    playerDummy.pos.y +=SPEEDy/6;
-                                    sendPlayerUpdate(playerDummy, &information->socket);
-                                    j=6;
+                                    playerDummy.pos.x+= SPEEDx;
                                 }
                             }
-                            sendPlayerUpdate(playerDummy, &information->socket);
-                            SDL_Delay(46);
-                        }
-                        sendPlayerUpdate(playerDummy, &information->socket);
-                    /*    playerDummy.pos.y += GRAVITY;
-                        for(i=0; i<PLATFORMAMOUNT; i++){
-                            if(checkCollision(playerDummy.pos, animator.platforms[i] )== true){
-                                playerDummy.pos.y += GRAVITY;
+                            animator.flip = SDL_FLIP_HORIZONTAL;
+
+                            if(animator.frame == 2)
+                            {
+                                animator.frame = 0;
                             }
-                        }
-                        sendPlayerUpdate(playerDummy, &information->socket);*/
-                        printf("jump!\n");
-                        break;
-                    default:
-                        printf("Wrong key! :D\n");
-                        SDL_Delay(8);//For dani
-                        break;
+                            else if(animator.frame == 0)
+                            {
+                                animator.frame = 3;
+                            }
+                            else if(animator.frame == 3)
+                            {
+                                animator.frame = 1;
+                            }
+                            else
+                            {
+                                animator.frame = 2;
+                            }
+                            sendPlayerUpdate(playerDummy, &information->socket);
+                            break;
+
+                        case SDLK_RIGHT:
+                            bulletDummy.direction = 1;
+                            playerDummy.pos.x += SPEEDx;
+                            for(i=0; i<PLATFORMAMOUNT; i++)
+                            {
+                                if((playerDummy.pos.x < 0 ) || (playerDummy.pos.x + playerDummy.pos.w >screen ->w )||checkCollision(playerDummy.pos,animator.platforms[i])==true)
+                                {
+
+                                    playerDummy.pos.x -= SPEEDx;
+
+                                }
+                            }
+                            animator.flip = SDL_FLIP_NONE;
+
+                            if(animator.frame == 2)
+                            {
+                                animator.frame = 0;
+                            }
+                            else if(animator.frame == 0)
+                            {
+                                animator.frame = 3;
+                            }
+                            else if(animator.frame == 3)
+                            {
+                                animator.frame = 1;
+                            }
+                            else
+                            {
+                                animator.frame = 2;
+                            }
+                            sendPlayerUpdate(playerDummy, &information->socket);
+                            break;
+                        case SDLK_x:
+                            printf("Shooting!\n");
+                            if(ammo > 0){
+                                if(animator.flip == SDL_FLIP_NONE){
+                                    bulletDummy.pos.x = playerDummy.pos.x + playerDummy.pos.w;
+                                }else{
+                                    bulletDummy.pos.x = playerDummy.pos.x;
+                                }
+                                bulletDummy.pos.y = playerDummy.pos.y+(playerDummy.pos.h/4);
+                                bulletDummy.TTL = BULLET_TTL;
+                                sendBulletUpdate(bulletDummy, &information->socket);
+                                ammo--;
+                            }
+                            break;
+                        case SDLK_r:
+                            printf("Reloading\n");
+                            ammo =3;
+                            break;
+                        case SDLK_SPACE:
+                            for(j=0;j<6;j++){
+                                playerDummy.pos.y -= SPEEDy/6;
+                                for(i=0; i<PLATFORMAMOUNT; i++){
+                                    if(checkCollision(playerDummy.pos,animator.platforms[i]))
+                                    {
+                                        playerDummy.pos.y +=SPEEDy/6;
+                                        sendPlayerUpdate(playerDummy, &information->socket);
+                                        j=6;
+                                    }
+                                }
+                                sendPlayerUpdate(playerDummy, &information->socket);
+                                SDL_Delay(46);
+                            }
+                            sendPlayerUpdate(playerDummy, &information->socket);
+                            printf("jump!\n");
+                            break;
+                        default:
+                            printf("Wrong key! :D\n");
+                            SDL_Delay(8);//For dani
+                            break;
+                    }
                 }
             }
         }

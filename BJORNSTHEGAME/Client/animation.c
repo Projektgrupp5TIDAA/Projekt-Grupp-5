@@ -32,7 +32,7 @@ int animate(void* info){
     animator->window = SDL_CreateWindow("BJORNS THE GAME",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
-        1280,800,
+        1280,700,
         0);//SDL_WINDOW_FULLSCREEN_DESKTOP);
     if(animator->window == NULL)
     {
@@ -53,12 +53,12 @@ int animate(void* info){
     SDL_Surface* textsurface[TEXTAMOUNT];
 
     SDL_Surface* playerSurface[6];
-    playerSurface[0] = IMG_Load("../Images/game/spriteGreen.png");
-    playerSurface[1] = IMG_Load("../Images/game/spriteOrange.png");
-    playerSurface[2] = IMG_Load("../Images/game/spritePurple.png");
-    playerSurface[3] = IMG_Load("../Images/game/spriteYellow.png");
-    playerSurface[4] = IMG_Load("../Images/game/spriteBlue.png");
-    playerSurface[5] = IMG_Load("../Images/game/spritePink.png");
+    playerSurface[5] = IMG_Load("../Images/game/spriteGreen.png");
+    playerSurface[4] = IMG_Load("../Images/game/spriteOrange.png");
+    playerSurface[3] = IMG_Load("../Images/game/spritePurple.png");
+    playerSurface[2] = IMG_Load("../Images/game/spriteYellow.png");
+    playerSurface[1] = IMG_Load("../Images/game/spriteBlue.png");
+    playerSurface[0] = IMG_Load("../Images/game/spritePink.png");
 
     /*Texture declaration*/
     SDL_Renderer* Rend = NULL;
@@ -321,7 +321,6 @@ int animate(void* info){
                     bflip = SDL_FLIP_NONE;
                 }else
                     bflip = SDL_FLIP_HORIZONTAL;
-                //SDL_RenderCopy(Rend, bulletTex, NULL, &animator->bullets[i].pos);
                 SDL_RenderCopyEx(Rend, bulletTex, NULL, &animator->bullets[i].pos, 0, NULL, bflip);
             }
         }

@@ -320,12 +320,9 @@ int animate(void* info){
         }
 
         for(i=0;i<PLAYERCOUNT;i++){
-        if(checkCollision(animator->player[i].pos, bjornDrapRect[i])){
-
-            SDL_RenderCopy(Rend,bjornDTom, NULL, &bjornDrapRect[i]);
-
-        }
-
+            if(checkCollision(animator->player[i].pos, bjornDrapRect[i])){
+                SDL_RenderCopy(Rend,bjornDTom, NULL, &bjornDrapRect[i]);
+            }
         }
 
 

@@ -23,11 +23,11 @@
 #define DRINKAMOUNT 2
 #define BULLET_TTL 12
 #define SPEEDx 15
-#define SPEEDy 101
+#define SPEEDy 150
 
 int gameplayWindow(ClientInfo* information)
 {
-    int i, quit=0, ammo=AMMOAMOUNT, drunk=0;
+    int i, j, quit=0, ammo=AMMOAMOUNT, drunk=0;
     animationInfo animator = {0, &quit, &ammo, &drunk, NULL, NULL, {{0, 0, {0, 0, 0, 0}}}, SDL_FLIP_NONE, {{{0,0,0,0}, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
     updaterInfo updater = {&quit, 0, &(information->socket), NULL};
     timerInfo timer = {&updater.timer, &quit, {NULL}, &animator, &information->socket};
@@ -80,6 +80,7 @@ int gameplayWindow(ClientInfo* information)
                     case SDLK_ESCAPE:
                         quit = 1;
                         break;
+
                     case SDLK_LEFT:
                         bulletDummy.direction=-1;
                         playerDummy.pos.x -= SPEEDx;
@@ -143,7 +144,6 @@ int gameplayWindow(ClientInfo* information)
                         }
                         sendPlayerUpdate(playerDummy, &information->socket);
                         break;
-
                     case SDLK_x:
                         printf("Shooting!\n");
                         if(ammo > 0){
@@ -157,15 +157,20 @@ int gameplayWindow(ClientInfo* information)
                         }
                         break;
                     case SDLK_SPACE:
-                       playerDummy.pos.y -= SPEEDy;
-                        for(i=0; i<PLATFORMAMOUNT; i++){
-                            if(checkCollision(playerDummy.pos,animator.platforms[i]))
-                            {
-                                playerDummy.pos.y +=SPEEDy;
+                        for(j=0;j<6;j++){
+                            playerDummy.pos.y -= SPEEDy/6;
+                            for(i=0; i<PLATFORMAMOUNT; i++){
+                                if(checkCollision(playerDummy.pos,animator.platforms[i]))
+                                {
+                                    playerDummy.pos.y +=SPEEDy/6;
+                                    sendPlayerUpdate(playerDummy, &information->socket);
+                                    j=6;
+                                }
                             }
+                            sendPlayerUpdate(playerDummy, &information->socket);
+                            SDL_Delay(46);
                         }
                         sendPlayerUpdate(playerDummy, &information->socket);
-                        SDL_Delay(500);
                     /*    playerDummy.pos.y += GRAVITY;
                         for(i=0; i<PLATFORMAMOUNT; i++){
                             if(checkCollision(playerDummy.pos, animator.platforms[i] )== true){
@@ -182,6 +187,7 @@ int gameplayWindow(ClientInfo* information)
                 }
             }
         }
+        SDL_Delay(1000/60);
     }
 
     SDL_WaitThread(updaterThread, &i);

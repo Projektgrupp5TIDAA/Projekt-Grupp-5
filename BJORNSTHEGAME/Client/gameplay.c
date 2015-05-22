@@ -18,7 +18,7 @@
 #include "gameplay.h"
 #include "animation.h"
 #define AMMOAMOUNT 3
-#define PLATFORMAMOUNT 14
+#define PLATFORMAMOUNT 17
 #define TEXTAMOUNT 3
 #define DRINKAMOUNT 2
 #define BULLET_TTL 12

@@ -112,7 +112,7 @@ int timeupdater(void* inc_time){
             for(j=0;j<20;j++)
             {
                 for(k=0;k<2;k++){
-                	for(i=0; i<14; i++)
+                	for(i=0; i<17; i++)
                     {
                         if(checkgravity(timer->animator->player->pos, timer->animator->platforms[i], GRAVITY*acceleration))
                         {
@@ -143,7 +143,7 @@ int timeupdater(void* inc_time){
                                 }
 	                    	}
 	                    }else{
-	                        for(k=0;k<14;k++){
+	                        for(k=0;k<17;k++){
 	                    	    if(checkCollision(timer->bullets[i]->pos, timer->animator->platforms[k]))
 	                    	        timer->bullets[i]->TTL = 0;
 	                    	    if(checkCollision(timer->bullets[i]->pos, timer->animator->players[k/2-1].pos) && timer->animator->players[k/2-1].health > 0)

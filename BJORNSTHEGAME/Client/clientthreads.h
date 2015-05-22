@@ -41,7 +41,7 @@ typedef struct{
 	playerInfo players[6];
     SDL_RendererFlip flip;
     bullet bullets[12];
-    SDL_Rect platforms[14];
+    SDL_Rect platforms[17];
     SDL_Rect bjornDrapRect[3];
 }animationInfo;
 

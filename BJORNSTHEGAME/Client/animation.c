@@ -18,7 +18,7 @@
 #include "animation.h"
 #include "gameplay.h"
 #define AMMOAMOUNT 3
-#define PLATFORMAMOUNT 14
+#define PLATFORMAMOUNT 17
 #define TEXTAMOUNT 4
 #define DRINKAMOUNT 3
 #define PLAYERCOUNT 6
@@ -159,7 +159,7 @@ int animate(void* info){
 
     printf("surfaces är friade från att ha laddat textures\n");
     /*set position for every platform on screen*/
-     animator->platforms[0].x = 0;
+    animator->platforms[0].x = 0;
     animator->platforms[0].y = screen->h-(screen->h*0.06);
     animator->platforms[0].w = screen->w;
     animator->platforms[0].h = screen->h*0.06;
@@ -177,7 +177,7 @@ int animate(void* info){
     animator->platforms[3].x = screen->w/3 +30;
     animator->platforms[3].y = screen->h -450;;
     animator->platforms[3].w = 45;
-    animator->platforms[3].h = 320;
+    animator->platforms[3].h = 300;
 
     animator->platforms[4].x = screen ->w/3 -115;
     animator->platforms[4].y = screen  ->h - 560;
@@ -194,9 +194,9 @@ int animate(void* info){
     animator->platforms[6].w = 150;
     animator->platforms[6].h = 30;
 
-    animator->platforms[7].x = screen ->w/2 +300;
-    animator->platforms[7].y = screen->h/2 -80;
-    animator->platforms[7].w = 400;
+    animator->platforms[7].x = screen ->w/2 +250;
+    animator->platforms[7].y = screen->h/2 -100;
+    animator->platforms[7].w = 420;
     animator->platforms[7].h = 60;
 
     animator->platforms[8].x = screen->w/3 -70;
@@ -214,10 +214,10 @@ int animate(void* info){
     animator->platforms[10].w = 100;
     animator->platforms[10].h = 30;
 
-    animator->platforms[11].x = screen ->w/3 +350;
-    animator->platforms[11].y = screen -> h/2 -140;
-    animator->platforms[11].w = 170;
-    animator->platforms[11].h = 30;
+    animator->platforms[11].x = screen ->w/3 +230;
+    animator->platforms[11].y = screen -> h/2 -180;
+    animator->platforms[11].w = 180;
+    animator->platforms[11].h = 15;
 
     animator->platforms[12].x = screen ->w/2 +390;
     animator->platforms[12].y = screen -> h/2 +150;
@@ -228,6 +228,21 @@ int animate(void* info){
     animator->platforms[13].y = screen -> h/2 +60;
     animator->platforms[13].w = 170;
     animator->platforms[13].h = 30;
+
+    animator->platforms[14].x = screen ->w/2 +300;
+    animator->platforms[14].y = screen -> h/2 +200;
+    animator->platforms[14].w = 100;
+    animator->platforms[14].h = 20;
+
+    animator->platforms[15].x = screen ->w/2 +220;
+    animator->platforms[15].y = screen -> h/2 +230;
+    animator->platforms[15].w = 100;
+    animator->platforms[15].h = 20;
+
+    animator->platforms[16].x = screen ->w/2 +90;
+    animator->platforms[16].y = screen -> h -360;
+    animator->platforms[16].w = 260;
+    animator->platforms[16].h = 20;
 
     for(i=0;i<AMMOAMOUNT;i++){
         capsRect[i].x = screen->w*0.9+(i*screen->w*0.032);

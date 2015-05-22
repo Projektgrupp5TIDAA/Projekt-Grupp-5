@@ -100,7 +100,7 @@ int animate(void* info){
     bakgroundTexture = SDL_CreateTextureFromSurface(Rend,gameBackground); //Load texture with image "bar.jpg" and Rend
     rip_texture = SDL_CreateTextureFromSurface(Rend, rip);
 
-    /*text*/
+    /*text info*/
     SDL_Color colorT= {170,60,255};
     TTF_Font *font = TTF_OpenFont("../Images/game/StencilStd.ttf", 100);
     if(font == NULL)

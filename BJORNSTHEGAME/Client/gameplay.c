@@ -188,18 +188,18 @@ int gameplayWindow(ClientInfo* information)
                                 if(checkgravity(playerDummy.pos, animator.platforms[i], 3))
                                     onground = 1;
                             if(onground == 1){
-                                for(j=0;j<5;j++){
-                                    playerDummy.pos.y -= SPEEDy/5;
+                                for(j=0;j<8;j++){
+                                    playerDummy.pos.y -= SPEEDy/8;
                                     for(i=0; i<PLATFORMAMOUNT; i++){
                                         if(checkCollision(playerDummy.pos,animator.platforms[i]))
                                         {
-                                            playerDummy.pos.y +=SPEEDy/5;
+                                            playerDummy.pos.y +=SPEEDy/8;
                                             sendPlayerUpdate(playerDummy, &information->socket);
-                                            j=5;
+                                            j=8;
                                         }
                                     }
                                     sendPlayerUpdate(playerDummy, &information->socket);
-                                    SDL_Delay(54);
+                                    SDL_Delay(33);
                                 }
                             }
 

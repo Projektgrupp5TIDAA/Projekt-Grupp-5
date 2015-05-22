@@ -26,7 +26,7 @@
 
 int animate(void* info){
     animationInfo* animator = (animationInfo*) info;
-    int i;
+    int i, flickerx=0, flickery=0;
     SDL_RendererFlip bflip = SDL_FLIP_NONE;
 
     animator->window = SDL_CreateWindow("BJORNS THE GAME",
@@ -39,6 +39,8 @@ int animate(void* info){
         printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
         return 1;
     }
+
+    playerInfo referenceplayer[PLAYERCOUNT] = {{0}};
 
     /*Loading and declaration of all images*/
     SDL_Surface* gameBackground = IMG_Load("../Images/game/bar.jpg");
@@ -327,6 +329,10 @@ int animate(void* info){
         textSprite[i].h = textsurface[3]->h;
     }
 
+    for(i=0;i<PLAYERCOUNT;i++){
+        referenceplayer[i] = animator->players[i];
+    }
+
     while (!(*(animator->quit))) // while not Esc
     {
         SDL_PumpEvents();
@@ -371,7 +377,7 @@ int animate(void* info){
         SDL_RenderCopy(Rend, myText[3], &textSprite[*(animator->drunk)], &textRect[4]);
 
         //copy all players
-        for(i=0;i<PLAYERCOUNT;i++){
+        /*for(i=0;i<PLAYERCOUNT;i++){
             if(animator->players[i].health < 1){
                 SDL_RenderCopy(Rend, rip_texture, NULL, &animator->players[i].pos);
             }else{
@@ -381,11 +387,56 @@ int animate(void* info){
                     animator->flip = SDL_FLIP_HORIZONTAL;
                 SDL_RenderCopyEx(Rend, player[i], &spriteClips[animator->frame], &animator->players[i].pos, 0, NULL, animator->flip);
             }
+        }*/
+
+        for(i=0;i<PLAYERCOUNT;i++){
+            if(animator->players[i].health < 1){
+                SDL_RenderCopy(Rend, rip_texture, NULL, &animator->players[i].pos);
+            }else{
+                if(animator->players[i].dir == 1){
+                    animator->flip = SDL_FLIP_NONE;
+                }else
+                    animator->flip = SDL_FLIP_HORIZONTAL;
+                if(animator->players[i].pos.x != referenceplayer[i].pos.x){
+                    if(animator->players[i].pos.x > referenceplayer[i].pos.x){
+                        referenceplayer[i].pos.x+=2;
+                        flickerx = 1;
+                    }else{
+                        referenceplayer[i].pos.x-=2;
+                        if(flickerx == 1)
+                            flickerx=2;
+                        else
+                            flickerx=0;
+                    }
+                    if(flickerx == 2){
+                        referenceplayer[i].pos.x = animator->players[i].pos.x;
+                    }
+                }
+                if(animator->players[i].pos.y != referenceplayer[i].pos.y){
+                    if(animator->players[i].pos.y > referenceplayer[i].pos.y){
+                        referenceplayer[i].pos.y+=2;
+                        flickery = 1;
+                    }else{
+                        referenceplayer[i].pos.y-=2;
+                        if(flickery == 1)
+                            flickery=2;
+                        else
+                            flickery=0;
+                    }
+                    if(flickery == 2){
+                        referenceplayer[i].pos.y = animator->players[i].pos.y;
+                    }
+                }
+                if(animator->players[i].pos.w != referenceplayer[i].pos.w){
+                    referenceplayer[i] = animator->players[i];
+                }
+                SDL_RenderCopyEx(Rend, player[i], &spriteClips[animator->frame], &referenceplayer[i].pos, 0, NULL, animator->flip);
+            }
         }
 
         // present the result on the render  "the screen"
         SDL_RenderPresent(Rend);
-        SDL_Delay(1000/60);
+        SDL_Delay(1000/240);
     }
 
 

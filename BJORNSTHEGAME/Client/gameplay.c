@@ -22,7 +22,7 @@
 #define TEXTAMOUNT 3
 #define DRINKAMOUNT 2
 #define BULLET_TTL 12
-#define SPEEDx 15
+#define SPEEDx 10
 #define SPEEDy 200
 
 int gameplayWindow(ClientInfo* information)

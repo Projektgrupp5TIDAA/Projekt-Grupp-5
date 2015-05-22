@@ -113,11 +113,13 @@ int animate(void* info){
     textsurface[2]= TTF_RenderText_Solid(font, "Drunk:", colorT);
     textsurface[3]= TTF_RenderText_Solid(font, "012345", colorT);
 
+    printf("surfaces laddade i animation\n");
     /*creating texture for all the images and texts */
     picture[0]= SDL_CreateTextureFromSurface(Rend,ground);
     picture[1]= SDL_CreateTextureFromSurface(Rend,band);
     picture[2]= SDL_CreateTextureFromSurface(Rend,platform1);
     picture[3]= SDL_CreateTextureFromSurface(Rend,platform2);
+
 
     int loopcounter;
     for (loopcounter = 4; loopcounter < PLATFORMAMOUNT; ++loopcounter)
@@ -134,6 +136,8 @@ int animate(void* info){
     myText[1]=SDL_CreateTextureFromSurface(Rend,textsurface[1]);
     myText[2]=SDL_CreateTextureFromSurface(Rend,textsurface[2]);
     myText[3]=SDL_CreateTextureFromSurface(Rend,textsurface[3]);
+
+    printf("texturer laddade från surfaces i animation.c\n");
 
     /* Free the used surfaces since we won't use them anymore */
     SDL_FreeSurface(gameBackground);
@@ -153,6 +157,7 @@ int animate(void* info){
         SDL_FreeSurface(textsurface[i]);
     }
 
+    printf("surfaces är friade från att ha laddat textures\n");
     /*set position for every platform on screen*/
      animator->platforms[0].x = 0;
     animator->platforms[0].y = screen->h-(screen->h*0.06);

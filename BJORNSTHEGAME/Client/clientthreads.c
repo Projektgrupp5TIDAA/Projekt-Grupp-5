@@ -102,6 +102,7 @@ int timeupdater(void* inc_time){
     timerInfo* timer = (timerInfo*) inc_time;
     int i, j, k, fall=1;
     float acceleration = 0.5;
+    Mix_Chunk* hurt = Mix_LoadWAV("../Sounds/hurt.wav");
     printf("Timer thread uppdater started\n");
     SDL_Delay(1000);
     while((*(timer->quit)) != 1){
@@ -135,6 +136,8 @@ int timeupdater(void* inc_time){
 	                    if(checkCollision(timer->bullets[i]->pos, timer->animator->player->pos)){
 	                    	if(timer->animator->player->health > 0){
 	                    		timer->animator->player->health -= timer->bullets[i]->dmg;
+				                Mix_HaltChannel(3);
+				                Mix_PlayChannel(3, hurt, 0);
 	                    		timer->bullets[i]->TTL = 0;
                                 if(timer->animator->player->health < 1){
                                     timer->animator->player->health = 0;

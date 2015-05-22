@@ -51,10 +51,12 @@ int main(int argc, char *argv[]){
         printf("Exiting the game!\n");
         return 0;
     }
+    Mix_HaltMusic();
 
     /* Clean up */
     printf("Going to the gameplay!\n");
     SDL_Quit();
+    Mix_CloseAudio();
     gameplayWindow(&startup);
 
     if((startup.socket) != NULL)

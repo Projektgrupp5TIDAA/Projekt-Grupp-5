@@ -231,6 +231,8 @@ int LobbyWindow(ClientInfo* lobbyConnection){
     SDL_DestroyWindow(lobby); //Destroy window
     SDL_FreeSurface(lobbyBackground);
     SDL_FreeSurface(exitButton);
+    Mix_HaltMusic();
+    Mix_FreeMusic(lobbyMusic);
 
     SDL_Quit(); //Quit SDL subsystems
     return 0;

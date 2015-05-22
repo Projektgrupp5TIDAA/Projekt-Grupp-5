@@ -27,6 +27,11 @@
 
 int gameplayWindow(ClientInfo* information)
 {
+    SDL_Init(SDL_INIT_EVERYTHING);
+    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024);
+    Mix_Music* music = Mix_LoadMUS("../Sounds/Music/MovProp.mp3");
+    Mix_PlayMusic(music, -1);
+
     int i, j, quit=0, ammo=AMMOAMOUNT, drunk=0, powerup=0, onground=0;
     animationInfo animator = {0, &quit, &ammo, &drunk, &powerup, NULL, NULL, {{0, 0, 0, {0, 0, 0, 0}}}, SDL_FLIP_NONE, {{{0,0,0,0}, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
     updaterInfo updater = {&quit, &powerup, 0, &(information->socket), NULL};
@@ -36,7 +41,7 @@ int gameplayWindow(ClientInfo* information)
     bullet bulletDummy = {{0,0,0,0}, 0, 0, 0};
     SDL_Event event;
 
-    SDL_Init(SDL_INIT_EVERYTHING);
+    //SDL_Init(SDL_INIT_EVERYTHING);
 
     /* to animate on the windows and ammo */
     animator.player = &playerDummy;
@@ -96,7 +101,6 @@ int gameplayWindow(ClientInfo* information)
 
                             for(i=0;i<3;i++)
                                 if(checkCollision(playerDummy.pos, animator.bjornDrapRect[i])){
-                                    printf("ISSET = %d\n", is_set(powerup, i));
                                     if(is_set(powerup, i) > 0 && drunk < 5){
                                         drunk++;
                                         clr_bit(&powerup, i);
@@ -233,7 +237,6 @@ int gameplayWindow(ClientInfo* information)
     SDL_WaitThread(animatorThread, &i);
     SDL_WaitThread(timerThread, &i);
     return 0;
-
 }
 
 /* Function to check collisions between rectangles, inspired by the rectangle collision from Lazyfoo */

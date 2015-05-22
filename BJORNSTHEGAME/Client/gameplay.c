@@ -66,7 +66,7 @@ int gameplayWindow(ClientInfo* information)
     bulletDummy.pos.w = screen->w*0.0030;
 
     while(!quit){
-        while(SDL_PollEvent(&event)) //events 
+        while(SDL_PollEvent(&event)) //events
         {
             if (event.type == SDL_QUIT)
             {
@@ -81,7 +81,7 @@ int gameplayWindow(ClientInfo* information)
                         case SDLK_ESCAPE:
                             quit = 1;
                             break;
-                            
+
                         case SDLK_LEFT:
                             bulletDummy.direction=-1;
                             playerDummy.pos.x -= SPEEDx;

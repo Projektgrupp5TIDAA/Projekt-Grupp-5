@@ -63,6 +63,6 @@ int main(int argc, char *argv[]){
     SDL_Quit();
     TTF_Quit();
     SDLNet_Quit();
-    
+
     return 0;
 }

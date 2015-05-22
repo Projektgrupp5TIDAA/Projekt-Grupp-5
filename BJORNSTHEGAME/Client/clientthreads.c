@@ -149,7 +149,7 @@ int timeupdater(void* inc_time){
 	                    	    if(checkCollision(timer->bullets[i]->pos, timer->animator->players[k/2-1].pos) && timer->animator->players[k/2-1].health > 0)
 	                    		    timer->bullets[i]->TTL = 0;
                             }
-                        }	                    
+                        }
 	                    if(timer->bullets[i]->TTL > 0)
 	                    	timer->bullets[i]->TTL--;
 	                }
@@ -157,7 +157,7 @@ int timeupdater(void* inc_time){
 	                    timer->bullets[i]->pos.x = 0;
 	                    timer->bullets[i]->pos.y = 0;
 	            	}
-	        		
+
 
 	        	}
 	        }

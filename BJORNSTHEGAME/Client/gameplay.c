@@ -28,11 +28,11 @@
 int gameplayWindow(ClientInfo* information)
 {
     int i, j, quit=0, ammo=AMMOAMOUNT, drunk=0, powerup=0, onground=0;
-    animationInfo animator = {0, &quit, &ammo, &drunk, &powerup, NULL, NULL, {{0, 0, {0, 0, 0, 0}}}, SDL_FLIP_NONE, {{{0,0,0,0}, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
+    animationInfo animator = {0, &quit, &ammo, &drunk, &powerup, NULL, NULL, {{0, 0, 0, {0, 0, 0, 0}}}, SDL_FLIP_NONE, {{{0,0,0,0}, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
     updaterInfo updater = {&quit, &powerup, 0, &(information->socket), NULL};
     timerInfo timer = {&updater.timer, &quit, {NULL}, &animator, &information->socket};
     SDL_Thread* updaterThread, *animatorThread, *timerThread;
-    playerInfo playerDummy = {5, 0, {0, 0, 0, 0}};
+    playerInfo playerDummy = {5, 0, 1, {0, 0, 0, 0}};
     bullet bulletDummy = {{0,0,0,0}, 0, 0, 0};
     SDL_Event event;
 
@@ -85,6 +85,7 @@ int gameplayWindow(ClientInfo* information)
                         case SDLK_LEFT:
                             bulletDummy.direction=-1;
                             playerDummy.pos.x -= SPEEDx;
+                            playerDummy.dir = -1;
                             for(i=0; i<PLATFORMAMOUNT; i++)
                             {
                                 if(( playerDummy.pos.x < 0 ) || ( playerDummy.pos.x + playerDummy.pos.w >screen ->w ) ||checkCollision(playerDummy.pos,animator.platforms[i])==true)
@@ -103,7 +104,7 @@ int gameplayWindow(ClientInfo* information)
                                     }
                                 }
 
-                            animator.flip = SDL_FLIP_HORIZONTAL;
+                            //animator.flip = SDL_FLIP_HORIZONTAL;
 
                             if(animator.frame == 2)
                             {
@@ -127,6 +128,7 @@ int gameplayWindow(ClientInfo* information)
                         case SDLK_RIGHT:
                             bulletDummy.direction = 1;
                             playerDummy.pos.x += SPEEDx;
+                            playerDummy.dir = 1;
                             for(i=0; i<PLATFORMAMOUNT; i++)
                             {
                                 if((playerDummy.pos.x < 0 ) || (playerDummy.pos.x + playerDummy.pos.w > screen->w )||checkCollision(playerDummy.pos,animator.platforms[i])==true)
@@ -144,7 +146,7 @@ int gameplayWindow(ClientInfo* information)
                                     }
                                 }
 
-                            animator.flip = SDL_FLIP_NONE;
+                            //animator.flip = SDL_FLIP_NONE;
 
                             if(animator.frame == 2)
                             {

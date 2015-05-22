@@ -19,7 +19,7 @@ Projekt Grupp 5
 
 int main(int argc, char **argv){
     tinfo threadvariables[PLAYERCOUNT] = {{0, NULL, NULL, NULL, NULL, {0}, {NULL}}};
-    pinfo playersend[PLAYERCOUNT] = {{5, 0, {0}}};
+    pinfo playersend[PLAYERCOUNT] = {{5, 0, 0, {0}}};
     PollInfo pollerinfo = {0, {0, NULL, {NULL}}, {0, {{0}}}, {0, {{0}}}};
     SDL_Thread* connectionpoller, *timerthr;
     TimerInfo timerinfo = {0, 0};

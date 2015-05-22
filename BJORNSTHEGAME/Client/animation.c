@@ -355,6 +355,10 @@ int animate(void* info){
             if(animator->players[i].health < 1){
                 SDL_RenderCopy(Rend, rip_texture, NULL, &animator->players[i].pos);
             }else{
+                if(animator->players[i].dir == 1){
+                    animator->flip = SDL_FLIP_NONE;
+                }else
+                    animator->flip = SDL_FLIP_HORIZONTAL;
                 SDL_RenderCopyEx(Rend, player[i], &spriteClips[animator->frame], &animator->players[i].pos, 0, NULL, animator->flip);
             }
         }

@@ -16,7 +16,7 @@ Created on 2015-05-12 by Jonathan Kåhre
 
 /* Struct with the information needed by the client to render the players */
 typedef struct{
-    short health, deaths;
+    short health, deaths, dir;
     SDL_Rect pos;
 }playerInfo;
 

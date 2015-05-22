@@ -23,7 +23,7 @@ Projekt Grupp 5
 
 /* Struct with important information regarding the thread and player */
 typedef struct{
-  short health, kills;
+  short health, deaths, dir;
   SDL_Rect pos;
 }pinfo;
 

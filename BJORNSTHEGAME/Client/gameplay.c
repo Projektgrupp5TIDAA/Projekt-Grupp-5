@@ -173,7 +173,7 @@ int gameplayWindow(ClientInfo* information)
                         case SDLK_x:
                             printf("Shooting!\n");
                             if(ammo > 0){
-                                if(animator.flip == SDL_FLIP_NONE){
+                                if(playerDummy.dir == 1){
                                     bulletDummy.pos.x = playerDummy.pos.x + playerDummy.pos.w;
                                 }else{
                                     bulletDummy.pos.x = playerDummy.pos.x;

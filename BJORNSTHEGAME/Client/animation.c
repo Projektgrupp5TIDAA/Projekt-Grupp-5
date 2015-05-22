@@ -41,7 +41,7 @@ int animate(void* info){
     }
 
     /*Loading and declaration of all images*/
-    SDL_Surface* gameBackground = IMG_Load("../Images/game/bar.jpg");;
+    SDL_Surface* gameBackground = IMG_Load("../Images/game/bar.jpg");
     SDL_Surface* ground = IMG_Load("../Images/game/ground2.png");
     SDL_Surface* platform1 = IMG_Load("../Images/game/platform_hor.png");
     SDL_Surface* platform2 = IMG_Load("../Images/game/platform_ver.png");

@@ -170,7 +170,7 @@ int animate(void* info){
     animator->platforms[2].h = 40;
 
     animator->platforms[3].x = screen->w/3 +30;
-    animator->platforms[3].y = screen->h -460;;
+    animator->platforms[3].y = screen->h -450;;
     animator->platforms[3].w = 45;
     animator->platforms[3].h = 320;
 
@@ -242,7 +242,7 @@ int animate(void* info){
     animator->bjornDrapRect[1].h = screen->h*0.046;//50;
 
     animator->bjornDrapRect[2].x = screen->w/2 -260;
-    animator->bjornDrapRect[2].y = screen->h - 482;
+    animator->bjornDrapRect[2].y = screen->h - 472;
     animator->bjornDrapRect[2].w = screen->w*0.03;//60;
     animator->bjornDrapRect[2].h = screen->h*0.046;//50;
 

@@ -104,16 +104,16 @@ int animate(void* info){
 
     /*text info*/
     SDL_Color colorT= {170,60,255};
-    TTF_Font *font = TTF_OpenFont("../Images/game/StencilStd.ttf", 100);
+    TTF_Font *font = TTF_OpenFont("../Images/game/StencilStd.ttf", 35);
     if(font == NULL)
     {
         printf("FONT E NULL\n");
     }
 
-    textsurface[0]= TTF_RenderText_Solid(font, "AMMO:", colorT);
-    textsurface[1]= TTF_RenderText_Solid(font, "HP:", colorT);
-    textsurface[2]= TTF_RenderText_Solid(font, "Drunk:", colorT);
-    textsurface[3]= TTF_RenderText_Solid(font, "012345", colorT);
+    textsurface[0]= TTF_RenderText_Blended(font, "AMMO:", colorT);
+    textsurface[1]= TTF_RenderText_Blended(font, "HP:", colorT);
+    textsurface[2]= TTF_RenderText_Blended(font, "Drunk:", colorT);
+    textsurface[3]= TTF_RenderText_Blended(font, "012345", colorT);
 
     printf("surfaces laddade i animation\n");
     /*creating texture for all the images and texts */
@@ -141,25 +141,6 @@ int animate(void* info){
 
     printf("texturer laddade från surfaces i animation.c\n");
 
-    /* Free the used surfaces since we won't use them anymore */
-    SDL_FreeSurface(gameBackground);
-    SDL_FreeSurface(ground);
-    SDL_FreeSurface(platform1);
-    SDL_FreeSurface(platform2);
-    SDL_FreeSurface(band);
-    SDL_FreeSurface(bjorns);
-    SDL_FreeSurface(ammo);
-    SDL_FreeSurface(bullet);
-    SDL_FreeSurface(bjornsTom);
-    SDL_FreeSurface(rip);
-    for(i=0;i<6;i++){
-        SDL_FreeSurface(playerSurface[i]);
-    }
-    for(i=0;i<TEXTAMOUNT;i++){
-        SDL_FreeSurface(textsurface[i]);
-    }
-
-    printf("surfaces är friade från att ha laddat textures\n");
     /*set position for every platform on screen*/
     animator->platforms[0].x = 0;
     animator->platforms[0].y = screen->h-(screen->h*0.06);
@@ -270,28 +251,28 @@ int animate(void* info){
 
     textRect[0].x= screen->w*0.79;//screen ->w/2 +310;
     textRect[0].y= screen->h*0.02;//screen ->h - 740;
-    textRect[0].w= screen->w*0.1;//120;
-    textRect[0].h= screen->h*0.055;//60;
+    textRect[0].w= textsurface[0]->w;//screen->w*0.1;//120;
+    textRect[0].h= textsurface[0]->h;//screen->h*0.055;//60;
 
     textRect[1].x= screen->w*0.02;//screen ->w/2 -660;
     textRect[1].y= screen->h*0.02;//screen ->h - 740;
-    textRect[1].w= screen->w*0.06;
-    textRect[1].h= screen->h*0.055;
+    textRect[1].w= textsurface[1]->w;//screen->w*0.06;
+    textRect[1].h= textsurface[1]->h;//screen->h*0.055;
 
     textRect[2].x= screen->w*0.14;//screen->w/2 -450;
     textRect[2].y= screen->h*0.02;
-    textRect[2].w= screen->w*0.11;
-    textRect[2].h= screen->h*0.055;
+    textRect[2].w= textsurface[2]->w;//screen->w*0.11;
+    textRect[2].h= textsurface[2]->h;//screen->h*0.055;
 
     textRect[3].x= screen->w*0.09;//screen->w/2 -450;
     textRect[3].y= screen->h*0.02;
-    textRect[3].w= screen->w*0.02;
-    textRect[3].h= screen->h*0.055;
+    textRect[3].w= textsurface[3]->w/6;//screen->w*0.02;
+    textRect[3].h= textsurface[3]->h;//screen->h*0.055;
 
     textRect[4].x= screen->w*0.26;//screen->w/2 -450;
     textRect[4].y= screen->h*0.02;
-    textRect[4].w= screen->w*0.02;
-    textRect[4].h= screen->h*0.055;
+    textRect[4].w= textsurface[3]->w/6;//screen->w*0.02;
+    textRect[4].h= textsurface[3]->h;//screen->h*0.055;
 
     //size and position for the player
     for(i=0;i<PLAYERCOUNT;i++){
@@ -332,6 +313,26 @@ int animate(void* info){
     for(i=0;i<PLAYERCOUNT;i++){
         referenceplayer[i] = animator->players[i];
     }
+
+    /* Free the used surfaces since we won't use them anymore */
+    SDL_FreeSurface(gameBackground);
+    SDL_FreeSurface(ground);
+    SDL_FreeSurface(platform1);
+    SDL_FreeSurface(platform2);
+    SDL_FreeSurface(band);
+    SDL_FreeSurface(bjorns);
+    SDL_FreeSurface(ammo);
+    SDL_FreeSurface(bullet);
+    SDL_FreeSurface(bjornsTom);
+    SDL_FreeSurface(rip);
+    for(i=0;i<6;i++){
+        SDL_FreeSurface(playerSurface[i]);
+    }
+    for(i=0;i<TEXTAMOUNT;i++){
+        SDL_FreeSurface(textsurface[i]);
+    }
+
+    printf("surfaces är friade från att ha laddat textures\n");
 
     while (!(*(animator->quit))) // while not Esc
     {

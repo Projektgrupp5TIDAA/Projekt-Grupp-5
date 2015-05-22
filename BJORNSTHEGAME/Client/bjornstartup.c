@@ -101,7 +101,7 @@ int menu(ClientInfo* startup){
     SDL_Colour black={0,0,0};
     TTF_Font* font = TTF_OpenFont("../Images/menu/StencilStd.ttf", 120);
     TTF_Font* fontsmall = TTF_OpenFont("../Images/menu/coolvetica.ttf", 30);
-    SDL_Surface* title = TTF_RenderText_Solid(font, "MENU", black);
+    SDL_Surface* title = TTF_RenderText_Blended(font, "MENU", black);
 
     /* Load music, set volume and start */
     Mix_Music *music = Mix_LoadMUS("../Sounds/Music/Mechanolith.mp3");
@@ -322,8 +322,9 @@ int getIP(IPaddress* targethost, SDL_Window* window){
 int textToScreen(TTF_Font *font, SDL_Rect place, SDL_Window* window, char* text){
     SDL_Surface *screen = SDL_GetWindowSurface(window);
     SDL_Colour black={0,0,0};
-    SDL_Surface *textsurface = TTF_RenderText_Solid(font, text, black);
+    SDL_Surface *textsurface = TTF_RenderText_Blended(font, text, black);
     SDL_BlitSurface(textsurface, NULL, screen, &place);
+    SDL_FreeSurface(textsurface);
     return 0;
 }
 

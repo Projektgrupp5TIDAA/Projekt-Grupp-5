@@ -30,7 +30,7 @@ int updateHandler(void* incinfo){
 	SDLNet_SocketSet activity = SDLNet_AllocSocketSet(1);
 	SDLNet_AddSocket(activity, *(info->socket));
 	char packet[512];
-	int i, tmpID;
+	int i, tmpID, activeplayers=0, errorcount=0;
 
     /* The main polling-loop */
 	while(!(*(info->quit))){
@@ -46,9 +46,11 @@ int updateHandler(void* incinfo){
 			SDLNet_TCP_Recv(*(info->socket), &packet, sizeof(packet));
 			switch(packet[0]){
 				case 'P':
-					printf("Playerupdate recieved!\n");
 					parseString(packet, 1, sizeof(packet));
-					memcpy(info->players, &packet, sizeof(playerInfo)*6);
+                    activeplayers = packet[0];
+                    parseString(packet, 1, sizeof(packet));
+                    printf("Recieved player update with %d active players!\n", activeplayers);
+					memcpy(info->players, &packet, sizeof(playerInfo)*activeplayers);
 					/*for(i=0;i<PLAYERCOUNT;i++)
 						printf("Player %d: %d, %d\n", i, info->players[i]->pos.x, info->players[i]->pos.y);*/
 					break;
@@ -90,6 +92,11 @@ int updateHandler(void* incinfo){
                     break;
 				default:
 					printf("Invalid packet recieved, ignoring.\n");
+                    if(errorcount > 20){
+                        printf("Too many errors, exiting.\n");
+                        SDL_Delay(2000);
+                        (*(info->quit)) = 1;
+                    }else errorcount++;
 					break;
 			}
 		}else SDL_Delay(50);

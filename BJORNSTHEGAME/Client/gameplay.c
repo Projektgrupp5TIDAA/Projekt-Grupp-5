@@ -76,17 +76,15 @@ int gameplayWindow(ClientInfo* information)
             if (event.type == SDL_QUIT)
             {
                 quit = 1;
-            }else
-
+            }
             if(event.type == SDL_KEYDOWN)
             {
+                if(event.key.keysym.sym == SDLK_ESCAPE){
+                    quit = 1;
+                }
                 if(animator.player->deaths == 0){
                     switch(event.key.keysym.sym)
                     {
-                        case SDLK_ESCAPE:
-                            quit = 1;
-                            break;
-
                         case SDLK_LEFT:
                             bulletDummy.direction=-1;
                             playerDummy.pos.x -= SPEEDx;

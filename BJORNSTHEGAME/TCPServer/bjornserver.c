@@ -19,19 +19,20 @@ Projekt Grupp 5
 
 int main(int argc, char **argv){
     tinfo threadvariables[PLAYERCOUNT] = {{0, NULL, NULL, NULL, NULL, {0}, {NULL}}};
+    pinfo players[PLAYERCOUNT] = {{5, 0, 0, {0}}};
     pinfo playersend[PLAYERCOUNT] = {{5, 0, 0, {0}}};
     PollInfo pollerinfo = {0, {0, NULL, {NULL}}, {0, {{0}}}, {0, {{0}}}};
     SDL_Thread* connectionpoller, *timerthr;
     TimerInfo timerinfo = {0, 0};
     char sendpackage[200];
-    int i, j, lastpop=0, newdata=0, powerupcheck=0;
+    int i, j, lastpop=0, newdata=0, powerupcheck=0, activeplayers;
     nsend namestruct;
 
     /* Initializing the information for the stack and threads */
     for(i=0;i<PLAYERCOUNT;i++){
         threadvariables[i].ID = i;
         threadvariables[i].newdata = &newdata;
-        threadvariables[i].player = &playersend[i];
+        threadvariables[i].player = &players[i];
         threadvariables[i].powerup = &timerinfo.powerup;
         for(j=0;j<PLAYERCOUNT;j++){
             threadvariables[i].names[j] = threadvariables[j].playername;
@@ -158,13 +159,25 @@ int main(int argc, char **argv){
             while(timerinfo.maintimer > 0 && (pollerinfo.stack.population < 5)){
                 if(newdata == 1){
                     //printf("Sending player update message!\n");
-                    memcpy(&sendpackage, &playersend, sizeof(playersend));
-                    //popString(&pollerinfo.dstack, sendpackage, sizeof(sendpackage));
-                    parseString(sendpackage, -1, sizeof(sendpackage));
+                    activeplayers = 0;
+
+                    for(i=0;i<PLAYERCOUNT;i++){
+                        if(players[i].pos.x != 0){
+                            memcpy(&playersend[activeplayers], &players[i], sizeof(pinfo));
+                            activeplayers++;
+                        }
+                    }
+
+                    printf("Sending player update with %d active players!\n", activeplayers);
+
+                    memcpy(&sendpackage, &playersend, sizeof(pinfo) * activeplayers);
+
+                    parseString(sendpackage, -2, sizeof(sendpackage));
                     sendpackage[0] = 'P';
+                    sendpackage[1] = activeplayers;
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket != NULL)
-                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage)+1);
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(pinfo) * activeplayers + 3);
                     }
                     newdata = 0;
                 }else{

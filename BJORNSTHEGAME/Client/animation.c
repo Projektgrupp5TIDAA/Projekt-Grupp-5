@@ -29,6 +29,7 @@ int animate(void* info){
     int i, flickerx=0, flickery=0;
     SDL_RendererFlip bflip = SDL_FLIP_NONE;
 
+    //Create the window
     animator->window = SDL_CreateWindow("BJORNS THE GAME",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
@@ -42,7 +43,7 @@ int animate(void* info){
 
     playerInfo referenceplayer[PLAYERCOUNT] = {{0}};
 
-    /*Loading and declaration of all images*/
+    /* Declaration and initialization/loading of all images */
     SDL_Surface* gameBackground = IMG_Load("../Images/game/bar.jpg");
     SDL_Surface* ground = IMG_Load("../Images/game/ground2.png");
     SDL_Surface* platform1 = IMG_Load("../Images/game/platform_hor.png");
@@ -63,7 +64,7 @@ int animate(void* info){
     playerSurface[1] = IMG_Load("../Images/game/spriteBlue.png");
     playerSurface[0] = IMG_Load("../Images/game/spritePink.png");
 
-    /*Texture declaration*/
+    /* Texture declaration */
     SDL_Renderer* Rend = NULL;
     SDL_Texture* player[6];
 
@@ -88,9 +89,10 @@ int animate(void* info){
     SDL_Surface* screen = SDL_GetWindowSurface(animator->window); //get the screen size
     printf("Width: %d, Height: %d\n", screen->w, screen->h);
 
+    //Create/Get the renderer from the window depending on if it's running on mac or not
     Rend=SDL_GetRenderer(animator->window);
     if(!Rend)
-        Rend = SDL_CreateRenderer(animator->window, -1, SDL_RENDERER_ACCELERATED); //Create a Render for the window
+        Rend = SDL_CreateRenderer(animator->window, -1, SDL_RENDERER_ACCELERATED);
     if(!Rend)
         printf("Couldn't start the render: %s\n", SDL_GetError());
 
@@ -102,31 +104,31 @@ int animate(void* info){
     bakgroundTexture = SDL_CreateTextureFromSurface(Rend,gameBackground); //Load texture with image "bar.jpg" and Rend
     rip_texture = SDL_CreateTextureFromSurface(Rend, rip);
 
-    /*text info*/
+    // Load the font into the program
     SDL_Color colorT= {170,60,255};
     TTF_Font *font = TTF_OpenFont("../Images/game/StencilStd.ttf", 35);
     if(font == NULL)
     {
-        printf("FONT E NULL\n");
+        printf("Font returned a NULL value.\n");
     }
 
+    // Render all of the text surfaces
     textsurface[0]= TTF_RenderText_Blended(font, "AMMO:", colorT);
     textsurface[1]= TTF_RenderText_Blended(font, "HP:", colorT);
     textsurface[2]= TTF_RenderText_Blended(font, "Drunk:", colorT);
     textsurface[3]= TTF_RenderText_Blended(font, "012345", colorT);
 
-    printf("surfaces laddade i animation\n");
-    /*creating texture for all the images and texts */
+    printf("All surfaces loaded.\n");
+
+    /* Creating textures from all of the loaded textures */
     picture[0]= SDL_CreateTextureFromSurface(Rend,ground);
     picture[1]= SDL_CreateTextureFromSurface(Rend,band);
     picture[2]= SDL_CreateTextureFromSurface(Rend,platform1);
     picture[3]= SDL_CreateTextureFromSurface(Rend,platform2);
 
-
-    int loopcounter;
-    for (loopcounter = 4; loopcounter < PLATFORMAMOUNT; ++loopcounter)
+    for(i=4;i<PLATFORMAMOUNT;++i)
     {
-        picture[loopcounter]= SDL_CreateTextureFromSurface(Rend,platform1);
+        picture[i]= SDL_CreateTextureFromSurface(Rend,platform1);
     }
 
     caps= SDL_CreateTextureFromSurface(Rend,ammo);
@@ -139,9 +141,9 @@ int animate(void* info){
     myText[2]=SDL_CreateTextureFromSurface(Rend,textsurface[2]);
     myText[3]=SDL_CreateTextureFromSurface(Rend,textsurface[3]);
 
-    printf("texturer laddade från surfaces i animation.c\n");
+    printf("All textures loaded.\n");
 
-    /*set position for every platform on screen*/
+    /* Set the positions for every platform on screen */
     animator->platforms[0].x = 0;
     animator->platforms[0].y = screen->h-(screen->h*0.06);
     animator->platforms[0].w = screen->w;
@@ -274,7 +276,7 @@ int animate(void* info){
     textRect[4].w= textsurface[3]->w/6;//screen->w*0.02;
     textRect[4].h= textsurface[3]->h;//screen->h*0.055;
 
-    //size and position for the player
+    // Size and position for the player
     for(i=0;i<PLAYERCOUNT;i++){
         animator->players[i].pos.y = screen->h;
         animator->players[i].pos.x = screen->w/2+(i*50);
@@ -282,7 +284,7 @@ int animate(void* info){
         animator->players[i].pos.w = screen->w*0.034;//66;
     }
 
-    /*position of the sprites in the image*/
+    /* Positions in the player-sprites */
     spriteClips[0].x = 0;
     spriteClips[0].y = 0;
     spriteClips[0].w = 210;
@@ -332,19 +334,21 @@ int animate(void* info){
         SDL_FreeSurface(textsurface[i]);
     }
 
-    printf("surfaces är friade från att ha laddat textures\n");
+    printf("Surfaces have been unallocated.\n");
 
-    while (!(*(animator->quit))) // while not Esc
+    while (!(*(animator->quit))) //While the program is running (main animation loop)
     {
-        SDL_PumpEvents();
+        SDL_PumpEvents(); //Since the event-handler is coupled with the video-rendering this is necessary for reading movements in the main thread for some reason
         SDL_RenderClear(Rend); // Clear the entire screen to our selected color/images.
-        SDL_RenderCopy(Rend,  bakgroundTexture,NULL,NULL); //view the background on the render "screen"
+        SDL_RenderCopy(Rend, bakgroundTexture, NULL, NULL); //Render the background onto the buffer of the renderer
 
+        //Render all of the platforms onto the buffer of the renderer
         for(i=0; i<PLATFORMAMOUNT; i++) //copy all platforms to the render
         {
             SDL_RenderCopy(Rend, picture[i],NULL,&animator->platforms[i]);
         }
 
+        //Render all of the active bullets on the screen to the buffer of the renderer
         for(i=0; i<12 ;i++){
             if(animator->bullets[i].TTL != 0){
                 if(animator->bullets[i].direction<0){
@@ -355,12 +359,14 @@ int animate(void* info){
             }
         }
 
+        //Render all of the ammunition-images onto the buffer of the renderer
         for(i=0; i<(*(animator->ammo)); i++) //copy all ammo to the render
         {
             SDL_RenderCopy(Rend, caps, NULL, &capsRect[i]);
         }
 
-        for(i=0; i<DRINKAMOUNT; i++) //copy all "bjornDrapare" to the render "the screen"
+        //Render the powerups onto the buffer of the renderer
+        for(i=0; i<DRINKAMOUNT; i++)
         {
             if(!is_set(*(animator->powerup), i))
                 SDL_RenderCopy(Rend, bjornDTom, NULL, &animator->bjornDrapRect[i]);
@@ -368,28 +374,17 @@ int animate(void* info){
                 SDL_RenderCopy(Rend, bjornDrapare, NULL, &animator->bjornDrapRect[i]);
         }
 
-
-        for(i=0; i<3; i++) // copy all text to the render "screen"
+        //Render the fixed text (AMMO: HP:) onto the buffer of the renderer
+        for(i=0; i<3; i++)
         {
             SDL_RenderCopy(Rend, myText[i], NULL, &textRect[i]);
         }
 
+        //Render the health and drunklevel text onto the buffer of the renderer
         SDL_RenderCopy(Rend, myText[3], &textSprite[(animator->player->health)], &textRect[3]);
         SDL_RenderCopy(Rend, myText[3], &textSprite[*(animator->drunk)], &textRect[4]);
 
-        //copy all players
-        /*for(i=0;i<PLAYERCOUNT;i++){
-            if(animator->players[i].health < 1){
-                SDL_RenderCopy(Rend, rip_texture, NULL, &animator->players[i].pos);
-            }else{
-                if(animator->players[i].dir == 1){
-                    animator->flip = SDL_FLIP_NONE;
-                }else
-                    animator->flip = SDL_FLIP_HORIZONTAL;
-                SDL_RenderCopyEx(Rend, player[i], &spriteClips[animator->frame], &animator->players[i].pos, 0, NULL, animator->flip);
-            }
-        }*/
-
+        //Render the players onto the buffer of the renderer aswell as manage the movement of the reference
         for(i=0;i<PLAYERCOUNT;i++){
             if(animator->players[i].health < 1){
                 SDL_RenderCopy(Rend, rip_texture, NULL, &animator->players[i].pos);
@@ -435,17 +430,12 @@ int animate(void* info){
             }
         }
 
-        // present the result on the render  "the screen"
+        //Render the present buffer of the renderer onto the screen
         SDL_RenderPresent(Rend);
         SDL_Delay(1000/240);
     }
 
-
-
-    //Destroy window
-    //Quit SDL subsystems
-
-    /*Destroy all textures*/
+    /* Destroy all textures, the window and the renderer */
     for(i=0; i<PLATFORMAMOUNT; i++)
     {
         SDL_DestroyTexture(picture[i]);

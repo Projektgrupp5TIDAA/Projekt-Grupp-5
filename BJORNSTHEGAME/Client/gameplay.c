@@ -41,7 +41,11 @@ int gameplayWindow(ClientInfo* information)
     bullet bulletDummy = {{0,0,0,0}, 0, 0, 0};
     SDL_Event event;
 
+
     //SDL_Init(SDL_INIT_EVERYTHING);
+    
+    SDL_Init(SDL_INIT_EVERYTHING);
+
 
     /* to animate on the windows and ammo */
     animator.player = &playerDummy;
@@ -73,6 +77,7 @@ int gameplayWindow(ClientInfo* information)
     while(!quit){
         while(SDL_PollEvent(&event)) //events
         {
+        
             if (event.type == SDL_QUIT)
             {
                 quit = 1;
@@ -81,10 +86,14 @@ int gameplayWindow(ClientInfo* information)
             {
                 if(event.key.keysym.sym == SDLK_ESCAPE){
                     quit = 1;
+                    break;
                 }
-                if(animator.player->deaths == 0){
+                if(animator.player->health > 0 ){
                     switch(event.key.keysym.sym)
                     {
+                        case SDLK_ESCAPE:
+                            return 1;
+
                         case SDLK_LEFT:
                             bulletDummy.direction=-1;
                             playerDummy.pos.x -= SPEEDx;

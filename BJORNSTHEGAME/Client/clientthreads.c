@@ -142,12 +142,15 @@ int timeupdater(void* inc_time){
                     if((timer->bullets[i]->TTL) > 0){
 	                    timer->bullets[i]->pos.x += (BULLETSPEED*(timer->bullets[i]->direction));
 	                    if(checkCollision(timer->bullets[i]->pos, timer->animator->player->pos)){
+                            
+                            /* checks if the player is dead */
 	                    	if(timer->animator->player->health > 0 && deathflag !=1){
                                     timer->animator->player->health -= timer->bullets[i]->dmg;
                                     Mix_HaltChannel(3);
                                     Mix_PlayChannel(3, hurt, 0);
                                     timer->bullets[i]->TTL = 0;
-        
+                                
+                                    /* set death flag if player is dead 0 */
                                     if(timer->animator->player->health < 1){
                                         timer->animator->player->health = 0;
                                         timer->animator->player->deaths++;
@@ -169,6 +172,7 @@ int timeupdater(void* inc_time){
 	                    	timer->bullets[i]->TTL--;
 	                }
                     
+                    /* checks if the player is died during the given time */
                     else if(deathtime > 3){
                         timer->animator->player->health = 5;
                         sendPlayerUpdate(*(timer->animator->player), timer->socket);
@@ -180,7 +184,9 @@ int timeupdater(void* inc_time){
 	                    timer->bullets[i]->pos.y = 0;
 	            	}
 	        	}
-	        }// for
+	        }
+            
+            /* if deathflag is set increase the deathtime variable */
             if(deathflag == 1){
                 deathtime ++;
                 printf("Deathtime is now :%d\n", deathtime);

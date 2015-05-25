@@ -107,7 +107,7 @@ int updateHandler(void* incinfo){
 
 int timeupdater(void* inc_time){
     timerInfo* timer = (timerInfo*) inc_time;
-    int i, j, k, fall=1, deathflag=0, deathtime=0;
+    int i, j, k, fall=1, deathflag=0, deathtime=0, timecheck=0;
     float acceleration = 0.5;
     Mix_Chunk* hurt = Mix_LoadWAV("../Sounds/hurt.wav");
     printf("Timer thread uppdater started\n");
@@ -116,6 +116,7 @@ int timeupdater(void* inc_time){
 
         if(*(timer->timer) > 0){
             (*(timer->timer))--;
+            timecheck ++;
 
             for(j=0;j<20;j++)
             {
@@ -150,10 +151,9 @@ int timeupdater(void* inc_time){
                                     if(timer->animator->player->health < 1){
                                         timer->animator->player->health = 0;
                                         timer->animator->player->deaths++;
+                                        printf("This player died %d times\n", timer->animator->player->deaths);
                                         sendPlayerUpdate(*(timer->animator->player), timer->socket);
                                         deathflag = 1;
-                                       // SDL_Delay(2000);
-                                        // SDL_Delay(3000);
                                     }
 	                    	}
                         }
@@ -186,7 +186,12 @@ int timeupdater(void* inc_time){
                 printf("Deathtime is now :%d\n", deathtime);
             }
             printf("Gameplay time: %d is ticking\n", *(timer->timer));
-        }else SDL_Delay(10);
+        }else{
+            if(timecheck > 1)
+                (*(timer->quit)) = 1;
+            /*else
+                SDL_Delay(10);*/
+        }
     }
     printf("Timeupdater exited!\n");
     return 0;

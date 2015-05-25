@@ -19,7 +19,7 @@ Projekt Grupp 5
 #define SERVERNAME "Server"
 #define POWERTIMER 20
 #define LOBBYLENGTH 15//120
-#define GAMELENGTH 300 // 300 från början
+#define GAMELENGTH 10 // 300 från början
 
 /* Struct with important information regarding the thread and player */
 typedef struct{

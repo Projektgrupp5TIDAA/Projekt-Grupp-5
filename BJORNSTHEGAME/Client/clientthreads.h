@@ -34,6 +34,7 @@ typedef struct{
     bullet* bullets[12];
 }updaterInfo;
 
+/* struct containing all animation information */
 typedef struct{
 	int frame, *quit, *ammo, *drunk, *powerup;
 	SDL_Window* window;
@@ -43,8 +44,10 @@ typedef struct{
     bullet bullets[12];
     SDL_Rect platforms[17];
     SDL_Rect bjornDrapRect[3];
+    int* gameclock;
 }animationInfo;
 
+/* struct containing all time information */
 typedef struct{
 	int* timer, *quit;
 	bullet* bullets[12];

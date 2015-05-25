@@ -55,6 +55,7 @@ int animate(void* info){
     SDL_Surface* bullet = IMG_Load("../Images/game/kapsylvertical.png");
     SDL_Surface* textsurface[TEXTAMOUNT];
     SDL_Surface* rip= IMG_Load("../Images/game/rip.png");
+    SDL_Surface* scoreboard= IMG_Load("../Images/game/deathboard.png");
 
     SDL_Surface* playerSurface[6];
     playerSurface[5] = IMG_Load("../Images/game/spriteGreen.png");
@@ -76,11 +77,14 @@ int animate(void* info){
     SDL_Texture* myText[TEXTAMOUNT];
     SDL_Texture* bulletTex;
     SDL_Texture* rip_texture=NULL;
+    SDL_Texture* score_texture= NULL;
 
     SDL_Rect spriteClips[4];
     SDL_Rect textSprite[6];
     SDL_Rect textRect[5];
     SDL_Rect capsRect[AMMOAMOUNT];
+    SDL_Rect scores;
+    SDL_Rect scorepos[PLAYERCOUNT];
 
     /* Fill the platforms with colors */
     SDL_FillRect(platform1, NULL, SDL_MapRGB(platform1->format, 200, 190, 200));
@@ -104,6 +108,7 @@ int animate(void* info){
     bakgroundTexture = SDL_CreateTextureFromSurface(Rend,gameBackground); //Load texture with image "bar.jpg" and Rend
     rip_texture = SDL_CreateTextureFromSurface(Rend, rip);
 
+
     // Load the font into the program
     SDL_Color colorT= {170,60,255};
     TTF_Font *font = TTF_OpenFont("../Images/game/StencilStd.ttf", 35);
@@ -125,6 +130,8 @@ int animate(void* info){
     picture[1]= SDL_CreateTextureFromSurface(Rend,band);
     picture[2]= SDL_CreateTextureFromSurface(Rend,platform1);
     picture[3]= SDL_CreateTextureFromSurface(Rend,platform2);
+    
+    score_texture= SDL_CreateTextureFromSurface(Rend, scoreboard);
 
     for(i=4;i<PLATFORMAMOUNT;++i)
     {
@@ -275,7 +282,42 @@ int animate(void* info){
     textRect[4].y= screen->h*0.02;
     textRect[4].w= textsurface[3]->w/6;//screen->w*0.02;
     textRect[4].h= textsurface[3]->h;//screen->h*0.055;
+    
+    scores.x= screen->w/3- 85;
+    scores.y= screen->h/3;
+    scores.h= screen->h/2;
+    scores.w= screen->w/2;
+    
+    scorepos[0].x= screen->w/3*0.05;
+    scorepos[0].y= screen->h/3*0.1;
+    scorepos[0].h= screen->h/2*0.05;
+    scorepos[0].w= screen->w/2*0.05;
+    
+    scorepos[1].x= screen->w/2*0.05;
+    scorepos[1].y= screen->h/2*0.1;
+    scorepos[1].h= screen->h/3*0.05;
+    scorepos[1].w= screen->w/3*0.05;
+    
+    scorepos[2].x= screen->w/4*0.05;
+    scorepos[2].y= screen->h/4*0.1;
+    scorepos[2].h= screen->h*0.05;
+    scorepos[2].w= screen->w*0.05;
+    
+    scorepos[3].x= screen->w/3*0.01;
+    scorepos[3].y= screen->h/3*0.2;
+    scorepos[3].h= screen->h/2*0.05;
+    scorepos[3].w= screen->w/2*0.05;
+    
+    scorepos[4].x= screen->w*0.05;
+    scorepos[4].y= screen->h*0.3;
+    scorepos[4].h= screen->h/2*0.05;
+    scorepos[4].w= screen->w/2*0.05;
 
+    scorepos[5].x= screen->w/4*0.05;
+    scorepos[5].y= screen->h/4*0.1;
+    scorepos[5].h= screen->h/2*0.05;
+    scorepos[5].w= screen->w/2*0.05;
+    
     // Size and position for the player
     for(i=0;i<PLAYERCOUNT;i++){
         animator->players[i].pos.y = screen->h;
@@ -327,6 +369,7 @@ int animate(void* info){
     SDL_FreeSurface(bullet);
     SDL_FreeSurface(bjornsTom);
     SDL_FreeSurface(rip);
+    SDL_FreeSurface(scoreboard);
     for(i=0;i<6;i++){
         SDL_FreeSurface(playerSurface[i]);
     }
@@ -432,9 +475,21 @@ int animate(void* info){
 
         //Render the present buffer of the renderer onto the screen
         SDL_RenderPresent(Rend);
+        
         SDL_Delay(1000/240);
     }
-
+    
+    if(*(animator->gameclock) == 0){
+        int l;
+        SDL_RenderCopy(Rend, score_texture, NULL, &scores);
+        for(l=0;l<PLAYERCOUNT;l++){
+           /* if(players[i] !=NULL)
+                SDL_RenderCopy(Rend, &players[i]->deaths, score_texture, NULL, scorepos[i]); */ 
+        }
+        SDL_RenderPresent(Rend);
+        SDL_Delay(10000);
+    }
+    
     /* Destroy all textures, the window and the renderer */
     for(i=0; i<PLATFORMAMOUNT; i++)
     {
@@ -451,6 +506,7 @@ int animate(void* info){
     SDL_DestroyTexture(bjornDrapare);
     SDL_DestroyTexture(bjornDTom);
     SDL_DestroyTexture(rip_texture);
+    SDL_DestroyTexture(score_texture);
     for(i=0;i<6;i++){
         SDL_DestroyTexture(player[i]);
     }

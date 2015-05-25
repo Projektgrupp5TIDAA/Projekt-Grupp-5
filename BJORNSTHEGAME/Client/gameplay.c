@@ -43,6 +43,7 @@ int gameplayWindow(ClientInfo* information)
 
     /* to animate on the windows and ammo */
     animator.player = &playerDummy;
+    animator.gameclock= &updater.timer; 
 
     updater.players = &(animator.players[0]);
 

@@ -30,7 +30,7 @@ int updateHandler(void* incinfo){
 	SDLNet_SocketSet activity = SDLNet_AllocSocketSet(1);
 	SDLNet_AddSocket(activity, *(info->socket));
 	char packet[512];
-	int i, tmpID, activeplayers=0, errorcount=0;
+    int i, tmpID, activeplayers=0, errorcount=0, deathflag=0;
 
     /* The main polling-loop */
 	while(!(*(info->quit))){
@@ -107,7 +107,7 @@ int updateHandler(void* incinfo){
 
 int timeupdater(void* inc_time){
     timerInfo* timer = (timerInfo*) inc_time;
-    int i, j, k, fall=1;
+    int i, j, k, fall=1, deathflag=0, deathtime=0;
     float acceleration = 0.5;
     Mix_Chunk* hurt = Mix_LoadWAV("../Sounds/hurt.wav");
     printf("Timer thread uppdater started\n");
@@ -138,22 +138,27 @@ int timeupdater(void* inc_time){
                 }
 
 	            for(i=0;i<12;i++){
-	                if((timer->bullets[i]->TTL) > 0){
+                    if((timer->bullets[i]->TTL) > 0){
 	                    timer->bullets[i]->pos.x += (BULLETSPEED*(timer->bullets[i]->direction));
 	                    if(checkCollision(timer->bullets[i]->pos, timer->animator->player->pos)){
-	                    	if(timer->animator->player->health > 0){
-	                    		timer->animator->player->health -= timer->bullets[i]->dmg;
-				                Mix_HaltChannel(3);
-				                Mix_PlayChannel(3, hurt, 0);
-	                    		timer->bullets[i]->TTL = 0;
-                                if(timer->animator->player->health < 1){
-                                    timer->animator->player->health = 0;
-                                    timer->animator->player->deaths++;
-                                    sendPlayerUpdate(*(timer->animator->player), timer->socket);
-                                }
+	                    	if(timer->animator->player->health > 0 && deathflag !=1){
+                                    timer->animator->player->health -= timer->bullets[i]->dmg;
+                                    Mix_HaltChannel(3);
+                                    Mix_PlayChannel(3, hurt, 0);
+                                    timer->bullets[i]->TTL = 0;
+        
+                                    if(timer->animator->player->health < 1){
+                                        timer->animator->player->health = 0;
+                                        timer->animator->player->deaths++;
+                                        sendPlayerUpdate(*(timer->animator->player), timer->socket);
+                                        deathflag = 1;
+                                       // SDL_Delay(2000);
+                                        // SDL_Delay(3000);
+                                    }
 	                    	}
-	                    }else{
-	                        for(k=0;k<17;k++){
+                        }
+                        else{
+                            for(k=0;k<17;k++){
 	                    	    if(checkCollision(timer->bullets[i]->pos, timer->animator->platforms[k]))
 	                    	        timer->bullets[i]->TTL = 0;
 	                    	    if(checkCollision(timer->bullets[i]->pos, timer->animator->players[k/2-1].pos) && timer->animator->players[k/2-1].health > 0)
@@ -163,15 +168,23 @@ int timeupdater(void* inc_time){
 	                    if(timer->bullets[i]->TTL > 0)
 	                    	timer->bullets[i]->TTL--;
 	                }
+                    
+                    else if(deathtime > 3){
+                        timer->animator->player->health = 5;
+                        sendPlayerUpdate(*(timer->animator->player), timer->socket);
+                        deathflag = 0;
+                        deathtime = 0;
+                    }
 	                else if(timer->bullets[i]->pos.x != 0 && timer->bullets[i]->pos.y != 0){
 	                    timer->bullets[i]->pos.x = 0;
 	                    timer->bullets[i]->pos.y = 0;
 	            	}
-
-
 	        	}
-	        }
-
+	        }// for
+            if(deathflag == 1){
+                deathtime ++;
+                printf("Deathtime is now :%d\n", deathtime);
+            }
             printf("Gameplay time: %d is ticking\n", *(timer->timer));
         }else SDL_Delay(10);
     }

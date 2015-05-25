@@ -44,21 +44,19 @@ int main(int argc, char *argv[]){
         return 0;
     }
     Mix_HaltMusic();
-
-    /* if exit is pressed, exit the game */
+        /* if exit is pressed, exit the game */
     if(LobbyWindow(&startup)==1){
         SDLNet_TCP_Send(startup.socket, "EXITCONNECTION", 16);
         printf("Exiting the game!\n");
         return 0;
     }
-    Mix_HaltMusic();
 
     /* Clean up */
     printf("Going to the gameplay!\n");
     SDL_Quit();
     Mix_CloseAudio();
     gameplayWindow(&startup);
-
+    Mix_HaltMusic();
     if((startup.socket) != NULL)
         SDLNet_TCP_Send(startup.socket, "EXITCONNECTION", 16);
 

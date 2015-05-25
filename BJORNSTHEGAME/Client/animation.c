@@ -482,10 +482,10 @@ int animate(void* info){
     if(*(animator->gameclock) == 0){
         int l;
         SDL_RenderCopy(Rend, score_texture, NULL, &scores);
-        for(l=0;l<PLAYERCOUNT;l++){
-           /* if(players[i] !=NULL)
-                SDL_RenderCopy(Rend, &players[i]->deaths, score_texture, NULL, scorepos[i]); */ 
-        }
+        /* for(l=0;l<PLAYERCOUNT;l++){
+            if(players[i] !=NULL)
+                SDL_RenderCopy(Rend, &players[i]->deaths, score_texture, NULL, scorepos[i]);
+        }*/
         SDL_RenderPresent(Rend);
         SDL_Delay(10000);
     }

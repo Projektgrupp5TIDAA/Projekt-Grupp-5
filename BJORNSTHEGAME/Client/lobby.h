@@ -2,11 +2,6 @@
 #define _LOBBY_H_
 
 typedef struct{
-    char ID[6];
-    char names[6][20];
-}nrecv;
-
-typedef struct{
 	int *timer, *quit;
 }lbytmr;
 

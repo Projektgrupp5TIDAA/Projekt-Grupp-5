@@ -44,8 +44,6 @@ int LobbyWindow(ClientInfo* lobbyConnection){
     char* message, timechar[8];
 
     SDL_Thread * timethr;
-    
-    nrecv name = {{0}, {{0}}}; // names struct
 
     SDLNet_SocketSet csock = SDLNet_AllocSocketSet(1);
     SDLNet_AddSocket(csock, lobbyConnection->socket);
@@ -167,7 +165,7 @@ int LobbyWindow(ClientInfo* lobbyConnection){
                     break;
                 case 'N':
                     parseString(packet, 1, strlen(packet));
-                    memcpy(&name, &packet, sizeof(name));
+                    memcpy(&lobbyConnection->names, &packet, sizeof(lobbyConnection->names));
                     break;
                 case 'T':
                     parseString(packet, 1, strlen(packet));
@@ -208,7 +206,7 @@ int LobbyWindow(ClientInfo* lobbyConnection){
         SDL_BlitScaled(exitButton, NULL, lobbySurface, &buttonPlacement);
         textToScreen(chatfont, typing[0], lobby, "Press 't' to type:");
         for(i=0;i<PLAYERCOUNT;i++){
-            textToScreen(playerfont, player[i], lobby, name.names[5-i]);
+            textToScreen(playerfont, player[i], lobby, lobbyConnection->names.names[5-i]);
         }
 
         for(i=0;i<19;i++){

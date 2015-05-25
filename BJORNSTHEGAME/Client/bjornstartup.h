@@ -19,10 +19,16 @@
 #endif
 
 typedef struct{
+    char ID[6];
+    char names[6][20];
+}nrecv;
+
+typedef struct{
 	TCPsocket socket;
 	IPaddress targethost;
 	char playerName[20];
 	int directConnect;
+	nrecv names;
 }ClientInfo;
 
 int getMouseBounds(int mouse[2], SDL_Rect rect);

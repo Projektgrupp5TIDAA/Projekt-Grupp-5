@@ -22,7 +22,7 @@ int Handler(void* thr){
     HandlerInfo* thread = (HandlerInfo *) thr;
     TCPsocket socket;
     char packet[PACKETSIZE], serialnames[sizeof(nsend)];
-    int i;
+    int i, errorcount=0;
     nsend names;
     tinfo* clientvar;
     printf("Thread is active!\n");
@@ -124,6 +124,15 @@ int Handler(void* thr){
                         *(clientvar->powerup) = atoi(packet);
                         printf("Recieved %d!\n", *(clientvar->powerup));
                         break;
+                    default:
+                        printf("Invalid string recieved!\n");
+                        if(++errorcount == 30){ 
+                            printf("Too many errors recieved, quitting thread #%d!\n", clientvar->ID);
+                            memset(clientvar->playername,0,strlen(clientvar->playername));
+                            SDLNet_TCP_Close(clientvar->socket);
+                            pushStack(thread->stack, clientvar);
+                            return 0;
+                        }
                 }
             }
         }

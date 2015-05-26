@@ -18,8 +18,8 @@ Projekt Grupp 5
 #define PACKETSIZE 512
 #define SERVERNAME "Server"
 #define POWERTIMER 20
-#define LOBBYLENGTH 15//120
-#define GAMELENGTH 10 // 300 från början
+#define LOBBYLENGTH 90
+#define GAMELENGTH 180
 
 /* Struct with important information regarding the thread and player */
 typedef struct{

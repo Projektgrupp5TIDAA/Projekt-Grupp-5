@@ -125,7 +125,6 @@ int Handler(void* thr){
                         printf("Recieved %d!\n", *(clientvar->powerup));
                         break;
                     default:
-                        printf("Invalid string recieved!\n");
                         if(++errorcount == 30){ 
                             printf("Too many errors recieved, quitting thread #%d!\n", clientvar->ID);
                             memset(clientvar->playername,0,strlen(clientvar->playername));

@@ -521,62 +521,46 @@ int animate(void* info)
         SDL_RenderCopy(Rend, myText[3], &textSprite[*(animator->drunk)], &textRect[4]);
 
         //Render the players onto the buffer of the renderer aswell as manage the movement of the reference
-        for(i=0; i<PLAYERCOUNT; i++)
-        {
-            if(animator->players[i].health < 1)
-            {
+        for(i=0; i<PLAYERCOUNT; i++){
+            if(animator->players[i].health < 1){
                 SDL_RenderCopy(Rend, rip_texture, NULL, &animator->players[i].pos);
-            }
-            else
-            {
-                if(animator->players[i].dir == 1)
-                {
+            }else{
+                if(animator->players[i].dir == 1){
                     animator->flip = SDL_FLIP_NONE;
                 }
                 else
                     animator->flip = SDL_FLIP_HORIZONTAL;
-                if(animator->players[i].pos.x != referenceplayer[i].pos.x)
-                {
-                    if(animator->players[i].pos.x > referenceplayer[i].pos.x)
-                    {
+                if(animator->players[i].pos.x != referenceplayer[i].pos.x){
+                    if(animator->players[i].pos.x > referenceplayer[i].pos.x){
                         referenceplayer[i].pos.x+=2;
                         flickerx = 1;
-                    }
-                    else
-                    {
+                    }else{
                         referenceplayer[i].pos.x-=2;
                         if(flickerx == 1)
                             flickerx=2;
                         else
                             flickerx=0;
                     }
-                    if(flickerx == 2)
-                    {
+                    if(flickerx == 2){
                         referenceplayer[i].pos.x = animator->players[i].pos.x;
                     }
                 }
-                if(animator->players[i].pos.y != referenceplayer[i].pos.y)
-                {
-                    if(animator->players[i].pos.y > referenceplayer[i].pos.y)
-                    {
+                if(animator->players[i].pos.y != referenceplayer[i].pos.y){
+                    if(animator->players[i].pos.y > referenceplayer[i].pos.y){
                         referenceplayer[i].pos.y+=2;
                         flickery = 1;
-                    }
-                    else
-                    {
+                    }else{
                         referenceplayer[i].pos.y-=2;
                         if(flickery == 1)
                             flickery=2;
                         else
                             flickery=0;
                     }
-                    if(flickery == 2)
-                    {
+                    if(flickery == 2){
                         referenceplayer[i].pos.y = animator->players[i].pos.y;
                     }
                 }
-                if(animator->players[i].pos.w != referenceplayer[i].pos.w)
-                {
+                if(animator->players[i].pos.w != referenceplayer[i].pos.w){
                     referenceplayer[i] = animator->players[i];
                 }
                 SDL_RenderCopyEx(Rend, player[i], &spriteClips[animator->frame], &referenceplayer[i].pos, 0, NULL, animator->flip);

@@ -154,7 +154,7 @@ int timeupdater(void* inc_time){
                                     if(timer->animator->player->health < 1){
                                         timer->animator->player->health = 0;
                                         timer->animator->player->deaths++;
-                                        printf("This player died %d times\n", timer->animator->player->deaths);
+                                        printf("\nThis player died %d times\n", timer->animator->player->deaths);
                                         sendPlayerUpdate(*(timer->animator->player), timer->socket);
                                         deathflag = 1;
                                     }
@@ -175,6 +175,7 @@ int timeupdater(void* inc_time){
                     /* checks if the player is died during the given time */
                     else if(deathtime > 3){
                         timer->animator->player->health = 5;
+                        *(timer->animator->drunk)=0;
                         sendPlayerUpdate(*(timer->animator->player), timer->socket);
                         deathflag = 0;
                         deathtime = 0;

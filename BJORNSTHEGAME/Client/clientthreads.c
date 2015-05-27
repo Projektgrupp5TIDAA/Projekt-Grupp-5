@@ -273,7 +273,10 @@ void clr_bit(int *num, int bit){
 int unpackPlayerPacket(char* packet, playerInfo players[PLAYERCOUNT], int activeplayers){
     unsigned int tempposition=0, i;
 
+    /* Does the unpacking for all of the active players */
     for(i=0;i<activeplayers;i++){
+        /* Gets the position and direction from the packet and then adds it to the 
+           proper destination variable */
         memcpy(&tempposition, packet, 3);
         if(is_set(tempposition, 0) > 0)
             players[i].dir = 1;
@@ -281,7 +284,9 @@ int unpackPlayerPacket(char* packet, playerInfo players[PLAYERCOUNT], int active
             players[i].dir = -1;
         players[i].pos.x = (tempposition & 0x00001FFF) >> 1;
         players[i].pos.y = (tempposition & 0x00FFE000) >> 13;
-        printf("tempposition: %d\n", tempposition);
+
+        /* Parses the string 3 steps, extracts the health-variable then parse one byte and returns
+           with a clean packet */
         parseString(packet, 3, PACKETSIZE);
         memcpy(&players[i].health, packet, 1);
         parseString(packet, 1, PACKETSIZE);

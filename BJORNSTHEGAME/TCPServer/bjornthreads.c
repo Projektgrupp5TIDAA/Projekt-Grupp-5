@@ -219,16 +219,22 @@ int timer(void* information){
 int makePlayerPacket(char* packet, pinfo players[PLAYERCOUNT], int activeplayers){
     emptyString(packet, sizeof(packet));
     unsigned int positionAndDirection = 0, i;
+
+    /* Will compress players until all active players have been added to the packet */
     for(i=0;i<activeplayers;i++){
+        /* Copies the health-variable into the first spot of the message since it will be the last member
+           of the final packet */
         memcpy(packet, &players[i].health, 1);
+
+        /* Parses the string 3 steps and then adds the position and direction to the packet */
         parseString(packet, -3, PACKETSIZE);
         positionAndDirection = (players[i].pos.y) << 12;
         positionAndDirection = (players[i].pos.x | positionAndDirection) << 1;
         if(players[i].dir == 1){
             set_bit((int*)&positionAndDirection, 0);
         }
-        //printf("positionAndDirection: %d\n", positionAndDirection);
-        //printf("tempy: %d ska vara %d, tempx: %d ska vara %d\n", positionAndDirection >> 13, players[i].pos.y, (positionAndDirection & 0x00001FFF) >> 1, players[i].pos.x);
+
+        /* Copies the position and direction variable into the packet */
         memcpy(packet, &positionAndDirection, 3);
         parseString(packet, -1, PACKETSIZE);
     }

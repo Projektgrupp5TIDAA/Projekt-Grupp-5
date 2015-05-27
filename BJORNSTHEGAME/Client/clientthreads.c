@@ -21,6 +21,7 @@ Created on 2015-05-12 by Jonathan Kåhre
 #define PLAYERCOUNT 6
 #define BULLETSPEED 30
 #define GRAVITY 4
+#define PACKETSIZE 512
 
 
 /* Function for handling all incoming information updates from the server */
@@ -29,8 +30,14 @@ int updateHandler(void* incinfo){
 	printf("Update poller running.\n");
 	SDLNet_SocketSet activity = SDLNet_AllocSocketSet(1);
 	SDLNet_AddSocket(activity, *(info->socket));
-	char packet[512];
-    int i, tmpID, activeplayers=0, errorcount=0, deathflag=0;
+	char packet[PACKETSIZE];
+    playerInfo tempPlayers[PLAYERCOUNT] = {{0}};
+    int i, tmpID, activeplayers=0, errorcount=0;
+
+    for(i=0;i<PLAYERCOUNT;i++){
+        tempPlayers[i].pos.h = 56;
+        tempPlayers[i].pos.w = 38;
+    }
 
     /* The main polling-loop */
 	while(!(*(info->quit))){
@@ -50,9 +57,10 @@ int updateHandler(void* incinfo){
                     activeplayers = packet[0];
                     parseString(packet, 1, sizeof(packet));
                     printf("Recieved player update with %d active players!\n", activeplayers);
-					memcpy(info->players, &packet, sizeof(playerInfo)*activeplayers);
-					/*for(i=0;i<PLAYERCOUNT;i++)
-						printf("Player %d: %d, %d\n", i, info->players[i]->pos.x, info->players[i]->pos.y);*/
+                    unpackPlayerPacket(packet, tempPlayers, activeplayers);
+					memcpy(info->players, &tempPlayers, sizeof(playerInfo)*activeplayers);
+					for(i=0;i<PLAYERCOUNT;i++)
+						printf("Player %d: %d, %d\n", i, tempPlayers[i].pos.x, tempPlayers[i].pos.y);
 					break;
 				/*case 'C':
 					printf("Chat recieved!\n");
@@ -263,4 +271,23 @@ void set_bit(int *num, int bit){
 void clr_bit(int *num, int bit){
     if(is_set(*num, bit) > 0)
         *num = *num - (pow(2, bit));
+}
+
+int unpackPlayerPacket(char* packet, playerInfo players[PLAYERCOUNT], int activeplayers){
+    unsigned int tempposition=0, i;
+
+    for(i=0;i<activeplayers;i++){
+        memcpy(&tempposition, packet, 3);
+        if(is_set(tempposition, 0) > 0)
+            players[i].dir = 1;
+        else
+            players[i].dir = -1;
+        players[i].pos.x = (tempposition & 0x00001FFF) >> 1;
+        players[i].pos.y = (tempposition & 0x00FFE000) >> 13;
+        printf("tempposition: %d\n", tempposition);
+        parseString(packet, 3, PACKETSIZE);
+        memcpy(&players[i].health, packet, 1);
+        parseString(packet, 1, PACKETSIZE);
+    }
+    return 0;
 }

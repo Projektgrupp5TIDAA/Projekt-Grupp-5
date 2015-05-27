@@ -33,17 +33,18 @@ int gameplayWindow(ClientInfo* information)
     Mix_PlayMusic(music, -1);
 
     int i, j, quit=0, ammo=AMMOAMOUNT, drunk=0, powerup=0, onground=0;
-    animationInfo animator = {0, &quit, &ammo, &drunk, &powerup, NULL, NULL, {{0, 0, 0, {0, 0, 0, 0}}}, SDL_FLIP_NONE, {{{0,0,0,0}, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}};
+    animationInfo animator = {0, &quit, &ammo, &drunk, &powerup, NULL, NULL, NULL, {{0}}, SDL_FLIP_NONE, {{{0}}}, {{0}}, {{0}}, &information->names};
     updaterInfo updater = {&quit, &powerup, 0, &(information->socket), NULL};
     timerInfo timer = {&updater.timer, &quit, {NULL}, &animator, &information->socket};
     SDL_Thread* updaterThread, *animatorThread, *timerThread;
     playerInfo playerDummy = {5, 0, 1, {0, 0, 0, 0}};
-    bullet bulletDummy = {{0,0,0,0}, 0, 0, 0};
+    bullet bulletDummy = {{0}};
     SDL_Event event;
 
     /* to animate on the windows and ammo */
     animator.player = &playerDummy;
     animator.gameclock= &updater.timer; 
+    animator.names = &information->names;
 
     updater.players = &(animator.players[0]);
 
@@ -61,8 +62,8 @@ int gameplayWindow(ClientInfo* information)
 
     playerDummy.pos.y = screen->h/4*3+60;
     playerDummy.pos.x = screen->w/2;
-    playerDummy.pos.h = screen->h*0.08;
-    playerDummy.pos.w = screen->w*0.030;
+    playerDummy.pos.h = 56;//screen->h*0.08;
+    playerDummy.pos.w = 38;//screen->w*0.030;
 
     bulletDummy.pos.y = 0;
     bulletDummy.pos.x = 0;

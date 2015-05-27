@@ -218,3 +218,22 @@ int timer(void* information){
     }
     return 0;
 }
+
+int makePlayerPacket(char* packet, pinfo players[PLAYERCOUNT], int activeplayers){
+    emptyString(packet, sizeof(packet));
+    unsigned int tempposition = 0, i;
+    for(i=0;i<activeplayers;i++){
+        memcpy(packet, &players[i].health, 1);
+        parseString(packet, -3, PACKETSIZE);
+        tempposition = (players[i].pos.y) << 12;
+        tempposition = (players[i].pos.x | tempposition) << 1;
+        if(players[i].dir == 1){
+            set_bit((int*)&tempposition, 0);
+        }
+        printf("tempposition: %d\n", tempposition);
+        printf("tempy: %d ska vara %d, tempx: %d ska vara %d\n", tempposition >> 13, players[i].pos.y, (tempposition & 0x00001FFF) >> 1, players[i].pos.x);
+        memcpy(packet, &tempposition, 3);
+        parseString(packet, -1, PACKETSIZE);
+    }
+    return 0;
+}

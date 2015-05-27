@@ -27,7 +27,7 @@
 int animate(void* info)
 {
     animationInfo* animator = (animationInfo*) info;
-    int i, flickerx=0, flickery=0;
+    int i;
     SDL_RendererFlip bflip = SDL_FLIP_NONE;
     char *buffer[6]= {NULL};
     char c[sizeof(int)];
@@ -348,8 +348,10 @@ int animate(void* info)
     {
         animator->players[i].pos.y = screen->h;
         animator->players[i].pos.x = screen->w/2+(i*50);
-        animator->players[i].pos.h = screen->h*0.11;//120;
-        animator->players[i].pos.w = screen->w*0.034;//66;
+        animator->players[i].pos.h = 56;//screen->h*0.11;//120;
+        animator->players[i].pos.w = 38;//screen->w*0.034;//66;
+        referenceplayer[i].pos.h = 56;
+        referenceplayer[i].pos.w = 38;
     }
 
     /* Positions in the player-sprites */
@@ -477,31 +479,27 @@ int animate(void* info)
                 if(animator->players[i].pos.x != referenceplayer[i].pos.x){
                     if(animator->players[i].pos.x > referenceplayer[i].pos.x){
                         referenceplayer[i].pos.x+=2;
-                        flickerx = 1;
+                        if((animator->players[i].pos.x - referenceplayer[i].pos.x) < 3){
+                            referenceplayer[i].pos.x = animator->players[i].pos.x;
+                        }
                     }else{
                         referenceplayer[i].pos.x-=2;
-                        if(flickerx == 1)
-                            flickerx=2;
-                        else
-                            flickerx=0;
-                    }
-                    if(flickerx == 2){
-                        referenceplayer[i].pos.x = animator->players[i].pos.x;
+                        if((referenceplayer[i].pos.x - animator->players[i].pos.x) < 3){
+                            referenceplayer[i].pos.x = animator->players[i].pos.x;
+                        }
                     }
                 }
                 if(animator->players[i].pos.y != referenceplayer[i].pos.y){
                     if(animator->players[i].pos.y > referenceplayer[i].pos.y){
                         referenceplayer[i].pos.y+=2;
-                        flickery = 1;
+                        if((animator->players[i].pos.y - referenceplayer[i].pos.y) < 3){
+                            referenceplayer[i].pos.y = animator->players[i].pos.y;
+                        }
                     }else{
                         referenceplayer[i].pos.y-=2;
-                        if(flickery == 1)
-                            flickery=2;
-                        else
-                            flickery=0;
-                    }
-                    if(flickery == 2){
-                        referenceplayer[i].pos.y = animator->players[i].pos.y;
+                        if((referenceplayer[i].pos.y - animator->players[i].pos.y) < 3){
+                            referenceplayer[i].pos.y = animator->players[i].pos.y;
+                        }
                     }
                 }
                 if(animator->players[i].pos.w != referenceplayer[i].pos.w){

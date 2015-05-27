@@ -5,7 +5,7 @@ FRAMEWORKS=/Library/Frameworks
 CC = gcc
 
 ifeq ($(OS),Windows_NT)
-	CFLAGS=-Wall -lmingw32 -lSDL2main -lSDL2 -lSDL2_net
+	CFLAGS=-Wall -g -lmingw32 -lSDL2main -lSDL2 -lSDL2_net
 	objectlist = bjornserver.o bjornthreads.o bjornstack.o bjornshared.o
 else
 	UNAME_TARGET := $(shell uname -s)

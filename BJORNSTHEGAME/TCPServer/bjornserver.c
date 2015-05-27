@@ -24,7 +24,7 @@ int main(int argc, char **argv){
     PollInfo pollerinfo = {0, {0, NULL, {NULL}}, {0, {{0}}}, {0, {{0}}}};
     SDL_Thread* connectionpoller, *timerthr;
     TimerInfo timerinfo = {0, 0};
-    char sendpackage[200];
+    char sendpackage[PACKETSIZE];
     int i, j, lastpop=0, newdata=0, powerupcheck=0, activeplayers;
     nsend namestruct;
 
@@ -170,14 +170,16 @@ int main(int argc, char **argv){
 
                     printf("Sending player update with %d active players!\n", activeplayers);
 
-                    memcpy(&sendpackage, &playersend, sizeof(pinfo) * activeplayers);
+                    makePlayerPacket(sendpackage, playersend, activeplayers);
 
-                    parseString(sendpackage, -2, sizeof(sendpackage));
+                    //memcpy(&sendpackage, &playersend, sizeof(pinfo) * activeplayers);
+
+                    parseString(sendpackage, -1, sizeof(sendpackage));
                     sendpackage[0] = 'P';
                     sendpackage[1] = activeplayers;
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket != NULL)
-                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(pinfo) * activeplayers + 3);
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, 4*activeplayers +3/*sizeof(pinfo) * activeplayers + 3*/);
                     }
                     newdata = 0;
                 }else{

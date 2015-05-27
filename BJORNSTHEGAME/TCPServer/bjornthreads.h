@@ -18,7 +18,7 @@ Projekt Grupp 5
 #define PACKETSIZE 512
 #define SERVERNAME "Server"
 #define POWERTIMER 20
-#define LOBBYLENGTH 90
+#define LOBBYLENGTH 5
 #define GAMELENGTH 180
 
 /* Struct with important information regarding the thread and player */
@@ -88,7 +88,6 @@ int poller(void* information);
 /* Thread counting down the main timer aswell as handle the powerup timers based on that */
 int timer(void* information);
 
-/* Initiation of the player struct */
-void initiatePlayer(pinfo* ply);
+int makePlayerPacket(char packet[PACKETSIZE], pinfo players[PLAYERCOUNT], int activeplayers);
 
 #endif

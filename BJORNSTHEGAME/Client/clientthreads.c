@@ -32,7 +32,7 @@ int updateHandler(void* incinfo){
 	SDLNet_AddSocket(activity, *(info->socket));
 	char packet[PACKETSIZE];
     playerInfo tempPlayers[PLAYERCOUNT] = {{0}};
-    int i, tmpID, activeplayers=0, errorcount=0;
+    int i, activeplayers=0, errorcount=0;
 
     for(i=0;i<PLAYERCOUNT;i++){
         tempPlayers[i].pos.h = 56;
@@ -77,13 +77,10 @@ int updateHandler(void* incinfo){
 				case 'B':
                     printf("Bulletupdate recieved!\n");
                     parseString(packet, 1, sizeof(packet));
-                    tmpID = packet[0];
-                    parseString(packet, 1, sizeof(packet));
                     for(i=0;i<12;i++){
                     	if(info->bullets[i]->TTL == 0){
-                    		memcpy(info->bullets[i], &packet, sizeof(*(info->bullets[i])));
-                    		info->bullets[i]->ID = tmpID;
-                    		printf("Bullet: %d, %d\n", info->bullets[i]->pos.x, info->bullets[i]->pos.y);
+                    		unpackBulletPacket(packet, info->bullets[i]);
+                    		printf("Bullet: x=%d, y=%d, dmg=%d, TTL=%d\n", info->bullets[i]->pos.x, info->bullets[i]->pos.y, info->bullets[i]->dmg, info->bullets[i]->TTL);
                     		break;
                     	}else{
                     		printf("Too many bullets!");
@@ -290,4 +287,31 @@ int unpackPlayerPacket(char* packet, playerInfo players[PLAYERCOUNT], int active
         parseString(packet, 1, PACKETSIZE);
     }
     return 0;
+}
+
+int unpackBulletPacket(char* packet, bullet* bullet){
+    unsigned char damageandTTL = 0;
+    unsigned int directionAndPosition = 0;
+
+    /* Unpacking the direction and position back into an int for processing aswell as parse the packet
+       3 steps to the left to set it in position to get the damage and TTL out of it next*/
+    memcpy(&directionAndPosition, packet, 3);
+    parseString(packet, 3, 5);
+
+    /* Processing the direction and position out of the int and put them into their respective destinations */
+    if(is_set(directionAndPosition, 0) > 0)
+        bullet->direction = 1;
+    else
+        bullet->direction = -1;
+    bullet->pos.x = (directionAndPosition & 0x00001FFF) >> 1;
+    bullet->pos.y = (directionAndPosition & 0x00FFE000) >> 13;
+
+    /* Unpack the damage and TTL char into the temporary storage and process them into their respective destinations */
+    memcpy(&damageandTTL, packet, 1);
+    bullet->dmg = damageandTTL & 0x07;
+    bullet->TTL = damageandTTL >> 3;
+    bullet->pos.w = 3;
+    bullet->pos.h = 9;
+
+    return 1;
 }

@@ -74,4 +74,6 @@ void clr_bit(int *num, int bit);
 
 int unpackPlayerPacket(char packet[PACKETSIZE], playerInfo players[PLAYERCOUNT], int activeplayers);
 
+int unpackBulletPacket(char* packet, bullet* bullet);
+
 #endif

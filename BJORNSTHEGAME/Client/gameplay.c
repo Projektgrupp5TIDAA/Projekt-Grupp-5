@@ -67,8 +67,8 @@ int gameplayWindow(ClientInfo* information)
 
     bulletDummy.pos.y = 0;
     bulletDummy.pos.x = 0;
-    bulletDummy.pos.h = screen->h*0.013;
-    bulletDummy.pos.w = screen->w*0.0030;
+    bulletDummy.pos.h = 9;//screen->h*0.013;
+    bulletDummy.pos.w = 3;//screen->w*0.0030;
 
     while(!quit){
         while(SDL_PollEvent(&event)) //events
@@ -280,14 +280,41 @@ int sendPlayerUpdate(playerInfo playerDummy, TCPsocket* socket){
         return 1;
 }
 
+/* Function created to easily send bullet-updates to the server while only providing the bullet aswell as socket */
 int sendBulletUpdate(bullet bulletDummy, TCPsocket* socket){
-    char serializedbullet[sizeof(bullet)+2] = {0};
-    memcpy(&serializedbullet, &bulletDummy, sizeof(bulletDummy));
-    parseString(serializedbullet, -1, sizeof(serializedbullet));
-    //printf("bullets x+y = %d, %d\n", bulletDummy.pos.x, bulletDummy.pos.y);
-    serializedbullet[0]= 'B';
+    char packet[5] = {0};
+    unsigned char damageandTTL = 0;
+    unsigned int directionAndPosition = 0;
+
+    /* Sets the damage and TTL char to the value of TTL and then add the damage to the last
+       3 bits of it by shifting it to the left 3 times aswell as or-ing it with the dmg short */
+    damageandTTL += bulletDummy.TTL;
+    damageandTTL = (damageandTTL << 3) | bulletDummy.dmg;
+    printf("damageandTTL = %d, %d\n", damageandTTL>>3, damageandTTL & 0x07);
+
+    /* Sets the directions initial value to y bit-shifted left 12 times, leaving space for x, which
+       is then added aswell as bit-shifted once to the left to leave space for the direction bit */
+    directionAndPosition = (bulletDummy.pos.y) << 12;
+    directionAndPosition = (bulletDummy.pos.x | directionAndPosition) << 1;
+
+    /* Sets or leaves the bit clear depending on if the direction is 1 or not */
+    if(bulletDummy.direction == 1)
+        set_bit((int*)&directionAndPosition, 0);
+
+    /* Copies the damage and TTL char to the array aswell as parse the string 3 steps to the right
+       to leave space for the direction and position int */
+    memcpy(&packet, &damageandTTL, 1);
+    parseString(packet, -3, 5);
+
+    /* Copies the direction and position int to the free space in the packet aswell as parse it one 
+       space to the right to leave space for the packet-identifier */
+    memcpy(&packet, &directionAndPosition, 3);
+    parseString(packet, -1, 5);
+
+    /* Adds the packet-identifier to the first space of the packet and then sends the packet */
+    packet[0]= 'B';
     if(*socket != NULL){
-        SDLNet_TCP_Send(*socket, serializedbullet, sizeof(serializedbullet));
+        SDLNet_TCP_Send(*socket, packet, 6);
         return 0;
     }else
         return 1;

@@ -18,12 +18,12 @@ Projekt Grupp 5
 #include "bjornshared.h"
 
 int main(int argc, char **argv){
-    tinfo threadvariables[PLAYERCOUNT] = {{0, NULL, NULL, NULL, NULL, {0}, {NULL}}};
+    tinfo threadvariables[PLAYERCOUNT] = {{0}};
     pinfo players[PLAYERCOUNT] = {{5, 0, 0, {0}}};
     pinfo playersend[PLAYERCOUNT] = {{5, 0, 0, {0}}};
-    PollInfo pollerinfo = {0, {0, NULL, {NULL}}, {0, {{0}}}, {0, {{0}}}};
+    PollInfo pollerinfo = {0};
     SDL_Thread* connectionpoller, *timerthr;
-    TimerInfo timerinfo = {0, 0};
+    TimerInfo timerinfo = {0};
     char sendpackage[PACKETSIZE];
     int i, j, lastpop=0, newdata=0, powerupcheck=0, activeplayers;
     nsend namestruct;
@@ -198,7 +198,7 @@ int main(int argc, char **argv){
                     popString(&pollerinfo.dstack, sendpackage, sizeof(sendpackage));
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(threadvariables[i].socket != NULL)
-                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, sizeof(sendpackage)+1);
+                            SDLNet_TCP_Send(threadvariables[i].socket, sendpackage, 6);
                     }
                     SDL_Delay(15);
                 }

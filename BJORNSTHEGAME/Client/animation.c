@@ -171,32 +171,6 @@ int animate(void* info)
     }
 
 
-    for(i=0; i<PLAYERCOUNT; i++)
-    {
-        //itoa(animator->players[i].deaths,buffer,10);
-        snprintf(c, sizeof(int), "%d", animator->players[i].deaths);
-        buffer[i] = malloc(sizeof(c));
-        strcpy(buffer[i], c);
-
-    }
-    for(i=0; i<PLAYERCOUNT; i++)
-    {
-
-        scoreSurface[i]=TTF_RenderText_Blended(font,buffer[i],black);
-
-
-    }
-
-    for(i=0; i<PLAYERCOUNT; i++)
-    {
-        if(death[i]==NULL)
-        {
-            printf("deth[i] fel");
-        }
-        death[i]=SDL_CreateTextureFromSurface(Rend,scoreSurface[i]);
-    }
-
-
     printf("All textures loaded.\n");
 
     /* Set the positions for every platform on screen */
@@ -368,35 +342,6 @@ int animate(void* info)
     Namepos[5].h= deathsurface[5]->h/2;
     Namepos[5].w= deathsurface[5]->w;
 
-    scorepos[0].x= screen->w/2 +200;
-    scorepos[0].y= screen->h/2 +20;
-    scorepos[0].h= scoreSurface[0]->h/2;
-    scorepos[0].w= scoreSurface[0]->w;
-
-    scorepos[1].x= screen->w/2 +200;
-    scorepos[1].y= screen->h/2 +45;
-    scorepos[1].h= scoreSurface[1]->h/2;
-    scorepos[1].w= scoreSurface[1]->w;
-
-    scorepos[2].x= screen->w/2 +200;
-    scorepos[2].y= screen->h/2 +70;
-    scorepos[2].h= scoreSurface[2]->h/2;
-    scorepos[2].w= scoreSurface[2]->w;
-
-    scorepos[3].x= screen->w/2 +200;
-    scorepos[3].y= screen->h/2 +95;
-    scorepos[3].h= scoreSurface[3]->h/2;
-    scorepos[3].w= scoreSurface[3]->w;
-
-    scorepos[4].x= screen->w/2 +200;
-    scorepos[4].y= screen->h/2 +120;
-    scorepos[4].h= scoreSurface[4]->h/2;
-    scorepos[4].w= scoreSurface[4]->w;
-
-    scorepos[5].x= screen->w/2 +200;
-    scorepos[5].y= screen->h/2 +145;
-    scorepos[5].h= scoreSurface[5]->h/2;
-    scorepos[5].w= scoreSurface[5]->w;
 
     // Size and position for the player
     for(i=0; i<PLAYERCOUNT; i++)
@@ -463,7 +408,6 @@ int animate(void* info)
     }
     for(i=0; i<PLAYERCOUNT; i++)
     {   SDL_FreeSurface(deathsurface[i]);
-        SDL_FreeSurface(scoreSurface[i]);
     }
 
     printf("Surfaces have been unallocated.\n");
@@ -572,6 +516,54 @@ int animate(void* info)
 
         SDL_Delay(1000/240);
     }
+
+     for(i=0; i<PLAYERCOUNT; i++)
+        {
+             snprintf(c, sizeof(int), "%d", animator->players[i].deaths);
+             buffer[i] = malloc(sizeof(c));
+             strcpy(buffer[i], c);}
+
+
+       for(i=0; i<PLAYERCOUNT; i++)
+        {
+            scoreSurface[i]=TTF_RenderText_Blended(font,buffer[i],black);}
+
+        for(i=0; i<PLAYERCOUNT; i++)
+        {
+            death[i]=SDL_CreateTextureFromSurface(Rend,scoreSurface[i]);
+            SDL_FreeSurface(scoreSurface[i]);
+        }
+
+
+    scorepos[0].x= screen->w/2 +200;
+    scorepos[0].y= screen->h/2 +20;
+    scorepos[0].h= scoreSurface[0]->h/2;
+    scorepos[0].w= scoreSurface[0]->w;
+
+    scorepos[1].x= screen->w/2 +200;
+    scorepos[1].y= screen->h/2 +45;
+    scorepos[1].h= scoreSurface[1]->h/2;
+    scorepos[1].w= scoreSurface[1]->w;
+
+    scorepos[2].x= screen->w/2 +200;
+    scorepos[2].y= screen->h/2 +70;
+    scorepos[2].h= scoreSurface[2]->h/2;
+    scorepos[2].w= scoreSurface[2]->w;
+
+    scorepos[3].x= screen->w/2 +200;
+    scorepos[3].y= screen->h/2 +95;
+    scorepos[3].h= scoreSurface[3]->h/2;
+    scorepos[3].w= scoreSurface[3]->w;
+
+    scorepos[4].x= screen->w/2 +200;
+    scorepos[4].y= screen->h/2 +120;
+    scorepos[4].h= scoreSurface[4]->h/2;
+    scorepos[4].w= scoreSurface[4]->w;
+
+    scorepos[5].x= screen->w/2 +200;
+    scorepos[5].y= screen->h/2 +145;
+    scorepos[5].h= scoreSurface[5]->h/2;
+    scorepos[5].w= scoreSurface[5]->w;
 
     if(*(animator->gameclock) == 0)
     {

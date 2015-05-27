@@ -97,7 +97,7 @@ int updateHandler(void* incinfo){
                     break;
 				default:
 					printf("Invalid packet recieved, ignoring.\n");
-                    if(errorcount > 20){
+                    if(errorcount > 70){
                         printf("Too many errors, exiting.\n");
                         SDL_Delay(2000);
                         (*(info->quit)) = 1;
@@ -180,7 +180,8 @@ int timeupdater(void* inc_time){
                     /* checks if the player is died during the given time */
                     else if(deathtime > 3){
                         timer->animator->player->health = 5;
-                        *(timer->animator->drunk)=0;
+                        if(*(timer->animator->drunk) > 0)
+                            *(timer->animator->drunk)=0;
                         sendPlayerUpdate(*(timer->animator->player), timer->socket);
                         deathflag = 0;
                         deathtime = 0;

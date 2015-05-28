@@ -202,8 +202,6 @@ int timeupdater(void* inc_time){
         }else{
             if(timecheck > 1)
                 (*(timer->quit)) = 1;
-            /*else
-                SDL_Delay(10);*/
         }
     }
     printf("Timeupdater exited!\n");

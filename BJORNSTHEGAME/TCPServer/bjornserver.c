@@ -212,7 +212,12 @@ int main(int argc, char **argv){
                     powerupcheck = timerinfo.powerup;
                 }
             }
+            
+            /* when timer is zero, return to the lobby send function */
+            if(timerinfo.maintimer == 0)
+                lastpop = pollerinfo.stack.population - 1;
             printf("Game stopping.\n");
+            // break;
         }else{
             /* If only one player is connected to the server, the lobby-functions should still remain,
                although useless, you can chat with yourself.. 

@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[]){
     ClientInfo startup = {NULL, {0, 0}, {0}, 0};
-    int quit=0;
+
     if(argc > 1){
         if(strstr(argv[1], "local")){
             startup.directConnect = 1;
@@ -45,22 +45,18 @@ int main(int argc, char *argv[]){
     }
     Mix_HaltMusic();
         /* if exit is pressed, exit the game */
-    while(!quit){
-        if(LobbyWindow(&startup)==1){
-            printf("Exiting the game!\n");
-            break;
-        }
-
-        /* Clean up */
-        printf("Going to the gameplay!\n");
-        SDL_Quit();
-        Mix_CloseAudio();
-        if(gameplayWindow(&startup)==1){
-            printf("Exiting the gameplay\n");
-            break;
-        }
-        Mix_HaltMusic();
+    if(LobbyWindow(&startup)==1){
+        SDLNet_TCP_Send(startup.socket, "EXITCONNECTION", 16);
+        printf("Exiting the game!\n");
+        return 0;
     }
+
+    /* Clean up */
+    printf("Going to the gameplay!\n");
+    SDL_Quit();
+    Mix_CloseAudio();
+    gameplayWindow(&startup);
+    Mix_HaltMusic();
     if((startup.socket) != NULL)
         SDLNet_TCP_Send(startup.socket, "EXITCONNECTION", 16);
 

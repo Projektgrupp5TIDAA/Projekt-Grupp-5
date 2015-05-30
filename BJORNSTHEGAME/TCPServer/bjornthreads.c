@@ -95,13 +95,18 @@ int Handler(void* thr){
                 switch(packet[0]){
                     case 'B':
                         //printf("Bullet data recieved, pushing to stack!\n");
-                        pushString(thread->bulletStack, packet, sizeof(packet));
+                        if(SDL_LockMutex(thread->bulletStack->mutex) < 0){
+                            printf("Connectionhandler #%d couldn't lock bulletmutex: %s\n", clientvar->ID, SDL_GetError());
+                        }else{
+                            pushString(thread->bulletStack, packet, sizeof(packet));
+                            SDL_UnlockMutex(thread->bulletStack->mutex);
+                        }
                         break;
                     case 'P':
                         //printf("Player data recieved, updating!\n");
                         parseString(packet, 1, sizeof(packet));
                         if(SDL_LockMutex(*(clientvar->playerArrayMutex)) < 0)
-                            printf("Connectionhandler thread #%d could not lock mutex: %s\n", clientvar->ID, SDL_GetError());
+                            printf("Connectionhandler thread #%d could not lock playermutex: %s\n", clientvar->ID, SDL_GetError());
                         else{
                             memcpy(clientvar->player, &packet, sizeof(playerInfo));
                             *(clientvar->newdata)=1;
@@ -111,7 +116,12 @@ int Handler(void* thr){
                         break;
                     case 'C':
                         //printf("Chat message recieved, pushing to stack!\n");
-                        pushString(thread->chatStack, packet, sizeof(packet));
+                        if(SDL_LockMutex(thread->chatStack->mutex) < 0){
+                            printf("Connectionhandler #%d couldn't lock chatmutex: %s\n", clientvar->ID, SDL_GetError());
+                        }else{
+                            pushString(thread->chatStack, packet, sizeof(packet));
+                            SDL_UnlockMutex(thread->chatStack->mutex);
+                        }
                         break;
                     case 'N':
                         //printf("Name request recieved, sending!\n");

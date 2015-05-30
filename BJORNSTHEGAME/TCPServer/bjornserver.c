@@ -29,6 +29,8 @@ int main(int argc, char **argv){
     int i, j, lastpop=0, newdata=0, powerupcheck=0, activeplayers;
     nsend namestruct;
     SDL_mutex* playerArrayMutex = SDL_CreateMutex();
+    pollerinfo.chatStack.mutex = SDL_CreateMutex();
+    pollerinfo.bulletStack.mutex = SDL_CreateMutex();
 
     /* Initializing the information for the stack and threads */
     for(i=0;i<PLAYERCOUNT;i++){
@@ -93,12 +95,17 @@ int main(int argc, char **argv){
 
                 /* If there is a message waiting to be handled it will be sent within the lobby */
                 if(!(isEmptyStrStack(pollerinfo.chatStack))){
-                    popString(&pollerinfo.chatStack, sendpackage, sizeof(sendpackage));
-                    for(i=0;i<PLAYERCOUNT;i++){
-                        if(clientHandlerData[i].socket !=NULL)
-                            SDLNet_TCP_Send(clientHandlerData[i].socket, sendpackage, sizeof(sendpackage)+1);
+                    if(SDL_LockMutex(pollerinfo.chatStack.mutex) < 0){
+                        printf("Main couldn't lock chatmutex: %s\n", SDL_GetError());
+                    }else{
+                        popString(&pollerinfo.chatStack, sendpackage, sizeof(sendpackage));
+                        for(i=0;i<PLAYERCOUNT;i++){
+                            if(clientHandlerData[i].socket !=NULL)
+                                SDLNet_TCP_Send(clientHandlerData[i].socket, sendpackage, sizeof(sendpackage)+1);
+                        }
+                        SDL_Delay(200);
+                        SDL_UnlockMutex(pollerinfo.chatStack.mutex);
                     }
-                    SDL_Delay(200);
                 }else SDL_Delay(200);
 
                 /* If the current stack population differs from the previous state
@@ -191,22 +198,32 @@ int main(int argc, char **argv){
                 }else{
                 /* If there is a message waiting to be handled it will be sent as long as no high-priority updates are waiting */
                     if(!(isEmptyStrStack(pollerinfo.chatStack))){
-                        popString(&pollerinfo.chatStack, sendpackage, sizeof(sendpackage));
-                        for(i=0;i<PLAYERCOUNT;i++){
-                            if(clientHandlerData[i].socket != NULL)
-                                SDLNet_TCP_Send(clientHandlerData[i].socket, sendpackage, sizeof(sendpackage)+1);
+                        if(SDL_LockMutex(pollerinfo.chatStack.mutex) < 0){
+                            printf("Main couldn't lock chatmutex: %s\n", SDL_GetError());
+                        }else{
+                            popString(&pollerinfo.chatStack, sendpackage, sizeof(sendpackage));
+                            for(i=0;i<PLAYERCOUNT;i++){
+                                if(clientHandlerData[i].socket != NULL)
+                                    SDLNet_TCP_Send(clientHandlerData[i].socket, sendpackage, sizeof(sendpackage)+1);
+                            }
+                            SDL_UnlockMutex(pollerinfo.chatStack.mutex);
                         }
                     }else SDL_Delay(200);
                 }
 
                 if(!(isEmptyStrStack(pollerinfo.bulletStack))){
-                    //printf("Sending the bullet position update");
-                    popString(&pollerinfo.bulletStack, sendpackage, sizeof(sendpackage));
-                    for(i=0;i<PLAYERCOUNT;i++){
-                        if(clientHandlerData[i].socket != NULL)
-                            SDLNet_TCP_Send(clientHandlerData[i].socket, sendpackage, 6);
+                    if(SDL_LockMutex(pollerinfo.bulletStack.mutex) < 0){
+                        printf("Main couldn't lock bulletmutex: %s\n", SDL_GetError());
+                    }else{
+                        //printf("Sending the bullet position update");
+                        popString(&pollerinfo.bulletStack, sendpackage, sizeof(sendpackage));
+                        for(i=0;i<PLAYERCOUNT;i++){
+                            if(clientHandlerData[i].socket != NULL)
+                                SDLNet_TCP_Send(clientHandlerData[i].socket, sendpackage, 6);
+                        }
+                        SDL_Delay(15);
+                        SDL_UnlockMutex(pollerinfo.bulletStack.mutex);
                     }
-                    SDL_Delay(15);
                 }
                 if(timerinfo.powerup != powerupcheck){
                     printf("Sending power update!\n");
@@ -225,12 +242,17 @@ int main(int argc, char **argv){
                (also serves as a release for the stack not to be overpopulated before being able to send) */
             timerinfo.maintimer = 0;
             if(!(isEmptyStrStack(pollerinfo.chatStack))){
+                if(SDL_LockMutex(pollerinfo.chatStack.mutex) < 0){
+                        printf("Main couldn't lock chatmutex: %s\n", SDL_GetError());
+                }else{
                     popString(&pollerinfo.chatStack, sendpackage, sizeof(sendpackage));
                     for(i=0;i<PLAYERCOUNT;i++){
                         if(clientHandlerData[i].socket != NULL)
                             SDLNet_TCP_Send(clientHandlerData[i].socket, sendpackage, sizeof(sendpackage)+1);
                     }
-                SDL_Delay(200);
+                    SDL_Delay(200);
+                    SDL_UnlockMutex(pollerinfo.chatStack.mutex);
+                }
             }else SDL_Delay(200);
 
             if(pollerinfo.clientInformationStack.population != lastpop){

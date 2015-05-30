@@ -10,7 +10,7 @@ Projekt Grupp 5
 #include "bjornshared.h"
 
 /* Push the struct to the top of the stack */
-void pushStack(ThreadStack *stack, tinfo *pushThread){
+void pushStack(ThreadStack *stack, clientHandler *pushThread){
 	if(isFullStack(*stack)){
 		fprintf(stderr, "Error adding to the stack: Stack is full\n");
 	}else{
@@ -20,7 +20,7 @@ void pushStack(ThreadStack *stack, tinfo *pushThread){
 }
 
 /* Grab the struct at the top of the stack */
-tinfo* popStack(ThreadStack *stack){
+clientHandler* popStack(ThreadStack *stack){
 	if(isEmptyStack(*stack)){
 		fprintf(stderr, "Error taking from stack: Stack is Empty\n");
 		return NULL;

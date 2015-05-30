@@ -7,6 +7,7 @@ Projekt Grupp 5
 
 #ifndef _BJORN_THREAD_
 #define _BJORN_THREAD_
+#include <SDL2/SDL.h>
 #ifdef __APPLE__
 #include <SDL2_net/SDL_net.h>
 #else
@@ -25,16 +26,17 @@ Projekt Grupp 5
 typedef struct{
   short health, deaths, dir;
   SDL_Rect pos;
-}pinfo;
+}playerInfo;
 
 /* Struct with all the information a thread will have to get when getting a slot from the stack */
 typedef struct{
     int ID, *powerup, *newdata;
+    SDL_mutex** playerArrayMutex;
     TCPsocket socket;
-    pinfo* player;
+    playerInfo* player;
     char playername[20];
     char* names[PLAYERCOUNT];
-}tinfo;
+}clientHandler;
 
 /* Struct to send names */
 typedef struct{
@@ -46,21 +48,22 @@ typedef struct{
 typedef struct{
 	int population;
 	TCPsocket socket;
-	tinfo* thread[PLAYERCOUNT];
+	clientHandler* thread[PLAYERCOUNT];
 }ThreadStack;
 
 /* The struct for adding to stack from incoming data */
 typedef struct{
     int population;
     char item[PLAYERCOUNT][PACKETSIZE];
+    SDL_mutex* mutex;
 }DataStack;
 
 /* Struct with pointers required for the Poller to work */
 typedef struct{
     int quit;
-    ThreadStack stack;
-    DataStack cstack;
-    DataStack dstack;
+    ThreadStack clientInformationStack;
+    DataStack chatStack;
+    DataStack bulletStack;
 }PollInfo;
 
 /* Struct for counting down all the timers */
@@ -73,8 +76,8 @@ typedef struct{
     int* quit;
     TCPsocket* socket;
     ThreadStack* stack;
-    DataStack* cstack;
-    DataStack* dstack;
+    DataStack* chatStack;
+    DataStack* bulletStack;
 }HandlerInfo;
 
 #include "bjornstack.h"
@@ -88,6 +91,6 @@ int poller(void* information);
 /* Thread counting down the main timer aswell as handle the powerup timers based on that */
 int timer(void* information);
 
-int makePlayerPacket(char packet[PACKETSIZE], pinfo players[PLAYERCOUNT], int activeplayers);
+int makePlayerPacket(char packet[PACKETSIZE], playerInfo players[PLAYERCOUNT], int activeplayers);
 
 #endif

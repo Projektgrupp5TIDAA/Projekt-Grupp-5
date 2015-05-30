@@ -8,6 +8,7 @@ Projekt Grupp 5
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <SDL2/SDL.h>
 #ifdef __APPLE__
 #include <SDL2_net/SDL_net.h>
 #else
@@ -24,7 +25,7 @@ int Handler(void* thr){
     char packet[PACKETSIZE], serialnames[sizeof(nsend)];
     int i, errorcount=0;
     nsend names;
-    tinfo* clientvar;
+    clientHandler* clientvar;
     printf("Thread is active!\n");
 
     /* Accepts the incoming connection on the socket to handle the request */
@@ -94,18 +95,23 @@ int Handler(void* thr){
                 switch(packet[0]){
                     case 'B':
                         //printf("Bullet data recieved, pushing to stack!\n");
-                        pushString(thread->dstack, packet, sizeof(packet));
+                        pushString(thread->bulletStack, packet, sizeof(packet));
                         break;
                     case 'P':
                         //printf("Player data recieved, updating!\n");
                         parseString(packet, 1, sizeof(packet));
-                        memcpy(clientvar->player, &packet, sizeof(pinfo));
+                        if(SDL_LockMutex(*(clientvar->playerArrayMutex)) < 0)
+                            printf("Connectionhandler thread #%d could not lock mutex: %s\n", clientvar->ID, SDL_GetError());
+                        else{
+                            memcpy(clientvar->player, &packet, sizeof(playerInfo));
+                            *(clientvar->newdata)=1;
+                            SDL_UnlockMutex(*(clientvar->playerArrayMutex));
+                        }
                         //printf("Player data: %d, %d\n", clientvar->player->pos.x, clientvar->player->pos.y);
-                        *(clientvar->newdata)=1;
                         break;
                     case 'C':
                         //printf("Chat message recieved, pushing to stack!\n");
-                        pushString(thread->cstack, packet, sizeof(packet));
+                        pushString(thread->chatStack, packet, sizeof(packet));
                         break;
                     case 'N':
                         //printf("Name request recieved, sending!\n");
@@ -141,7 +147,7 @@ int poller(void* information){
     IPaddress listenerIP;
     TCPsocket socket;
     SDLNet_SocketSet activity = SDLNet_AllocSocketSet(1);
-    HandlerInfo connectionhandler = {&(info->quit), &socket, &(info->stack), &(info->cstack), &(info->dstack)};
+    HandlerInfo connectionhandler = {&(info->quit), &socket, &(info->clientInformationStack), &(info->chatStack), &(info->bulletStack)};
 
     /* Resolve listener ip */
     if(SDLNet_ResolveHost(&listenerIP,NULL,PORT) < 0){
@@ -216,7 +222,7 @@ int timer(void* information){
     return 0;
 }
 
-int makePlayerPacket(char* packet, pinfo players[PLAYERCOUNT], int activeplayers){
+int makePlayerPacket(char* packet, playerInfo players[PLAYERCOUNT], int activeplayers){
     emptyString(packet, sizeof(packet));
     unsigned int positionAndDirection = 0, i;
 

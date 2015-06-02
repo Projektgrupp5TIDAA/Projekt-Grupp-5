@@ -178,7 +178,7 @@ int timeupdater(void* inc_time){
 	                }
                     
                     /* checks if the player is died during the given time */
-                    else if(deathtime > 3){
+                    else if(deathtime > 7){
                         timer->animator->player->health = 5;
                         if(*(timer->animator->drunk) > 0)
                             *(timer->animator->drunk)=0;
